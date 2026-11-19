@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type ElementType, type ReactNode, type CSSProperties } from "react";
+import { useRef, type ElementType, type ReactNode, type CSSProperties } from "react";
+import { useInView } from "./useInView";
 
 type Props = {
   children: ReactNode;
@@ -11,33 +12,19 @@ type Props = {
   id?: string;
 };
 
-/** Calm fade-up when the element enters the viewport. Runs once. */
+/**
+ * Calm fade-in when the element enters the viewport. Replays every time it is scrolled back to:
+ * rises from below when scrolling down, settles from above when scrolling up.
+ */
 export default function Reveal({ children, as: Tag = "div", delay = 0, className = "", style, id }: Props) {
   const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in");
-            io.unobserve(entry.target);
-          }
-        }
-      },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.08 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { inView, exitedFrom } = useInView(ref, 0.08);
 
   return (
     <Tag
       ref={ref}
       id={id}
-      className={`reveal ${className}`}
+      className={`reveal ${inView ? "in" : ""} ${exitedFrom === "top" ? "reveal-from-top" : ""} ${className}`}
       style={{ ...style, ["--d" as string]: `${delay}ms` }}
     >
       {children}

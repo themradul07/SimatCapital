@@ -81,7 +81,7 @@ function Block({ id, eyebrow, title, lede, children }: { id: string; eyebrow: st
   return (
     <section id={id} className="border-t py-20 first:border-t-0 first:pt-0 md:py-28" style={{ borderColor: "var(--line-soft)" }}>
       <Reveal>
-        <span className="eyebrow">{eyebrow}</span>
+        <span className="chip-gold">{eyebrow}</span>
       </Reveal>
       <Reveal delay={80}>
         <h2 className="h2 mt-5 max-w-3xl">{title}</h2>

@@ -71,7 +71,7 @@ body {
   font-size: 16px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip; /* clip, not hidden: hidden would break position: sticky (hero globe) */
 }
 
 ::selection {
@@ -136,14 +136,6 @@ a {
   font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-}
-.eyebrow::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border: 1px solid var(--gold);
-  transform: rotate(45deg);
 }
 
 .display {
@@ -358,6 +350,15 @@ a {
   opacity: 1;
   transform: none;
 }
+/* scrolling back up: settle down from above instead of rising from below */
+.reveal.reveal-from-top:not(.in) {
+  transform: translate3d(0, -28px, 0);
+}
+/* reset instantly while off-screen so the next entrance always plays in full */
+.reveal:not(.in) {
+  transition-duration: 0ms;
+  transition-delay: 0ms;
+}
 
 /* staggered headline words (hero) */
 .word {
@@ -449,11 +450,37 @@ a {
   display: flex;
   flex-shrink: 0;
   width: max-content;
-  animation: tickerScroll 52s linear infinite;
+  animation: tickerScroll 64s linear infinite;
   will-change: transform;
 }
-.ticker-track:hover {
+.ticker-ribbon:hover .ticker-track,
+.ticker-ribbon[data-paused] .ticker-track {
   animation-play-state: paused;
+}
+/* price flash on a simulated tick */
+.tick-flash-up {
+  animation: tickUp 1100ms var(--ease);
+}
+.tick-flash-down {
+  animation: tickDown 1100ms var(--ease);
+}
+@keyframes tickUp {
+  0% {
+    background: rgba(96, 215, 177, 0.28);
+    color: #9ff0d4;
+  }
+  100% {
+    background: transparent;
+  }
+}
+@keyframes tickDown {
+  0% {
+    background: rgba(237, 103, 87, 0.28);
+    color: #ffb3a8;
+  }
+  100% {
+    background: transparent;
+  }
 }
 @keyframes tickerScroll {
   0% {
@@ -617,26 +644,16 @@ select.input {
 .chip-gold {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   background: var(--gold-tint);
   color: var(--gold);
   border: 1px solid var(--gold-hairline);
-  padding: 5px 13px;
+  padding: 5px 14px;
   border-radius: 9999px;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-}
-.chip-gold::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  background: var(--gold);
-  transform: rotate(45deg);
-}
-.chip-gold.no-mark::before {
-  display: none;
+  line-height: 1.4;
 }
 
 .card-kelder {

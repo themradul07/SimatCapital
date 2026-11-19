@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface MarketQuote {
   symbol: string;
@@ -136,158 +136,183 @@ const INITIAL_QUOTES: MarketQuote[] = [
   },
 ];
 
+function Sparkline({ data, up, id }: { data: number[]; up: boolean; id: string }) {
+  const W = 44;
+  const H = 18;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const pts = data.map((v, i) => [(i / (data.length - 1)) * W, H - 3 - ((v - min) / range) * (H - 6)] as const);
+  const line = pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const area = `0,${H} ${line} ${W},${H}`;
+  const [lx, ly] = pts[pts.length - 1];
+  const c = up ? "#60D7B1" : "#ED6757";
+  return (
+    <svg className="h-[18px] w-11 flex-shrink-0 overflow-visible" viewBox={`0 0 ${W} ${H}`} aria-hidden>
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={c} stopOpacity="0.28" />
+          <stop offset="100%" stopColor={c} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon points={area} fill={`url(#${id})`} />
+      <polyline fill="none" stroke={c} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" points={line} />
+      <circle cx={lx} cy={ly} r="1.9" fill={c} />
+    </svg>
+  );
+}
+
 export default function MarketTickerTape() {
   const [quotes, setQuotes] = useState<MarketQuote[]>(INITIAL_QUOTES);
-  const [activeTick, setActiveTick] = useState<string | null>(null);
+  const [tick, setTick] = useState<{ symbol: string; up: boolean; n: number } | null>(null);
+  const [visible, setVisible] = useState(true);
+  const rootRef = useRef<HTMLDivElement>(null);
 
-  // Periodic subtle live tick update to give true market momentum
+  // Pause the marquee and the tick timer while the ribbon is off-screen.
   useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Gentle simulated tick on one equity at a time.
+  useEffect(() => {
+    if (!visible) return;
+    const candidates = INITIAL_QUOTES.map((q, i) => (q.type === "sovereign" ? -1 : i)).filter((i) => i >= 0);
     const interval = setInterval(() => {
+      const idx = candidates[Math.floor(Math.random() * candidates.length)];
+      const delta = Math.random() * 0.35 - 0.12;
+      const up = delta >= 0;
+
       setQuotes((prev) => {
-        const idx = Math.floor(Math.random() * prev.length);
         const q = prev[idx];
-        if (q.type === "sovereign") return prev;
-
         const numPrice = parseFloat(q.price.replace(/[^0-9.]/g, ""));
-        const delta = (Math.random() * 0.35 - 0.12);
         const newPrice = Math.max(1, numPrice + delta);
-
-        const prefix = q.price.includes("SAR")
-          ? "SAR "
-          : q.price.includes("€")
-          ? "€"
-          : q.price.includes("CHF")
-          ? "CHF "
-          : q.price.includes("£")
-          ? "£"
-          : "$";
-
-        setActiveTick(q.symbol);
-        setTimeout(() => setActiveTick(null), 900);
-
+        const prefix = q.price.match(/^[^0-9]*/)?.[0] ?? "";
         const next = [...prev];
         next[idx] = {
           ...q,
-          price: `${prefix}${newPrice.toFixed(2)}`,
-          change: `${delta >= 0 ? "+" : ""}${((delta / numPrice) * 100).toFixed(2)}%`,
-          isPositive: delta >= 0,
+          price: `${prefix}${newPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          change: `${up ? "+" : ""}${((delta / numPrice) * 100).toFixed(2)}%`,
+          isPositive: up,
           sparkline: [...q.sparkline.slice(1), newPrice],
         };
         return next;
       });
+      setTick((t) => ({ symbol: INITIAL_QUOTES[idx].symbol, up, n: (t?.n ?? 0) + 1 }));
     }, 2400);
-
     return () => clearInterval(interval);
-  }, []);
+  }, [visible]);
 
   return (
     <div
-      className="relative z-20 w-full overflow-hidden select-none -mt-12 sm:-mt-20 md:-mt-28 mb-8 md:mb-14 px-4"
-      aria-label="Live Global Market Prices & Treasury Yields"
+      ref={rootRef}
+      className="ticker-ribbon relative w-full select-none"
+      aria-label="Global market prices and treasury yields"
+      data-paused={!visible || undefined}
     >
-      {/* Warm horizon ambient glow bridging globe to preview */}
+      {/* Radiant horizon ambient glow bridging globe to preview across full width */}
       <div
-        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-44 w-[92%] max-w-5xl rounded-full blur-3xl opacity-50"
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 h-36 w-full -translate-x-1/2 -translate-y-1/2 opacity-70 blur-3xl"
         style={{
-          background: "radial-gradient(circle, rgba(216, 183, 101, 0.22) 0%, rgba(96, 215, 177, 0.08) 45%, transparent 75%)",
+          background: "radial-gradient(ellipse 70% 100% at 50% 50%, rgba(216,183,101,0.22) 0%, rgba(96,215,177,0.06) 50%, transparent 80%)",
         }}
       />
 
-      {/* Main glassmorphic ticker ribbon */}
+      {/* Full-bleed edge-to-edge glassmorphic ticker ribbon */}
       <div
-        className="relative mx-auto max-w-[1240px] rounded-2xl border px-3 py-2.5 backdrop-blur-xl shadow-2xl transition-all duration-300"
+        className="relative flex w-full items-stretch overflow-hidden border-y backdrop-blur-xl transition-colors duration-300"
         style={{
-          borderColor: "rgba(216, 183, 101, 0.26)",
-          background: "linear-gradient(90deg, rgba(14, 23, 33, 0.90) 0%, rgba(20, 33, 44, 0.95) 50%, rgba(14, 23, 33, 0.90) 100%)",
-          boxShadow: "0 18px 45px -10px rgba(0, 0, 0, 0.75), 0 0 30px -8px rgba(216, 183, 101, 0.15)",
-          maskImage: "linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%)",
+          borderTop: "1px solid rgba(216, 183, 101, 0.28)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          background: "linear-gradient(180deg, rgba(16, 26, 36, 0.80) 0%, rgba(10, 16, 22, 0.90) 100%)",
+          boxShadow: "0 20px 50px -15px rgba(0, 0, 0, 0.85), 0 1px 0 rgba(255, 255, 255, 0.06) inset",
         }}
       >
-        <div className="flex items-center">
-          {/* Static Lead Badge */}
-          <div className="hidden lg:flex items-center gap-2 pr-4 mr-3 border-r border-white/10 flex-shrink-0">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#60D7B1] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#60D7B1]" />
-            </span>
-            <span className="text-[10px] font-semibold tracking-wider uppercase text-[#D8B765] whitespace-nowrap">
+        {/* Subtle top gold specular highlight beam */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 z-20 h-px"
+          style={{
+            background: "linear-gradient(90deg, transparent 0%, rgba(216,183,101,0.6) 25%, rgba(216,183,101,0.6) 75%, transparent 100%)",
+          }}
+        />
+
+        {/* Fixed institutional lead badge anchored to the left */}
+        <div
+          className="relative z-10 flex flex-shrink-0 items-center gap-3 border-r px-4 sm:px-6 md:px-8"
+          style={{
+            borderColor: "rgba(255, 255, 255, 0.08)",
+            background: "linear-gradient(90deg, rgba(10, 16, 22, 0.97) 0%, rgba(13, 21, 29, 0.92) 100%)",
+          }}
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#60D7B1] opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#60D7B1]" />
+          </span>
+          <span className="flex flex-col leading-tight">
+            <span className="whitespace-nowrap text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#D8B765]">
               Active Markets
             </span>
-          </div>
+            <span className="hidden whitespace-nowrap text-[9px] text-[#7E8E9C] sm:inline">
+              Global equity · Sukuk
+            </span>
+          </span>
+        </div>
 
-          {/* Continuous Moving Ticker Track */}
-          <div className="flex w-max ticker-track hover:[animation-play-state:paused] py-0.5">
+        {/* Continuous scrolling track, softly feathered at screen margins */}
+        <div
+          className="relative min-w-0 flex-1 overflow-hidden"
+          style={{
+            maskImage: "linear-gradient(90deg, transparent 0, #000 32px, #000 calc(100% - 48px), transparent 100%)",
+            WebkitMaskImage: "linear-gradient(90deg, transparent 0, #000 32px, #000 calc(100% - 48px), transparent 100%)",
+          }}
+        >
+          <div className="ticker-track py-3 sm:py-3.5">
             {[...quotes, ...quotes].map((q, i) => {
-              const isTicking = activeTick === q.symbol;
-
-              // Sparkline points calculation
-              const min = Math.min(...q.sparkline);
-              const max = Math.max(...q.sparkline);
-              const range = max - min || 1;
-              const points = q.sparkline
-                .map((val, idx) => {
-                  const x = (idx / (q.sparkline.length - 1)) * 36;
-                  const y = 14 - ((val - min) / range) * 10;
-                  return `${x.toFixed(1)},${y.toFixed(1)}`;
-                })
-                .join(" ");
-
+              const isTicking = tick?.symbol === q.symbol;
+              const falling = q.change.trim().startsWith("-");
+              const tone = q.isPositive ? "text-[#60D7B1]" : "text-[#ED6757]";
               return (
                 <div
                   key={`${q.symbol}-${i}`}
-                  className={`inline-flex items-center gap-3 px-5 border-r border-white/5 transition-colors duration-300 ${
-                    isTicking ? "bg-[#D8B765]/10" : ""
-                  }`}
+                  aria-hidden={i >= quotes.length || undefined}
+                  className="relative inline-flex items-center gap-3.5 px-5 transition-colors duration-500 hover:bg-white/[0.03] sm:px-6"
                 >
-                  <div className="flex flex-col">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-bold text-[13px] text-white tracking-tight">
-                        {q.symbol}
-                      </span>
-                      <span className="text-[9px] uppercase tracking-wider text-[#7E8E9C]">
-                        {q.market}
-                      </span>
+                  <div className="flex min-w-0 flex-col">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="whitespace-nowrap text-[13px] font-semibold tracking-tight text-[var(--cream)]">{q.symbol}</span>
+                      <span className="whitespace-nowrap text-[9px] uppercase tracking-[0.12em] text-[#7E8E9C]">{q.market}</span>
                     </div>
-                    <span className="text-[11px] text-[#A9B6C2] truncate max-w-[110px]">
-                      {q.name}
-                    </span>
+                    <span className="max-w-[120px] truncate text-[11px] text-[#9AA8B5]">{q.name}</span>
                   </div>
 
-                  {/* Mini Sparkline Chart */}
-                  <svg className="w-9 h-3.5 overflow-visible" viewBox="0 0 36 14">
-                    <polyline
-                      fill="none"
-                      stroke={q.isPositive ? "#60D7B1" : "#ED6757"}
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      points={points}
-                    />
-                  </svg>
+                  <Sparkline data={q.sparkline} up={q.isPositive} id={`spark-${i}`} />
 
-                  {/* Price & Change */}
                   <div className="flex flex-col items-end">
                     <span
-                      className={`text-xs font-semibold tabular-nums transition-colors duration-200 ${
-                        isTicking ? (q.isPositive ? "text-[#60D7B1]" : "text-[#ED6757]") : "text-white"
+                      key={isTicking ? `t${tick?.n}` : "s"}
+                      className={`rounded px-1 text-[12.5px] font-semibold tabular-nums text-white ${
+                        isTicking ? (tick?.up ? "tick-flash-up" : "tick-flash-down") : ""
                       }`}
                     >
                       {q.price}
                     </span>
-                    <span
-                      className={`text-[10px] font-medium tabular-nums ${
-                        q.isPositive ? "text-[#60D7B1]" : "text-[#ED6757]"
-                      }`}
-                    >
-                      {q.change}
+                    <span className={`mt-0.5 inline-flex items-center gap-0.5 text-[10px] font-medium tabular-nums ${tone}`}>
+                      <span className="text-[7px]">{falling ? "▼" : "▲"}</span>
+                      {q.change.replace(/^[+-]/, "")}
                     </span>
                   </div>
 
-                  {/* Shariah / Settlement Pill */}
-                  <span className="hidden xl:inline-flex items-center rounded-full bg-[#D8B765]/10 px-2 py-0.5 text-[9px] font-medium text-[#D8B765] border border-[#D8B765]/20 whitespace-nowrap">
-                    {q.type === "sovereign" ? "✓ Sovereign Direct" : "✓ MSCI Islamic"}
+                  <span className="hidden whitespace-nowrap rounded-full border border-[#D8B765]/20 bg-[#D8B765]/[0.07] px-2 py-0.5 text-[9px] font-medium text-[#D8B765] xl:inline-flex">
+                    {q.type === "sovereign" ? "Sovereign" : "MSCI Islamic"}
                   </span>
+
+                  {/* Divider */}
+                  <span aria-hidden className="absolute right-0 top-1/2 h-7 w-px -translate-y-1/2 bg-white/[0.06]" />
                 </div>
               );
             })}

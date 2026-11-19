@@ -31,8 +31,8 @@ export default function FiveQuestions() {
   return (
     <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr]">
       <div className="lg:sticky lg:top-32 lg:self-start">
-        <span className="eyebrow">How we think</span>
-        <h2 className="h2 mt-5">
+        <span className="chip-gold">How we think</span>
+        <h2 className="k-title mt-6">
           Every investment must answer <span className="italic-gold">five questions.</span>
         </h2>
         <p className="lede mt-6">

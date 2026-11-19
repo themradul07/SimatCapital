@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import HalftoneGrid from "./HalftoneGrid";
+import MarketTickerTape from "./MarketTickerTape";
 
 // three.js and the map data load only in the browser, after the hero text.
 const GlobeKelder = dynamic(() => import("./GlobeKelder"), { ssr: false });
@@ -38,10 +39,15 @@ export default function HeroKelder() {
   };
 
   return (
-    <section className="relative overflow-hidden pt-[130px] pb-4 md:pt-[170px] md:pb-6">
+    // overflow-clip (not hidden) so the sticky globe below keeps working.
+    <section className="relative overflow-clip pt-[130px] pb-10 md:pt-[170px] md:pb-16">
+      {/* Warms toward the globe, then settles back to the page colour so the next section joins without a seam */}
       <div
         className="pointer-events-none absolute inset-0"
-        style={{ background: "linear-gradient(180deg, var(--bg-deep) 0%, var(--bg) 55%, var(--gold-tint) 100%)" }}
+        style={{
+          background:
+            "linear-gradient(180deg, var(--bg-deep) 0%, var(--bg) 38%, var(--gold-tint) 72%, var(--gold-tint) 82%, var(--bg) 100%)",
+        }}
       />
       <div
         className="pointer-events-none absolute left-1/2 top-[16%] h-[460px] w-[680px] -translate-x-1/2 rounded-full blur-[140px]"
@@ -52,6 +58,8 @@ export default function HeroKelder() {
         <HalftoneGrid />
       </div>
 
+      {/* Sticky boundary: the globe can rise as high as the top of this block, no higher */}
+      <div className="relative flex flex-col">
       <div className="wrap relative z-10 flex flex-col items-center text-center">
         <div className="fade-in mb-7 flex flex-wrap items-center justify-center gap-3">
           {/* Status chip: confirm still true at launch (open item 11). */}
@@ -139,16 +147,33 @@ export default function HeroKelder() {
         </div>
       </div>
 
-      {/* Globe horizon: global equity, rising under the hero */}
+
+      {/*
+        Globe horizon. Sticky to the viewport bottom with a negative offset, so on first load only the
+        top cap shows at the bottom of the screen. As the page scrolls the globe stays parked there
+        (drifting down the page) until it reaches its own slot, where it docks behind the market ticker.
+        --below = the part of the canvas under the dome's top edge (~65% of its height).
+      */}
       <div
-        className="fade-in relative z-0 mx-auto -mt-4 h-[340px] w-full max-w-[1200px] sm:h-[440px] md:-mt-10 md:h-[540px]"
-        style={{
-          ["--d" as string]: "900ms",
-          maskImage: "linear-gradient(180deg, transparent 0%, #000 12%, #000 85%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 12%, #000 85%, transparent 100%)",
-        }}
+        className="sticky z-0 mx-auto -mt-4 h-[340px] w-full max-w-[1200px] [--below:221px] sm:h-[440px] sm:[--below:286px] md:-mt-10 md:h-[540px] md:[--below:351px]"
+        style={{ bottom: "calc(min(20svh, 190px) - var(--below))" }}
       >
-        <GlobeKelder />
+        <div
+          className="fade-in h-full w-full"
+          style={{
+            ["--d" as string]: "900ms",
+            maskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 80%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 80%, transparent 100%)",
+          }}
+        >
+          <GlobeKelder />
+        </div>
+      </div>
+      </div>
+
+      {/* Market ribbon docks across the lower globe */}
+      <div className="relative z-20 -mt-[96px] sm:-mt-[120px] md:-mt-[150px]">
+        <MarketTickerTape />
       </div>
     </section>
   );

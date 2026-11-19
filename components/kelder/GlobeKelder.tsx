@@ -8,7 +8,7 @@ import land110 from "world-atlas/land-110m.json";
 
 /**
  * Interactive 3D Dotted Globe with gold trade arcs and scroll-driven kinematics.
- * - Scroll-based elevation rise: globe rises dramatically from the horizon as the user scrolls.
+ * - Docking: the hero holds it in a sticky container that carries it down to the market ticker.
  * - Scroll-based velocity & tilt: scrolling actively spins the globe and angles the viewpoint.
  * - Passive cursor hover: subtle 3D gyroscope parallax responding to mouse movements.
  * - Curated trade corridors between London, Riyadh, New York, Zurich, Dubai, Tokyo, Singapore.
@@ -358,10 +358,10 @@ export default function GlobeKelder({ className = "" }: { className?: string }) 
       lastScrollY = curY;
 
       // Add spin velocity directly in scroll direction
-      scrollVelocity += deltaY * 0.0016;
+      scrollVelocity += deltaY * 0.0009;
 
       // Calculate progress of hero passing (0 to 700px scroll range)
-      const prog = Math.min(1, Math.max(0, curY / 650));
+      const prog = Math.min(1, Math.max(0, curY / 900));
       scrollProgress = prog;
 
       // Trigger an arc on meaningful scroll steps
@@ -387,17 +387,14 @@ export default function GlobeKelder({ className = "" }: { className?: string }) 
       const dt = Math.min(clock.getDelta(), 0.05);
       const t = clock.elapsedTime;
 
-      // 1. Scroll-driven elevation rise: the globe physically ascends as user scrolls down
-      // Rises from -74 up to -44 (30 unit rise), surfacing more of the world
-      const targetElevation = baseElevationY + scrollProgress * 30;
-      globe.position.y += (targetElevation - globe.position.y) * 0.08;
-      atmos.position.y = globe.position.y;
+      // 1. Elevation stays fixed: the page (a sticky container) carries the globe down to the ticker,
+      //    so the dome edge must sit at a predictable height inside the canvas.
 
-      // 2. Scroll-driven tilt angle: tilts forward (0.38 -> 0.48) to reveal Northern trading hubs
-      const baseTiltWithScroll = 0.38 + scrollProgress * 0.12;
+      // 2. Scroll-driven tilt: leans forward slightly (0.38 -> 0.46) as the globe docks
+      const baseTiltWithScroll = 0.38 + scrollProgress * 0.08;
 
-      // 3. Decay scroll spin velocity smoothly
-      scrollVelocity *= 0.92;
+      // 3. Scroll spin with a soft cap and gentle decay so fast flicks never jerk the globe
+      scrollVelocity = Math.max(-0.035, Math.min(0.035, scrollVelocity)) * 0.9;
       targetSpin += scrollVelocity;
 
       // 4. Smooth auto-rotation when idle
@@ -409,8 +406,10 @@ export default function GlobeKelder({ className = "" }: { className?: string }) 
       currentMouseX += (mouseXOffset - currentMouseX) * 0.06;
       currentMouseY += (mouseYOffset - currentMouseY) * 0.06;
 
-      spin += (targetSpin - spin) * 0.06;
-      tilt += (baseTiltWithScroll - tilt) * 0.06;
+      // Frame-rate independent easing (same feel at 60Hz and 120Hz)
+      const k = 1 - Math.pow(0.94, dt * 60);
+      spin += (targetSpin - spin) * k;
+      tilt += (baseTiltWithScroll - tilt) * k;
 
       // Apply combined orientation
       globe.rotation.set(tilt + currentMouseY, spin + currentMouseX, 0);

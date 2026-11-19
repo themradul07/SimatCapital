@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
+import { useInView } from "../useInView";
 
 /**
  * A calm, tilted preview of one proposal reaching the CIO.
@@ -23,15 +24,7 @@ const SHARIAH = ["Business activity", "Financial ratios", "Prohibited income"];
 
 export default function PlatformPreview() {
   const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && setInView(true), { threshold: 0.2 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { inView } = useInView(ref, 0.2);
 
   return (
     <section className="relative pb-24" aria-label="Illustrative platform preview">

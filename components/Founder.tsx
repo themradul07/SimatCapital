@@ -21,7 +21,7 @@ export default function Founder({ long = false }: { long?: boolean }) {
       </Reveal>
       <div>
         <Reveal>
-          <span className="eyebrow">The founder</span>
+          <span className="chip-gold">The founder</span>
         </Reveal>
         <Reveal delay={100}>
           <blockquote className="serif mt-6 text-[28px] leading-[1.25] md:text-[38px]" style={{ color: "var(--cream)" }}>

@@ -1,170 +1,155 @@
 import Link from "next/link";
 import IntroLoader from "@/components/kelder/IntroLoader";
 import HeroKelder from "@/components/kelder/HeroKelder";
-import MarketTickerTape from "@/components/kelder/MarketTickerTape";
 import PlatformPreview from "@/components/kelder/PlatformPreview";
-import KHead from "@/components/kelder/KHead";
-import ValueSources from "@/components/kelder/ValueSources";
-import TwoStrategies from "@/components/kelder/TwoStrategies";
-import ShariahSteps from "@/components/kelder/ShariahSteps";
-import PersonDecides from "@/components/kelder/PersonDecides";
-import Transparency from "@/components/kelder/Transparency";
 import StayInformed from "@/components/kelder/StayInformed";
 import Reveal from "@/components/Reveal";
-import WhyExist from "@/components/WhyExist";
-import FiveQuestions from "@/components/FiveQuestions";
-import EtfTable from "@/components/EtfTable";
-import Founder from "@/components/Founder";
-import Faq, { faqCore } from "@/components/Faq";
 
+/**
+ * Minimalist Institutional Landing Page:
+ * Focused on the hero statement, 3D interactive globe, live market ticker,
+ * and illustrative platform preview. In-depth technical details, ETF comparison
+ * tables, founder biography, and complete FAQs are hosted on their dedicated
+ * audience pages (/individuals and /institutions).
+ */
 export default function Home() {
   return (
     <>
       <IntroLoader />
 
-      {/* 1. Hero */}
+      {/* 1. Hero with 3D Globe, Full-Bleed Market Ribbon & Audience Doors */}
       <HeroKelder />
-      <MarketTickerTape />
+
+      {/* 2. Illustrative Intelligence Desk Terminal Preview */}
       <PlatformPreview />
 
-      {/* 2. Why we exist */}
+      {/* 3. Minimalist Core Pillars */}
       <section className="k-section">
-        <div className="wrap grid items-center gap-16 lg:grid-cols-2">
-          <div>
+        <div className="wrap">
+          <div className="max-w-3xl">
             <Reveal>
-              <span className="chip-gold">Why we exist</span>
+              <span className="chip-gold">Core Principles</span>
             </Reveal>
             <Reveal delay={100}>
               <h2 className="k-title mt-6">
-                Compliant is not the same as <span className="italic-gold">a good investment.</span>
+                Investing with purpose. <span className="italic-gold">Governed with precision.</span>
               </h2>
             </Reveal>
             <Reveal delay={200}>
               <p className="lede mt-6">
-                Checking that a share is Shariah-compliant, well understood and fairly priced takes far longer than buying it.
-                Simat Capital exists to close that gap.
+                We combine systematic fundamental research and automated Shariah screening, but no algorithm is ever permitted
+                to deploy capital independently. Every investment decision is approved by a person.
               </p>
             </Reveal>
           </div>
-          <WhyExist />
-        </div>
-      </section>
 
-      {/* 3. How we think */}
-      <section className="k-section">
-        <div className="wrap">
-          <FiveQuestions />
-        </div>
-      </section>
-
-      {/* 4. Where we aim to add value */}
-      <ValueSources />
-
-      {/* 5. Two strategies, one platform */}
-      <TwoStrategies />
-
-      {/* 6. Shariah, built into every step */}
-      <ShariahSteps />
-
-      {/* 7. A person decides */}
-      <PersonDecides />
-
-      {/* 8. Transparency */}
-      <Transparency />
-
-      {/* 9. Why not simply buy a Shariah ETF? */}
-      <section className="k-section">
-        <div className="wrap space-y-14">
-          <KHead
-            chip="A fair question"
-            title={
-              <>
-                Why not simply buy a <span className="italic-gold">Shariah ETF?</span>
-              </>
-            }
-            lede="ETFs are not bad. They make different trade-offs."
-          />
-          <EtfTable />
-        </div>
-      </section>
-
-      {/* 10. Founder, with the values strip */}
-      <section className="k-section">
-        <div className="wrap">
-          <Founder />
-          <div className="mt-24 grid gap-px overflow-hidden rounded-[20px] border md:grid-cols-3" style={{ borderColor: "var(--line)", background: "var(--line)" }}>
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
             {[
-              ["Stewardship", "over short-term returns"],
-              ["Integrity", "in every report"],
-              ["Transparency", "in how we think"],
-            ].map(([a, b], i) => (
-              <Reveal key={a} delay={i * 120} className="p-8 text-center" style={{ background: "var(--bg-2)" }}>
-                <p className="serif text-[30px]" style={{ color: "var(--cream)" }}>{a}</p>
-                <p className="muted">{b}</p>
+              {
+                num: "01",
+                tag: "Purpose",
+                title: "Compliant is not the same as a good investment.",
+                desc: "A company can pass Shariah screens and still be a poor investment. We evaluate valuation, cash generation, and balance sheet resilience before committing.",
+              },
+              {
+                num: "02",
+                tag: "Precision",
+                title: "Digital team proposes. A person decides.",
+                desc: "Autonomous agents index filings, test fair-value scenarios, and check limits in code. No trade executes without physical biometric passkey authorization from the CIO.",
+              },
+              {
+                num: "03",
+                tag: "Protection",
+                title: "Zero leverage. Direct sovereign custody.",
+                desc: "We forbid borrowing, margin, and synthetic derivatives. Holdings are 100% cash-funded and reconciled to the broker every night with an instant kill switch.",
+              },
+            ].map((p, i) => (
+              <Reveal key={p.num} delay={i * 120} className="card-kelder flex flex-col justify-between p-7 md:p-8">
+                <div>
+                  <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--line)" }}>
+                    <span className="font-mono text-[12px] font-semibold text-[#D8B765]">{p.num}</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-[#7E8E9C]">{p.tag}</span>
+                  </div>
+                  <h3 className="serif mt-5 text-[22px] leading-snug text-[var(--cream)]">
+                    {p.title}
+                  </h3>
+                  <p className="mt-3.5 text-[14px] leading-relaxed text-[#A9B6C2]">
+                    {p.desc}
+                  </p>
+                </div>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 11. Teaser for family offices and institutions */}
+      {/* 4. Audience Gateways (Directing to Deep-Dive Pages) */}
       <section className="k-section">
         <div className="wrap">
-          <Reveal className="card-kelder-gold overflow-hidden p-7 md:p-14">
-            <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-              <div>
-                <span className="chip-gold">For family offices and institutions</span>
-                <h2 className="k-title mt-6">
-                  The process, the controls and the governance <span className="italic-gold">in full.</span>
-                </h2>
-                <Link href="/institutions" className="btn btn-gold group mt-10">
-                  Read the full picture
-                  <span className="transition-transform duration-500 group-hover:translate-x-1">→</span>
-                </Link>
-              </div>
-              <dl>
-                {[
-                  ["Process", "One cycle from a new filing to a recorded, monitored outcome, compared later with what happened."],
-                  ["Controls", "Pre-trade checks in code, passkey approval, nightly reconciliation to the broker, a kill switch."],
-                  ["Shariah method", "MSCI Islamic, stored as data, with recorded rulings and a purification ledger."],
-                ].map(([k, v]) => (
-                  <div key={k} className="grid gap-2 border-t py-5 md:grid-cols-[160px_1fr]" style={{ borderColor: "var(--line)" }}>
-                    <dt className="serif text-[22px] gold">{k}</dt>
-                    <dd className="muted">{v}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* 12. FAQ */}
-      <section className="k-section">
-        <div className="wrap grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
+          <div className="text-center">
             <Reveal>
-              <span className="chip-gold">Questions</span>
+              <span className="chip-gold">Choose Your Perspective</span>
             </Reveal>
             <Reveal delay={100}>
               <h2 className="k-title mt-6">
-                Asked <span className="italic-gold">often.</span>
+                Explore Simat Capital <span className="italic-gold">in detail.</span>
               </h2>
             </Reveal>
           </div>
-          <Faq
-            items={[
-              ...faqCore,
-              {
-                q: "Who is behind Simat Capital?",
-                a: "Eesaa Simat, Founder and Chief Investment Officer, who founded the firm in 2021 and approves every investment decision.",
-              },
-            ]}
-          />
+
+          <div className="mt-14 grid gap-6 md:grid-cols-2">
+            <Reveal delay={150}>
+              <Link
+                href="/individuals"
+                className="card-kelder group relative flex h-full flex-col justify-between overflow-hidden p-8 transition-all duration-300 hover:border-[#D8B765]/40 hover:bg-[#192937]/80"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="chip-gold">For Individuals</span>
+                    <span className="text-[12px] text-[#7E8E9C]">~2 minute read</span>
+                  </div>
+                  <h3 className="serif mt-6 text-[28px] text-[var(--cream)] transition-colors group-hover:text-white">
+                    Plain words, clear principles.
+                  </h3>
+                  <p className="mt-3.5 text-[14.5px] leading-relaxed text-[#A9B6C2]">
+                    Learn why compliant isn&apos;t the finish line, how our five investment questions work, and explore our founder&apos;s background and common questions.
+                  </p>
+                </div>
+
+                <div className="mt-8 flex items-center gap-2 text-[13.5px] font-semibold text-[#D8B765] transition-transform duration-300 group-hover:translate-x-1">
+                  Read the individual overview <span>→</span>
+                </div>
+              </Link>
+            </Reveal>
+
+            <Reveal delay={250}>
+              <Link
+                href="/institutions"
+                className="card-kelder-gold group relative flex h-full flex-col justify-between overflow-hidden p-8 transition-all duration-300 hover:border-[#D8B765]/60 hover:bg-[#231F17]/90"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="chip-gold">For Family Offices & Institutions</span>
+                    <span className="text-[12px] text-[#D8B765]/70">Technical Briefing</span>
+                  </div>
+                  <h3 className="serif mt-6 text-[28px] text-[var(--cream)] transition-colors group-hover:text-white">
+                    Process, controls and governance in full.
+                  </h3>
+                  <p className="mt-3.5 text-[14.5px] leading-relaxed text-[#A9B6C2]">
+                    Review the complete operating system: the 11 pre-trade checks in code, fail-closed architecture, Shariah purification ledgers, and comparison to Shariah ETFs.
+                  </p>
+                </div>
+
+                <div className="mt-8 flex items-center gap-2 text-[13.5px] font-semibold text-[#D8B765] transition-transform duration-300 group-hover:translate-x-1">
+                  Inspect the institutional briefing <span>→</span>
+                </div>
+              </Link>
+            </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* 13. Call to action (footer follows in the layout) */}
+      {/* 5. Clean Institutional CTA */}
       <StayInformed />
     </>
   );

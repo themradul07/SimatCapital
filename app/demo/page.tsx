@@ -13,7 +13,7 @@ export default function Demo() {
       <div className="grid-bg pointer-events-none absolute inset-0" />
       <div className="wrap relative grid gap-14 lg:grid-cols-[1fr_1.05fr] lg:items-start">
         <div>
-          <span className="eyebrow fade-in">Demo</span>
+          <span className="chip-gold fade-in">Demo</span>
           <h1 className="h2 mt-6 fade-in" style={{ ["--d" as string]: "120ms" }}>
             See the platform <span className="italic-gold">working.</span>
           </h1>

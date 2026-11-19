@@ -1,29 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
+import { useInView } from "./useInView";
 
 const asks = ["Compliant?", "Understood?", "Fairly priced?"];
 
-/** Three questions converge into one gold diamond when the section comes into view. */
+/** Three questions converge into one gold diamond each time the section comes into view. */
 export default function WhyExist() {
   const ref = useRef<HTMLDivElement>(null);
-  const [on, setOn] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setOn(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.45 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { inView: on } = useInView(ref, 0.45);
 
   return (
     <div ref={ref} className="relative mx-auto w-full max-w-[560px]">
