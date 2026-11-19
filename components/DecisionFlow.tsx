@@ -99,7 +99,7 @@ export default function DecisionFlow({ initialMode = "plain", showToggle = true 
                 aria-selected={mode === m}
                 onClick={() => setMode(m)}
                 className="relative z-10 w-[132px] rounded-full py-2.5 text-[14px] font-semibold transition-colors duration-500"
-                style={{ color: mode === m ? "#0b1520" : "var(--muted)" }}
+                style={{ color: mode === m ? "var(--bg)" : "var(--muted)" }}
               >
                 {m === "plain" ? "In plain words" : "In detail"}
               </button>
@@ -145,7 +145,7 @@ export default function DecisionFlow({ initialMode = "plain", showToggle = true 
                   >
                     <span
                       className="-rotate-45 serif text-[22px] font-semibold"
-                      style={{ color: on ? (s.decide ? "#0b1520" : "var(--gold)") : "var(--faint)" }}
+                      style={{ color: on ? (s.decide ? "var(--bg)" : "var(--gold)") : "var(--faint)" }}
                     >
                       {i + 1}
                     </span>

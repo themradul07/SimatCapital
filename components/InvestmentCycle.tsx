@@ -76,7 +76,7 @@ export default function InvestmentCycle() {
                 stroke={done ? "var(--gold)" : "var(--line)"}
                 style={{ transition: "all 700ms var(--ease)", filter: on ? "drop-shadow(0 0 10px rgba(214,180,106,0.7))" : "none" }}
               />
-              <text textAnchor="middle" dy="4.5" fontSize="12" fontWeight="700" fill={on ? "#0b1520" : done ? "var(--gold)" : "var(--faint)"} style={{ fontFamily: "var(--font-inter)" }}>
+              <text textAnchor="middle" dy="4.5" fontSize="12" fontWeight="700" fill={on ? "var(--bg)" : done ? "var(--gold)" : "var(--faint)"} style={{ fontFamily: "var(--font-inter)" }}>
                 {i + 1}
               </text>
             </g>

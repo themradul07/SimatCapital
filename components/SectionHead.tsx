@@ -16,10 +16,10 @@ export default function SectionHead({
   return (
     <div className={center ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
       <Reveal>
-        <span className="eyebrow">{eyebrow}</span>
+        <span className="chip-gold">{eyebrow}</span>
       </Reveal>
       <Reveal delay={100}>
-        <h2 className="h2 mt-5">{title}</h2>
+        <h2 className="k-title mt-6">{title}</h2>
       </Reveal>
       {lede && (
         <Reveal delay={200}>

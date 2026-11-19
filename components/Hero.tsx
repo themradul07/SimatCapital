@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import HeroDiamond from "./HeroDiamond";
+import HalftoneGrid from "./kelder/HalftoneGrid";
 
 type Props = {
   eyebrow: string;
@@ -33,15 +34,19 @@ export default function Hero({ eyebrow, lines, lede, actions, visual }: Props) {
   const offsets = lines.map((_, i) => lines.slice(0, i).reduce((n, l) => n + l.split(" ").length, 0));
   return (
     <section className="relative overflow-hidden pt-[140px] pb-20 md:pt-[170px] md:pb-28">
-      <div className="grid-bg pointer-events-none absolute inset-0" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "linear-gradient(180deg, var(--bg-deep) 0%, var(--bg) 60%, var(--gold-tint) 100%)" }}
+      />
+      <HalftoneGrid />
       <div
         className="pointer-events-none absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full blur-3xl"
         style={{ background: "radial-gradient(closest-side, rgba(214,180,106,0.10), transparent)" }}
       />
-      <div className="wrap relative grid items-center gap-14 lg:grid-cols-[1.15fr_1fr]">
+      <div className="wrap relative z-10 grid items-center gap-14 lg:grid-cols-[1.15fr_1fr]">
         <div>
           <div className="fade-in flex flex-wrap items-center gap-3" style={{ ["--d" as string]: "0ms" }}>
-            <span className="eyebrow">{eyebrow}</span>
+            <span className="chip-gold">{eyebrow}</span>
           </div>
           <h1 className="display mt-7">
             {lines.map((line, li) => (

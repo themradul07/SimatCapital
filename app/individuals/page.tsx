@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Hero from "@/components/Hero";
-import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
 import WhyExist from "@/components/WhyExist";
 import FiveQuestions from "@/components/FiveQuestions";
-import ShariahGate from "@/components/ShariahGate";
+import ShariahSteps from "@/components/kelder/ShariahSteps";
+import StayInformed from "@/components/kelder/StayInformed";
 import DecisionFlow from "@/components/DecisionFlow";
 import TwoBooks from "@/components/TwoBooks";
 import Founder from "@/components/Founder";
 import Faq, { faqCore } from "@/components/Faq";
-import LeadForm from "@/components/LeadForm";
 import Arrow from "@/components/Arrow";
 
 export const metadata: Metadata = {
@@ -18,12 +17,6 @@ export const metadata: Metadata = {
   description: "Shariah-compliant investing, decided by people and checked by code. Simat Capital in plain words.",
 };
 
-const plain = [
-  { t: "Checked before, and after", d: "Every company is checked against Shariah rules before we consider it, and again whenever it publishes new results." },
-  { t: "No guessing", d: "If something is unclear, everything stops and waits for a proper ruling." },
-  { t: "Purification, done for you", d: "The small share of income that is not permissible is worked out for every holding and recorded, so it can be given to charity." },
-  { t: "No debt, ever", d: "No borrowing, no margin, no short selling and no interest on cash." },
-];
 
 export default function Individuals() {
   return (
@@ -59,27 +52,7 @@ export default function Individuals() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="wrap">
-          <SectionHead
-            eyebrow="Shariah, in plain words"
-            title={<>Every company passes <span className="italic-gold">three checks</span> before a person sees it.</>}
-            lede="We follow the MSCI Islamic screening method. We do not claim certification; a Shariah adviser will rule on any case that is unclear."
-          />
-          <div className="mt-14">
-            <ShariahGate />
-          </div>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {plain.map((p, i) => (
-              <Reveal key={p.t} delay={i * 100} className="card">
-                <div className="h-3 w-3 rotate-45" style={{ background: "var(--gold)" }} />
-                <h3 className="h3 mt-6">{p.t}</h3>
-                <p className="mt-3 text-[15px] muted">{p.d}</p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ShariahSteps plain />
 
       <section className="section">
         <div className="wrap">
@@ -129,18 +102,7 @@ export default function Individuals() {
         </div>
       </section>
 
-      <section className="section" id="stay-informed">
-        <div className="wrap grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <SectionHead
-            eyebrow="Stay informed"
-            title={<>Follow along as our record is <span className="italic-gold">built transparently.</span></>}
-            lede="Occasional updates by email. This is not an investment account and no money is taken."
-          />
-          <Reveal delay={150}>
-            <LeadForm variant="stay-informed" />
-          </Reveal>
-        </div>
-      </section>
+      <StayInformed />
     </>
   );
 }

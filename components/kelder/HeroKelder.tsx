@@ -1,0 +1,128 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import HalftoneGrid from "./HalftoneGrid";
+
+// three.js and the map data load only in the browser, after the hero text.
+const GlobeKelder = dynamic(() => import("./GlobeKelder"), { ssr: false });
+
+const LINE_1 = ["Investing", "with", "*Purpose.*"];
+const LINE_2 = ["Delivering", "with", "*Precision.*"];
+
+export default function HeroKelder() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 60);
+    return () => clearTimeout(t);
+  }, []);
+
+  const word = (w: string, i: number) => {
+    const gold = w.startsWith("*");
+    return (
+      <span
+        key={`${w}-${i}`}
+        className={`mr-[0.22em] inline-block ${gold ? "italic-gold" : ""}`}
+        style={{
+          opacity: mounted ? 1 : 0,
+          transform: mounted ? "none" : "translateY(18px)",
+          filter: mounted ? "blur(0)" : "blur(6px)",
+          transition: "opacity 1200ms var(--ease), transform 1200ms var(--ease), filter 1200ms var(--ease)",
+          transitionDelay: `${i * 110}ms`,
+        }}
+      >
+        {gold ? w.slice(1, -1) : w}
+      </span>
+    );
+  };
+
+  return (
+    <section className="relative overflow-hidden pt-[130px] pb-16 md:pt-[170px]">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "linear-gradient(180deg, var(--bg-deep) 0%, var(--bg) 55%, var(--gold-tint) 100%)" }}
+      />
+      <div
+        className="pointer-events-none absolute left-1/2 top-[16%] h-[460px] w-[680px] -translate-x-1/2 rounded-full blur-[140px]"
+        style={{ background: "radial-gradient(circle, rgba(214,180,106,0.12) 0%, transparent 70%)" }}
+      />
+      {/* Dot grid fades out before the globe so the two never compete */}
+      <div className="pointer-events-none absolute inset-0 [mask-image:linear-gradient(180deg,#000_0%,#000_45%,transparent_70%)]">
+        <HalftoneGrid />
+      </div>
+
+      <div className="wrap relative z-10 flex flex-col items-center text-center">
+        <div className="fade-in mb-7 flex flex-wrap items-center justify-center gap-3">
+          {/* Status chip: confirm still true at launch (open item 11). */}
+          <span className="chip">
+            <span className="dot" />
+            Paper trading phase. No outside capital managed yet.
+          </span>
+        </div>
+
+        <p className="eyebrow-kelder fade-in mb-6" style={{ ["--d" as string]: "120ms" }}>
+          Simat Capital · Shariah-compliant global equity
+        </p>
+
+        {/* Tagline: confirm approved for the web (open item 3). */}
+        <h1 className="display max-w-5xl">
+          <span className="block">{LINE_1.map((w, i) => word(w, i))}</span>
+          <span className="block">{LINE_2.map((w, i) => word(w, i + LINE_1.length))}</span>
+        </h1>
+
+        <p className="lede fade-in mx-auto mt-8 max-w-2xl" style={{ ["--d" as string]: "800ms" }}>
+          Simat Capital is an actively managed, Shariah-compliant global equity firm. We combine value-focused research, a
+          systematic process and Shariah screening, and{" "}
+          <span style={{ color: "var(--cream)" }}>every investment decision is made by a person.</span>
+        </p>
+
+        <div className="fade-in mt-10 flex flex-wrap items-center justify-center gap-4" style={{ ["--d" as string]: "1000ms" }}>
+          <Link href="/institutions#briefing" className="btn btn-gold group">
+            Request the investor briefing
+            <span className="transition-transform duration-500 group-hover:translate-x-1">→</span>
+          </Link>
+          <a href="#how-it-works" className="btn btn-ghost">
+            See how it works
+          </a>
+        </div>
+        <Link href="/demo" className="link-gold fade-in mt-6 text-[14px]" style={{ ["--d" as string]: "1150ms" }}>
+          Watch the demo
+        </Link>
+
+        {/* Two audience doors (brief section 7: home hero signposts both pages) */}
+        <div className="fade-in mt-14 grid w-full max-w-3xl gap-3 sm:grid-cols-2" style={{ ["--d" as string]: "1300ms" }}>
+          {[
+            { href: "/individuals", k: "For Individuals", d: "Plain words, about two minutes." },
+            { href: "/institutions", k: "For Family Offices and Institutions", d: "Process, controls and governance in full." },
+          ].map((c) => (
+            <Link
+              key={c.href}
+              href={c.href}
+              className="group flex items-center justify-between gap-4 rounded-xl border px-5 py-4 text-left transition-colors duration-500 hover:border-[var(--gold-hairline)]"
+              style={{ borderColor: "var(--line)", background: "rgba(10,9,7,0.55)", backdropFilter: "blur(6px)" }}
+            >
+              <span>
+                <span className="block text-[14.5px] font-semibold" style={{ color: "var(--cream)" }}>{c.k}</span>
+                <span className="block text-[13px] muted">{c.d}</span>
+              </span>
+              <span className="gold transition-transform duration-500 group-hover:translate-x-1">→</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Globe horizon: global equity, rising under the hero */}
+      <div
+        className="fade-in relative z-0 mx-auto -mt-4 h-[340px] w-full max-w-[1200px] sm:h-[440px] md:-mt-10 md:h-[540px]"
+        style={{
+          ["--d" as string]: "900ms",
+          maskImage: "linear-gradient(180deg, transparent 0%, #000 18%, #000 70%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 18%, #000 70%, transparent 100%)",
+        }}
+      >
+        <GlobeKelder />
+      </div>
+    </section>
+  );
+}

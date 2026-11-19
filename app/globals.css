@@ -2,27 +2,41 @@
 
 /* ------------------------------------------------------------------
    Simat Capital — design tokens
-   Deep navy-black, restrained gold, cream text. Taken from the
-   Intelligence Desk screens and the business card identity.
+   Business card identity: black, gold and cream, Cormorant Garamond,
+   the diamond mark. Quiet, precise, editorial. Private bank, not fintech.
+   (Final palette to be confirmed with the client: open item 1.)
 ------------------------------------------------------------------- */
 :root {
-  --bg: #0a131d;
-  --bg-2: #0e1926;
-  --panel: #122030;
-  --panel-2: #172839;
-  --line: #213347;
-  --line-soft: rgba(33, 51, 71, 0.6);
+  /* Surfaces: warm black */
+  --bg: #0a0907;
+  --bg-2: #0f0d0a;
+  --bg-deep: #060504;
+  --panel: #15120e;
+  --panel-2: #1d1a15;
+  --gold-tint: #19150e;
+
+  /* Hairlines */
+  --line: rgba(243, 236, 220, 0.1);
+  --line-soft: rgba(243, 236, 220, 0.06);
+  --line-dotted: rgba(243, 236, 220, 0.18);
+
+  /* Gold */
   --gold: #d6b46a;
-  --gold-bright: #ecd193;
+  --gold-bright: #e8cc8c;
   --gold-deep: #a8873f;
-  --gold-wash: rgba(214, 180, 106, 0.08);
+  --gold-wash: rgba(214, 180, 106, 0.07);
+  --gold-hairline: rgba(214, 180, 106, 0.28);
+
+  /* Cream and text */
   --cream: #f3ecdc;
-  --text: #e7e3d8;
-  --muted: #95a6b9;
-  --faint: #66788c;
-  --ok: #3fcf8e;
-  --ok-wash: rgba(63, 207, 142, 0.1);
-  --stop: #e2726b;
+  --text: #e6e0d2;
+  --muted: #a69f90;
+  --faint: #716b5f;
+
+  /* Status (used sparingly) */
+  --ok: #9cc9a8;
+  --ok-wash: rgba(156, 201, 168, 0.08);
+  --stop: #d98a7e;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --slow: 1100ms;
@@ -62,7 +76,7 @@ body {
 
 ::selection {
   background: var(--gold);
-  color: #0a131d;
+  color: var(--bg);
 }
 
 a {
@@ -184,7 +198,7 @@ a {
   gap: 10px;
   height: 50px;
   padding: 0 26px;
-  border-radius: 999px;
+  border-radius: 10px;
   font-weight: 600;
   font-size: 15px;
   letter-spacing: 0.01em;
@@ -199,7 +213,7 @@ a {
 }
 .btn-gold {
   background: var(--gold);
-  color: #0b1520;
+  color: var(--bg);
   box-shadow: 0 0 0 0 rgba(214, 180, 106, 0);
 }
 .btn-gold:hover {
@@ -243,16 +257,16 @@ a {
   border-radius: 999px;
   font-size: 12.5px;
   font-weight: 500;
-  border: 1px solid rgba(63, 207, 142, 0.35);
+  border: 1px solid rgba(156, 201, 168, 0.3);
   background: var(--ok-wash);
-  color: #bfeedb;
+  color: #cfe3d4;
 }
 .chip .dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--ok);
-  box-shadow: 0 0 0 0 rgba(63, 207, 142, 0.6);
+  box-shadow: 0 0 0 0 rgba(156, 201, 168, 0.6);
   animation: pulse 2.8s ease-out infinite;
 }
 .chip-gold {
@@ -266,7 +280,7 @@ a {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-weight: 700;
-  color: #0b1520;
+  color: var(--bg);
   background: var(--gold);
   padding: 3px 8px;
   border-radius: 4px;
@@ -274,13 +288,13 @@ a {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(63, 207, 142, 0.55);
+    box-shadow: 0 0 0 0 rgba(156, 201, 168, 0.55);
   }
   70% {
-    box-shadow: 0 0 0 9px rgba(63, 207, 142, 0);
+    box-shadow: 0 0 0 9px rgba(156, 201, 168, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(63, 207, 142, 0);
+    box-shadow: 0 0 0 0 rgba(156, 201, 168, 0);
   }
 }
 
@@ -472,7 +486,7 @@ a {
   height: 50px;
   border-radius: 12px;
   border: 1px solid var(--line);
-  background: rgba(10, 19, 29, 0.6);
+  background: rgba(6, 5, 4, 0.6);
   color: var(--cream);
   padding: 0 16px;
   font-size: 15px;
@@ -555,6 +569,94 @@ select.input {
   animation: fadeIn 600ms var(--ease);
 }
 
+}
+
+/* ------------------------------ modern layer ------------------------------ */
+.eyebrow-kelder {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+}
+
+.chip-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold-tint);
+  color: var(--gold);
+  border: 1px solid var(--gold-hairline);
+  padding: 5px 13px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.chip-gold::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  transform: rotate(45deg);
+}
+.chip-gold.no-mark::before {
+  display: none;
+}
+
+.card-kelder {
+  background: linear-gradient(180deg, var(--panel) 0%, var(--bg-2) 100%);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  transition: border-color 600ms var(--ease);
+}
+.card-kelder:hover {
+  border-color: var(--gold-hairline);
+}
+
+.card-kelder-gold {
+  background: linear-gradient(150deg, var(--gold-tint) 0%, var(--bg-2) 100%);
+  border: 1px solid var(--gold-hairline);
+  border-radius: 20px;
+}
+
+.k-section {
+  position: relative;
+  padding: 96px 0;
+  border-top: 1px solid var(--line-soft);
+}
+@media (min-width: 900px) {
+  .k-section {
+    padding: 130px 0;
+  }
+}
+
+.k-title {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 500;
+  color: var(--cream);
+  font-size: clamp(34px, 4.4vw, 58px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-hairline);
+  color: var(--gold);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+@keyframes goldSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
 }
 
 /* ------------------------------ reduced motion ------------------------------ */

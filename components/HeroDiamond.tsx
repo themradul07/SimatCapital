@@ -98,7 +98,7 @@ export default function HeroDiamond() {
             left: `${l.x}%`,
             top: `${l.y}%`,
             borderColor: "rgba(214,180,106,0.35)",
-            background: "rgba(10,19,29,0.85)",
+            background: "rgba(6,5,4,0.85)",
             color: "var(--gold-bright)",
             ["--d" as string]: `${1800 + i * 200}ms`,
           }}

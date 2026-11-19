@@ -13,7 +13,7 @@ export default function Founder({ long = false }: { long?: boolean }) {
           <div className="absolute inset-0 flex items-center justify-center">
             <Image src="/simat-mark.png" alt="" width={140} height={140} className="opacity-80" />
           </div>
-          <div className="absolute inset-x-0 bottom-0 p-6" style={{ background: "linear-gradient(transparent, rgba(10,19,29,0.95))" }}>
+          <div className="absolute inset-x-0 bottom-0 p-6" style={{ background: "linear-gradient(transparent, rgba(6,5,4,0.95))" }}>
             <p className="serif text-[26px]" style={{ color: "var(--cream)" }}>Eesaa Simat</p>
             <p className="text-[13px] gold">Founder and Chief Investment Officer</p>
           </div>
