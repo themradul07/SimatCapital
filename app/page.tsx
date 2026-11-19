@@ -1,6 +1,7 @@
 import Link from "next/link";
 import IntroLoader from "@/components/kelder/IntroLoader";
 import HeroKelder from "@/components/kelder/HeroKelder";
+import MarketTickerTape from "@/components/kelder/MarketTickerTape";
 import PlatformPreview from "@/components/kelder/PlatformPreview";
 import KHead from "@/components/kelder/KHead";
 import ValueSources from "@/components/kelder/ValueSources";
@@ -23,6 +24,7 @@ export default function Home() {
 
       {/* 1. Hero */}
       <HeroKelder />
+      <MarketTickerTape />
       <PlatformPreview />
 
       {/* 2. Why we exist */}

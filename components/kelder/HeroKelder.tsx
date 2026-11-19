@@ -38,7 +38,7 @@ export default function HeroKelder() {
   };
 
   return (
-    <section className="relative overflow-hidden pt-[130px] pb-16 md:pt-[170px]">
+    <section className="relative overflow-hidden pt-[130px] pb-4 md:pt-[170px] md:pb-6">
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: "linear-gradient(180deg, var(--bg-deep) 0%, var(--bg) 55%, var(--gold-tint) 100%)" }}
@@ -55,10 +55,10 @@ export default function HeroKelder() {
       <div className="wrap relative z-10 flex flex-col items-center text-center">
         <div className="fade-in mb-7 flex flex-wrap items-center justify-center gap-3">
           {/* Status chip: confirm still true at launch (open item 11). */}
-          <span className="chip">
+          {/* <span className="chip">
             <span className="dot" />
             Paper trading phase. No outside capital managed yet.
-          </span>
+          </span> */}
         </div>
 
         <p className="eyebrow-kelder fade-in mb-6" style={{ ["--d" as string]: "120ms" }}>
@@ -90,8 +90,8 @@ export default function HeroKelder() {
           Watch the demo
         </Link>
 
-        {/* Two audience doors (brief section 7: home hero signposts both pages) */}
-        <div className="fade-in mt-14 grid w-full max-w-3xl gap-3 sm:grid-cols-2" style={{ ["--d" as string]: "1300ms" }}>
+        {/* Two audience doors */}
+        <div className="fade-in mt-14 grid w-full max-w-3xl gap-3.5 sm:grid-cols-2" style={{ ["--d" as string]: "1300ms" }}>
           {[
             { href: "/individuals", k: "For Individuals", d: "Plain words, about two minutes." },
             { href: "/institutions", k: "For Family Offices and Institutions", d: "Process, controls and governance in full." },
@@ -99,14 +99,41 @@ export default function HeroKelder() {
             <Link
               key={c.href}
               href={c.href}
-              className="group flex items-center justify-between gap-4 rounded-xl border px-5 py-4 text-left transition-colors duration-500 hover:border-[var(--gold-hairline)]"
-              style={{ borderColor: "var(--line)", background: "rgba(10,9,7,0.55)", backdropFilter: "blur(6px)" }}
+              className="group relative flex items-center justify-between gap-4 rounded-xl border px-5 py-4 text-left transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-[rgba(216,183,101,0.5)] hover:bg-[#192937]/90 hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.7),0_0_24px_-4px_rgba(216,183,101,0.16)] active:translate-y-0.5 active:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.8)] overflow-hidden"
+              style={{
+                borderColor: "var(--line)",
+                background: "rgba(18, 28, 38, 0.65)",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+              }}
             >
-              <span>
-                <span className="block text-[14.5px] font-semibold" style={{ color: "var(--cream)" }}>{c.k}</span>
-                <span className="block text-[13px] muted">{c.d}</span>
+              {/* Subtle top hairline that brightens to gold on hover */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-300 group-hover:via-[#D8B765]/50"
+              />
+
+              {/* Subtle gold ambient glow on hover */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                style={{
+                  background: "radial-gradient(circle at 50% 0%, rgba(216, 183, 101, 0.08) 0%, transparent 75%)",
+                }}
+              />
+
+              <span className="relative z-10">
+                <span className="block text-[14.5px] font-semibold text-[var(--cream)] transition-colors duration-200 group-hover:text-white">
+                  {c.k}
+                </span>
+                <span className="block text-[13px] text-[#A9B6C2] transition-colors duration-200 group-hover:text-[#CBD5E1]">
+                  {c.d}
+                </span>
               </span>
-              <span className="gold transition-transform duration-500 group-hover:translate-x-1">→</span>
+
+              <span className="relative z-10 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-sm text-[var(--gold)] transition-all duration-300 group-hover:border-[#D8B765]/50 group-hover:bg-[#D8B765]/10 group-hover:text-[#ECD193] group-hover:translate-x-1 group-hover:shadow-[0_0_12px_rgba(216,183,101,0.3)]">
+                →
+              </span>
             </Link>
           ))}
         </div>
@@ -117,8 +144,8 @@ export default function HeroKelder() {
         className="fade-in relative z-0 mx-auto -mt-4 h-[340px] w-full max-w-[1200px] sm:h-[440px] md:-mt-10 md:h-[540px]"
         style={{
           ["--d" as string]: "900ms",
-          maskImage: "linear-gradient(180deg, transparent 0%, #000 18%, #000 70%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 18%, #000 70%, transparent 100%)",
+          maskImage: "linear-gradient(180deg, transparent 0%, #000 12%, #000 85%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 12%, #000 85%, transparent 100%)",
         }}
       >
         <GlobeKelder />
