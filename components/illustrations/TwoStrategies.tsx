@@ -52,7 +52,7 @@ export default function TwoStrategies({ full = false }: { full?: boolean }) {
             <dl className="mt-6 space-y-4">
               {s.rows.map(([k, v]) => (
                 <div key={k} className="border-t pt-3" style={{ borderColor: "var(--hairline)" }}>
-                  <dt className="ill-sub uppercase tracking-[0.12em]">{k}</dt>
+                  <dt className="ill-sub">{k}</dt>
                   <dd className="ill-label mt-1">
                     {/\d/.test(v) && k === "Horizon" ? <span className="ill-num text-[19px]">{v}</span> : v}
                   </dd>
@@ -62,7 +62,7 @@ export default function TwoStrategies({ full = false }: { full?: boolean }) {
           </div>
         ))}
 
-        {/* Divider: NEVER MERGED */}
+        {/* Divider: Never merged */}
         <div className="relative my-8 flex items-center justify-center sm:order-2 sm:my-0 sm:w-14 sm:flex-col">
           <span
             aria-hidden
@@ -74,8 +74,8 @@ export default function TwoStrategies({ full = false }: { full?: boolean }) {
               transition: "transform 900ms var(--ease)",
             }}
           />
-          <span className="px-3 py-3 text-[12px] font-semibold tracking-[0.2em] sm:[writing-mode:vertical-rl]" style={{ color: "var(--gold-accent)" }}>
-            NEVER MERGED
+          <span className="px-3 py-3 text-[13px] font-medium sm:[writing-mode:vertical-rl]" style={{ color: "var(--gold-accent)" }}>
+            Never merged
           </span>
           <span
             aria-hidden
@@ -93,12 +93,21 @@ export default function TwoStrategies({ full = false }: { full?: boolean }) {
       {full && (
         <div className="mt-10 grid gap-px sm:grid-cols-2" style={{ background: "var(--hairline)" }}>
           <div className="p-5" style={{ background: "var(--bg-raised)" }}>
-            <p className="ill-sub uppercase tracking-[0.12em]">Shared</p>
-            <p className="ill-label mt-1.5">Same research engine · Same Shariah method · Same controls</p>
+            <p className="ill-sub">Shared</p>
+            <ul className="ill-label mt-2 space-y-1">
+              <li>Same research engine</li>
+              <li>Same Shariah method</li>
+              <li>Same controls</li>
+            </ul>
           </div>
           <div className="p-5" style={{ background: "var(--bg-raised)" }}>
-            <p className="ill-sub uppercase tracking-[0.12em]">Separate</p>
-            <p className="ill-label mt-1.5">Own capital · Own limits · Own records · Own approvals</p>
+            <p className="ill-sub">Separate</p>
+            <ul className="ill-label mt-2 space-y-1">
+              <li>Own capital</li>
+              <li>Own limits</li>
+              <li>Own records</li>
+              <li>Own approvals</li>
+            </ul>
           </div>
         </div>
       )}

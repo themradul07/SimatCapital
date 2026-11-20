@@ -9,30 +9,45 @@ import ShariahFilter from "../illustrations/ShariahFilter";
 import TwoStrategies from "../illustrations/TwoStrategies";
 import Founder from "./Founder";
 
-/* All copy below is final (brief, Section C). Do not paraphrase or extend. */
-
 export function Hero() {
   return (
     <section className="relative flex min-h-[100svh] items-center pt-[104px] pb-12 md:pb-16">
       <div className="wrap grid items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
         <div>
-          <p className="eyebrow fade-in">Shariah-compliant global equity</p>
-          <h1 className="h1 fade-in mt-6" style={{ ["--d" as string]: "100ms" }}>
-            The pursuit of Shariah-compliant alpha. <span className="em-gold">With institutional discipline.</span>
+          <h1 className="h1 fade-in" style={{ ["--d" as string]: "100ms" }}>
+            Shariah-compliant alpha. <span className="em-gold">Institutional discipline.</span>
           </h1>
           <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "200ms" }}>
-            A proprietary research engine, systematic controls and human judgement, applied to under-researched companies that meet strict
-            Shariah standards.
+            Proprietary research, systematic controls and human judgement applied to Shariah global equity.
           </p>
-          <div className="fade-in mt-9 flex flex-wrap items-center gap-x-7 gap-y-4" style={{ ["--d" as string]: "300ms" }}>
+          <div className="fade-in mt-8 flex flex-wrap items-center gap-x-6 gap-y-4" style={{ ["--d" as string]: "300ms" }}>
             <Link href="/contact#waitlist" className="btn btn-gold">
               Join the waitlist
             </Link>
             <Link href="/contact#demo" className="text-link">
-              Request a demo →
+              Request a demo
             </Link>
           </div>
-          <p className="fade-in mt-6 max-w-[56ch] text-[14px] secondary" style={{ ["--d" as string]: "400ms" }}>
+
+          {/* Two Audience Routing Cards with refined hover effects */}
+          <div className="fade-in mt-10 grid gap-4 sm:grid-cols-2" style={{ ["--d" as string]: "360ms" }}>
+            <Link href="/private-investors" className="audience-card">
+              <div className="flex items-center justify-between">
+                <span className="serif text-[20px] font-medium" style={{ color: "var(--text-primary)" }}>For Individuals</span>
+                <span className="text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>Explore</span>
+              </div>
+              <p className="text-[14px] secondary mt-2">Plain words, about two minutes.</p>
+            </Link>
+            <Link href="/institutions" className="audience-card">
+              <div className="flex items-center justify-between">
+                <span className="serif text-[20px] font-medium" style={{ color: "var(--text-primary)" }}>For Family Offices and Institutions</span>
+                <span className="text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>Review</span>
+              </div>
+              <p className="text-[14px] secondary mt-2">Process, controls and governance in full.</p>
+            </Link>
+          </div>
+
+          <p className="fade-in mt-6 max-w-[56ch] text-[14px] secondary" style={{ ["--d" as string]: "420ms" }}>
             Simat Capital does not manage external capital. Both strategies currently run on the founder&apos;s own capital.
           </p>
         </div>
@@ -46,7 +61,7 @@ export function Hero() {
 
 export function ChapterQuestion() {
   return (
-    <Chapter id="question" eyebrow="I · The question" className="text-center [&_.wrap]:flex [&_.wrap]:flex-col [&_.wrap]:items-center">
+    <Chapter id="question" eyebrow="The question" className="text-center [&_.wrap]:flex [&_.wrap]:flex-col [&_.wrap]:items-center">
       <Reveal>
         <blockquote className="h2 mx-auto mt-8 max-w-[22ch]">
           &ldquo;How can investors be sure their money is both <span className="em-gold">Shariah-compliant</span> and genuinely well
@@ -70,7 +85,7 @@ function TwoCol({ text, art, reverse = false }: { text: React.ReactNode; art: Re
 
 export function ChapterGap({ thread = true }: { thread?: boolean }) {
   return (
-    <Chapter id="gap" thread={thread} eyebrow="II · The gap">
+    <Chapter id="gap" thread={thread} eyebrow="The gap">
       <TwoCol
         text={
           <>
@@ -89,7 +104,7 @@ export function ChapterGap({ thread = true }: { thread?: boolean }) {
 
 export function ChapterEdge() {
   return (
-    <Chapter id="edge" eyebrow="III · The edge">
+    <Chapter id="edge" eyebrow="The edge">
       <TwoCol
         reverse
         text={
@@ -108,7 +123,7 @@ export function ChapterEdge() {
 
 export function ChapterMethod({ thread = true }: { thread?: boolean }) {
   return (
-    <Chapter id="method" thread={thread} eyebrow="IV · The method">
+    <Chapter id="method" thread={thread} eyebrow="The method">
       <Reveal className="mt-6 max-w-[720px]">
         <h2 className="h2">
           Machine-scale research. <span className="em-gold">Human judgement.</span>
@@ -123,7 +138,7 @@ export function ChapterMethod({ thread = true }: { thread?: boolean }) {
       </div>
       <p className="mt-12">
         <Link href="/institutions" className="text-link">
-          Read the full approach →
+          Read the full approach
         </Link>
       </p>
     </Chapter>
@@ -132,7 +147,7 @@ export function ChapterMethod({ thread = true }: { thread?: boolean }) {
 
 export function ChapterDiscipline({ thread = true }: { thread?: boolean }) {
   return (
-    <Chapter id="discipline" thread={thread} eyebrow="V · The discipline">
+    <Chapter id="discipline" thread={thread} eyebrow="The discipline">
       <div className="mt-6 grid gap-10 lg:grid-cols-12">
         <Reveal className="lg:col-span-7">
           <h2 className="h2">Screened systematically. Monitored continuously.</h2>
@@ -165,7 +180,7 @@ export function ChapterDiscipline({ thread = true }: { thread?: boolean }) {
 
 export function ChapterStrategies() {
   return (
-    <Chapter id="strategies" eyebrow="VI · The strategies">
+    <Chapter id="strategies" eyebrow="The strategies">
       <Reveal className="mt-6 max-w-[760px]">
         <h2 className="h2">One for the long term. One for timely opportunities.</h2>
       </Reveal>
@@ -182,7 +197,7 @@ export function ChapterStrategies() {
 
 export function ChapterFounder() {
   return (
-    <Chapter id="founder" eyebrow="VII · The founder">
+    <Chapter id="founder" eyebrow="The founder">
       <Reveal className="mt-10">
         <Founder />
       </Reveal>

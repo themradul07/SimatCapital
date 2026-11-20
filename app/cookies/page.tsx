@@ -34,7 +34,7 @@ export default function Cookies() {
               <tr>
                 <td>None at present</td>
                 <td>This website does not currently set any cookies.</td>
-                <td>—</td>
+                <td>None</td>
               </tr>
             </tbody>
           </table>

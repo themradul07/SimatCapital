@@ -15,7 +15,7 @@ export default function PrivateInvestors() {
         <div className="wrap">
           <h1 className="h1 fade-in">For private investors.</h1>
           <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "120ms" }}>
-            Simat Capital is building a Shariah-compliant global equity strategy for the long term. We do not accept external capital.
+            A Shariah-compliant global equity strategy for the long term, currently self-funded.
           </p>
         </div>
       </section>

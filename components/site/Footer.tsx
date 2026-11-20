@@ -47,7 +47,7 @@ export default function Footer() {
             </Link>
             .
           </p>
-          <p>© 2026 Simat Capital. All rights reserved.</p>
+          <p>© 2026 Simat Capital.</p>
         </div>
 
         <div aria-hidden className="pointer-events-none mt-12 select-none overflow-hidden text-center">

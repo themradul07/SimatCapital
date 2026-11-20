@@ -30,8 +30,7 @@ function Ch({ id, n, title, summary, children }: { id: string; n: number; title:
   return (
     <section id={id} className="border-t py-20 md:py-28" style={{ borderColor: "var(--hairline)" }} aria-labelledby={`${id}-h`}>
       <Reveal>
-        <p className="eyebrow">Chapter {n}</p>
-        <h2 id={`${id}-h`} className="h2 mt-4">
+        <h2 id={`${id}-h`} className="h2">
           {title}
         </h2>
         {summary && <p className="lead mt-6">{summary}</p>}
@@ -106,9 +105,8 @@ export default function Institutions() {
       {/* Intro */}
       <section className="pt-[160px] pb-20 md:pt-[200px] md:pb-24">
         <div className="wrap">
-          <p className="eyebrow fade-in">For family offices and institutions</p>
-          <h1 className="h1 fade-in mt-6 max-w-[18ch]" style={{ ["--d" as string]: "100ms" }}>
-            The process, the controls and the governance, <span className="em-gold">in full.</span>
+          <h1 className="h1 fade-in max-w-[18ch]" style={{ ["--d" as string]: "100ms" }}>
+            Process, controls and governance, <span className="em-gold">in full.</span>
           </h1>
           <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "200ms" }}>
             What an allocator would ask, answered plainly.
@@ -121,166 +119,133 @@ export default function Institutions() {
         </div>
       </section>
 
-      <div className="wrap grid gap-12 pb-24 lg:grid-cols-[220px_1fr] lg:gap-16">
-        <aside>
-          <SideIndex items={CHAPTERS} />
-        </aside>
+      {/* Chapters wrapped with sticky side index */}
+      <div className="wrap">
+        <div className="grid gap-12 lg:grid-cols-[220px_1fr] lg:gap-16">
+          <aside className="hidden lg:block">
+            <SideIndex items={CHAPTERS} />
+          </aside>
+          <div className="min-w-0">
+            {/* Ch 1: Status */}
+            <Ch id="status" n={1} title="Status, plainly." summary="Where the firm stands today, what it manages, and what it cannot do.">
+              <StatusGlance />
+            </Ch>
 
-        <div className="min-w-0">
-          <Ch id="status" n={1} title="Where we are today.">
-            <StatusGlance />
-          </Ch>
+            {/* Ch 2: Process */}
+            <Ch
+              id="process"
+              n={2}
+              title="The investment process."
+              summary="From universe to portfolio. Four gates; every trade decided by a person."
+            >
+              <InvestmentLoop />
+              <div className="mt-14 space-y-4">
+                <p className="body">
+                  No company enters the portfolio without clearing every gate. Rejections are preserved so work is not repeated.
+                </p>
+              </div>
+            </Ch>
 
-          <Ch
-            id="process"
-            n={2}
-            title={
-              <>
-                One cycle, end to end. <span className="em-gold">The last step feeds the first.</span>
-              </>
-            }
-          >
-            <InvestmentLoop />
-            <Reveal className="mt-16">
-              <h3 className="h3">Every idea must answer five questions.</h3>
-              <ol className="mt-6 grid gap-3 sm:grid-cols-2">
-                {["Why this company?", "Why this price?", "What might the market be missing?", "What could go wrong?", "What would change our mind?"].map(
-                  (q, i) => (
-                    <li key={q} className="flex items-baseline gap-4 border-t pt-3" style={{ borderColor: "var(--hairline)" }}>
-                      <span className="ill-num text-[19px]">{i + 1}</span>
-                      <span style={{ color: "var(--text-primary)" }}>{q}</span>
-                    </li>
-                  ),
-                )}
-              </ol>
-            </Reveal>
-          </Ch>
+            {/* Ch 3: Engine */}
+            <Ch
+              id="engine"
+              n={3}
+              title="The research engine."
+              summary="Ten models. Each reads primary filings, prices and transcripts in its domain."
+            >
+              <EngineMap />
+              <div className="mt-14">
+                <DecisionEngine withToggle />
+              </div>
+            </Ch>
 
-          <Ch
-            id="engine"
-            n={3}
-            title="Specialised research models. One discipline each."
-            summary="Each model covers one discipline, works from stored data and records its reasoning. None can place an order."
-          >
-            <EngineMap />
-            <div className="mt-20">
-              <DecisionEngine withToggle />
-            </div>
-          </Ch>
-
-          <Ch id="shariah" n={4} title="Shariah discipline, applied at every stage.">
-            <ShariahFilter expanded />
-            <p className="mt-8 text-[13px] secondary">
-              Thresholds follow the firm&apos;s adopted Shariah methodology and are verified against its current published version.
-            </p>
-            <div className="mt-14">
-              <Lines
-                items={[
-                  "Methodology stored as data with every decision",
-                  "Re-screened on every new filing and each quarter",
-                  "Purification calculated per holding, held in a ledger, reported quarterly",
-                  "Uncertain cases excluded until resolved, with the decision recorded",
-                  "Adaptable to a client's own Shariah standard where required",
-                ]}
-              />
-            </div>
-          </Ch>
-
-          <Ch
-            id="governance"
-            n={5}
-            title="When anything is uncertain, nothing proceeds."
-            summary="Controls are enforced by the system, not by habit, and every exception is recorded."
-          >
-            <div className="grid gap-px sm:grid-cols-2 xl:grid-cols-3" style={{ background: "var(--hairline)" }}>
-              {CONTROLS.map(([t, d]) => (
-                <div key={t} className="p-6" style={{ background: "var(--bg-base)" }}>
-                  <p className="flex items-center gap-3">
-                    <span className="dia dia-outline" aria-hidden />
-                    <span className="ill-label">{t}</span>
-                  </p>
-                  <p className="ill-sub mt-2 !text-[14px]">{d}</p>
-                </div>
-              ))}
-            </div>
-            <Reveal className="mt-14">
-              <h3 className="h3">Governance</h3>
-              <div className="mt-6">
+            {/* Ch 4: Shariah */}
+            <Ch
+              id="shariah"
+              n={4}
+              title="Shariah method."
+              summary="Four screens under a recognised methodology. Monitored continuously."
+            >
+              <ShariahFilter />
+              <div className="mt-12 space-y-4">
                 <Lines
                   items={[
-                    "The founder sets the mandate and makes every final decision",
-                    "Strong results never loosen risk limits automatically; changes are proposed, reviewed and recorded",
-                    "No trade quota; cash is held when ideas are scarce",
+                    "Purification calculated for each holding and reported quarterly",
+                    "No leverage, no short selling, no interest-bearing cash",
+                    "Uncertain cases excluded until resolved",
+                    "Continuous re-screening on every regulatory filing",
                   ]}
                 />
               </div>
-            </Reveal>
-          </Ch>
+            </Ch>
 
-          <Ch id="measurement" n={6} title="Principles, stated in advance.">
-            <TwoStrategies full />
-            <Reveal className="mt-16">
-              <h3 className="h3">Measurement</h3>
-              <div className="mt-6">
-                <Lines
-                  items={[
-                    "Net of all costs",
-                    "Against a stated benchmark",
-                    "Risk-adjusted: volatility, Sharpe and Sortino ratios, maximum drawdown",
-                    "Sample size always shown",
-                    "No figures published until independently verified and cleared by legal review",
-                  ]}
-                />
+            {/* Ch 5: Governance */}
+            <Ch id="governance" n={5} title="Governance and controls." summary="Hard rules in code that cannot be bypassed by an operator.">
+              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+                {CONTROLS.map(([title, desc]) => (
+                  <div key={title} className="panel p-6">
+                    <span className="dia" aria-hidden />
+                    <h3 className="serif mt-4 text-[20px]" style={{ color: "var(--text-primary)" }}>
+                      {title}
+                    </h3>
+                    <p className="mt-2 text-[14px] secondary">{desc}</p>
+                  </div>
+                ))}
               </div>
-            </Reveal>
-            <Reveal className="mt-16">
-              <h3 className="h3">Why not simply buy a Shariah ETF?</h3>
-              <p className="body mt-3">ETFs are not bad. They make different trade-offs.</p>
-              <div className="mt-8 overflow-x-auto">
-                <table className="table min-w-[560px]">
-                  <thead>
-                    <tr>
-                      <th scope="col">Topic</th>
-                      <th scope="col">Passive Shariah ETF</th>
-                      <th scope="col">Simat Capital</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {COMPARISON.map(([t, etf, simat]) => (
-                      <tr key={t}>
-                        <th scope="row" className="!border-b !py-[18px] !text-[15px] !font-medium !normal-case !tracking-normal" style={{ color: "var(--text-primary)", borderColor: "var(--hairline)" }}>
-                          {t}
-                        </th>
-                        <td>{etf}</td>
-                        <td style={{ color: "var(--text-primary)" }}>{simat}</td>
+              <div className="mt-12">
+                <h3 className="h3">How Simat compares to a passive Shariah ETF</h3>
+                <div className="mt-6 overflow-x-auto">
+                  <table className="table min-w-[640px]">
+                    <thead>
+                      <tr>
+                        <th scope="col">Dimension</th>
+                        <th scope="col">Typical passive Shariah ETF</th>
+                        <th scope="col">Simat Capital</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {COMPARISON.map(([dim, etf, simat]) => (
+                        <tr key={dim}>
+                          <td>{dim}</td>
+                          <td>{etf}</td>
+                          <td style={{ color: "var(--text-primary)" }}>{simat}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <p className="mt-5 text-[13px] secondary">A general comparison of approaches, not of any named product.</p>
-            </Reveal>
-          </Ch>
+            </Ch>
 
-          <Ch id="questions" n={7} title="Founder and questions">
-            <Founder condensed />
-            <div className="faq mt-16 border-t" style={{ borderColor: "var(--hairline)" }}>
-              {FAQS.map((f) => (
-                <details key={f.q}>
-                  <summary>
-                    {f.q}
-                    <span className="plus" aria-hidden />
-                  </summary>
-                  <p className="answer">{f.a}</p>
-                </details>
-              ))}
-            </div>
-            <div className="mt-12">
-              <Link href="/contact#enquiry" className="btn btn-gold">
-                Make an enquiry
-              </Link>
-            </div>
-          </Ch>
+            {/* Ch 6: Measurement */}
+            <Ch
+              id="measurement"
+              n={6}
+              title="Strategies and measurement."
+              summary="Two distinct books. Never merged, independently tracked."
+            >
+              <TwoStrategies full />
+            </Ch>
+
+            {/* Ch 7: Questions */}
+            <Ch id="questions" n={7} title="Founder and common questions.">
+              <Founder condensed />
+              <div className="mt-16">
+                <h3 className="h3 mb-6">Frequently asked questions</h3>
+                <div className="faq divide-y divide-[var(--hairline)] border-t border-[var(--hairline)]">
+                  {FAQS.map((f) => (
+                    <details key={f.q}>
+                      <summary>
+                        <span>{f.q}</span>
+                        <span className="plus" aria-hidden />
+                      </summary>
+                      <div className="answer">{f.a}</div>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            </Ch>
+          </div>
         </div>
       </div>
     </>

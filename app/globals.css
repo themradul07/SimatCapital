@@ -1,7 +1,10 @@
+/* Hallmark · v2.0.0 · editorial · brand · dark/high-contrast-serif/warm */
+/* critique: An editorial Shariah investment site; typography-led, restraint over decoration */
+
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------
-   Simat Capital — design system (brief, Section 4)
+   Simat Capital — design system
    Black, one muted gold, warm off-white. Serif headlines, diamond motif.
    One gold only: no gradients, no metallic effects.
 ------------------------------------------------------------------- */
@@ -10,12 +13,19 @@
   --bg-base: #0a0907;
   --bg-raised: #15120e;
   --gold-accent: #d6b46a;
+  --btn-gold-hover: #e2c27d;
+  --btn-outline-hover: rgba(214, 180, 106, 0.08);
   --text-primary: #f3ecdc;
   /* Lifted grey: ~7.4:1 on bg-base (WCAG AA needs 4.5:1) */
   --text-secondary: #aea796;
   --line: rgba(214, 180, 106, 0.3);
   --line-soft: rgba(214, 180, 106, 0.16);
+  --line-focus: rgba(243, 236, 220, 0.2);
+  --line-link: rgba(214, 180, 106, 0.4);
   --hairline: rgba(243, 236, 220, 0.09);
+  --bg-card-hover: rgba(21, 18, 14, 0.9);
+  --error-border: #e0a093;
+  --error-text: #e8ab9e;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --fade: 560ms;
@@ -40,6 +50,7 @@
     background: var(--bg-base);
     scroll-behavior: smooth;
     scroll-padding-top: 96px;
+    overflow-x: clip;
   }
 
   body {
@@ -118,12 +129,19 @@
   }
 
   .eyebrow {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--gold-accent);
+    letter-spacing: normal;
+    text-transform: none;
+    line-height: 1.4;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    border: 1px solid var(--line-soft);
+    background: var(--bg-raised);
+    transition: border-color 300ms var(--ease), background-color 300ms var(--ease);
   }
 
   .h1 {
@@ -222,9 +240,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     min-height: 48px;
-    padding: 0 26px;
+    padding: 0 24px;
     border-radius: 2px;
     font-weight: 600;
     font-size: 15px;
@@ -234,7 +252,11 @@
     transition:
       background-color 400ms var(--ease),
       color 400ms var(--ease),
-      border-color 400ms var(--ease);
+      border-color 400ms var(--ease),
+      transform 150ms var(--ease);
+  }
+  .btn:active {
+    transform: translateY(1px);
   }
   .btn-gold {
     background: var(--gold-accent);
@@ -242,7 +264,10 @@
     border: 1px solid var(--gold-accent);
   }
   .btn-gold:hover {
-    background: #e2c27d;
+    background: var(--btn-gold-hover);
+  }
+  .btn-gold:active {
+    background: var(--gold-accent);
   }
   .btn-outline {
     border: 1px solid var(--gold-accent);
@@ -250,27 +275,37 @@
     background: transparent;
   }
   .btn-outline:hover {
-    background: rgba(214, 180, 106, 0.08);
+    background: var(--btn-outline-hover);
   }
-  .btn[disabled] {
-    opacity: 0.6;
-    cursor: wait;
+  .btn-outline:active {
+    background: var(--btn-outline-hover);
+  }
+  .btn[disabled],
+  .btn:disabled {
+    background: var(--bg-raised);
+    color: var(--text-secondary);
+    border-color: var(--hairline);
+    cursor: not-allowed;
   }
 
   .text-link {
     color: var(--gold-accent);
-    border-bottom: 1px solid rgba(214, 180, 106, 0.4);
+    border-bottom: 1px solid var(--line-link);
     padding-bottom: 1px;
-    transition: border-color 400ms var(--ease);
+    transition: border-color 400ms var(--ease), opacity 150ms var(--ease);
     font-weight: 500;
   }
   .text-link:hover {
     border-color: var(--gold-accent);
   }
+  .text-link:active {
+    opacity: 0.8;
+  }
 
   /* ------------------------------ surfaces ------------------------------ */
   .panel {
     background: var(--bg-raised);
+    color: var(--text-primary);
     border: 1px solid var(--hairline);
     border-radius: 2px;
   }
@@ -300,16 +335,16 @@
   }
   .table th {
     text-align: left;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: normal;
+    text-transform: none;
     color: var(--gold-accent);
-    padding: 0 16px 14px 0;
+    padding: 0 16px 16px 0;
     border-bottom: 1px solid var(--line);
   }
   .table td {
-    padding: 18px 16px 18px 0;
+    padding: 16px 16px 16px 0;
     border-bottom: 1px solid var(--hairline);
     vertical-align: top;
     color: var(--text-secondary);
@@ -334,10 +369,10 @@
   .input {
     width: 100%;
     min-height: 48px;
-    padding: 12px 14px;
+    padding: 12px 16px;
     background: var(--bg-base);
     color: var(--text-primary);
-    border: 1px solid rgba(243, 236, 220, 0.2);
+    border: 1px solid var(--line-focus);
     border-radius: 2px;
     font: inherit;
     font-size: 16px;
@@ -364,11 +399,11 @@
     border-color: var(--gold-accent);
   }
   .input[aria-invalid="true"] {
-    border-color: #e0a093;
+    border-color: var(--error-border);
   }
   .error {
     font-size: 14px;
-    color: #e8ab9e;
+    color: var(--error-text);
   }
 
   /* ------------------------------ faq ------------------------------ */
@@ -378,7 +413,7 @@
   .faq summary {
     list-style: none;
     cursor: pointer;
-    padding: 22px 0;
+    padding: 24px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -387,6 +422,13 @@
     font-size: 23px;
     color: var(--text-primary);
     font-weight: 500;
+    transition: color 200ms var(--ease);
+  }
+  .faq summary:hover {
+    color: var(--gold-accent);
+  }
+  .faq summary:active {
+    opacity: 0.85;
   }
   .faq summary::-webkit-details-marker {
     display: none;
@@ -427,12 +469,12 @@
     max-width: 70ch;
   }
   .prose-legal p + p {
-    margin-top: 18px;
+    margin-top: 16px;
   }
   .prose-legal ul {
     margin-top: 12px;
     display: grid;
-    gap: 14px;
+    gap: 16px;
   }
   .prose-legal strong {
     color: var(--text-primary);
@@ -440,18 +482,26 @@
   }
   .prose-legal a {
     color: var(--gold-accent);
-    border-bottom: 1px solid rgba(214, 180, 106, 0.4);
+    border-bottom: 1px solid var(--line-link);
+    transition: border-color 300ms var(--ease);
+  }
+  .prose-legal a:hover {
+    border-color: var(--gold-accent);
   }
 
   /* ------------------------------ motion ------------------------------ */
-  /* Slow fade, 400–600ms ease-out. Plays once. */
+  /* Slow fade, 400–600ms ease-out. Visible by default. */
   .reveal {
-    opacity: 0;
-    transform: translate3d(0, 12px, 0);
+    opacity: 1;
+    transform: none;
     transition:
       opacity var(--fade) var(--ease),
       transform var(--fade) var(--ease);
     transition-delay: var(--d, 0ms);
+  }
+  html.js .reveal:not(.in) {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
   }
   .reveal.in {
     opacity: 1;
@@ -481,6 +531,31 @@
     animation: markPulse 6s ease-in-out infinite;
     transform-origin: center;
     transform-box: fill-box;
+  }
+
+  /* Audience routing card (For Individuals / For Institutions) */
+  .audience-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border: 1px solid var(--hairline);
+    background: var(--bg-raised);
+    color: var(--text-primary);
+    border-radius: 4px;
+    transition:
+      border-color 300ms var(--ease),
+      background-color 300ms var(--ease),
+      transform 200ms var(--ease);
+    cursor: pointer;
+    min-height: 104px;
+  }
+  .audience-card:hover {
+    border-color: var(--gold-accent);
+    background: var(--bg-card-hover);
+  }
+  .audience-card:active {
+    transform: translateY(1px);
   }
 }
 

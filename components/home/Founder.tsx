@@ -35,7 +35,11 @@ export default function Founder({ condensed = false }: { condensed?: boolean }) 
           Founder and Chief Investment Officer
         </p>
         {/* Credentials [Recommended] */}
-        <p className="mt-5 text-[15px] secondary">BSc Finance and Investment, De Montfort University · Investment consulting, Aon · CFA Level I candidate</p>
+        <div className="mt-5 space-y-1 text-[15px] secondary">
+          <p>BSc Finance and Investment, De Montfort University</p>
+          <p>Investment consulting, Aon</p>
+          <p>CFA Level I candidate</p>
+        </div>
         {!condensed && (
           <p className="body mt-5">
             Eesaa founded Simat Capital in 2021 to answer the question that opens this page. He runs both strategies on his own capital today.
