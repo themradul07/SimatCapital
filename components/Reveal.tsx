@@ -12,21 +12,13 @@ type Props = {
   id?: string;
 };
 
-/**
- * Calm fade-in when the element enters the viewport. Replays every time it is scrolled back to:
- * rises from below when scrolling down, settles from above when scrolling up.
- */
+/** Slow fade (560ms ease-out) the first time the element enters the viewport. */
 export default function Reveal({ children, as: Tag = "div", delay = 0, className = "", style, id }: Props) {
   const ref = useRef<HTMLElement>(null);
-  const { inView, exitedFrom } = useInView(ref, 0.08);
+  const inView = useInView(ref, 0.1);
 
   return (
-    <Tag
-      ref={ref}
-      id={id}
-      className={`reveal ${inView ? "in" : ""} ${exitedFrom === "top" ? "reveal-from-top" : ""} ${className}`}
-      style={{ ...style, ["--d" as string]: `${delay}ms` }}
-    >
+    <Tag ref={ref} id={id} className={`reveal ${inView ? "in" : ""} ${className}`} style={{ ...style, ["--d" as string]: `${delay}ms` }}>
       {children}
     </Tag>
   );

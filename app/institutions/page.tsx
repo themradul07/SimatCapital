@@ -1,419 +1,286 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
 import Link from "next/link";
-import Hero from "@/components/Hero";
+import type { ReactNode } from "react";
 import Reveal from "@/components/Reveal";
-import SideIndex from "@/components/SideIndex";
-import InvestmentCycle from "@/components/InvestmentCycle";
-import DecisionFlow from "@/components/DecisionFlow";
-import ShariahGate from "@/components/ShariahGate";
-import TwoBooks from "@/components/TwoBooks";
-import EtfTable from "@/components/EtfTable";
-import Founder from "@/components/Founder";
-import Faq, { faqCore } from "@/components/Faq";
-import LeadForm from "@/components/LeadForm";
-import Arrow from "@/components/Arrow";
+import SideIndex from "@/components/institutions/SideIndex";
+import StatusGlance from "@/components/illustrations/StatusGlance";
+import InvestmentLoop from "@/components/illustrations/InvestmentLoop";
+import EngineMap from "@/components/illustrations/EngineMap";
+import DecisionEngine from "@/components/illustrations/DecisionEngine";
+import ShariahFilter from "@/components/illustrations/ShariahFilter";
+import TwoStrategies from "@/components/illustrations/TwoStrategies";
+import Founder from "@/components/home/Founder";
 
 export const metadata: Metadata = {
-  title: "For Family Offices and Institutions",
-  description:
-    "The Simat Capital investment process, controls, Shariah method, governance and security, in full.",
+  title: { absolute: "Process, controls and governance · Simat Capital" },
+  description: "How Simat Capital researches, screens, decides and records every investment decision.",
 };
 
-const index = [
+const CHAPTERS = [
   { id: "status", label: "Status, plainly" },
   { id: "process", label: "The investment process" },
-  { id: "team", label: "The digital investment team" },
-  { id: "decision", label: "A person decides" },
-  { id: "controls", label: "The controls" },
+  { id: "engine", label: "The research engine" },
   { id: "shariah", label: "Shariah method" },
-  { id: "strategies", label: "Two strategies" },
-  { id: "governance", label: "Governance" },
-  { id: "proof", label: "How we prove it works" },
-  { id: "day", label: "A day on the platform" },
-  { id: "security", label: "Security and data" },
-  { id: "benchmarks", label: "Benchmarks" },
-  { id: "etf", label: "Versus a Shariah ETF" },
-  { id: "founder", label: "The founder" },
-  { id: "faq", label: "Questions" },
-  { id: "briefing", label: "Request the briefing" },
+  { id: "governance", label: "Governance and controls" },
+  { id: "measurement", label: "Strategies and measurement" },
+  { id: "questions", label: "Founder and questions" },
 ];
 
-const team = [
-  ["CIO / Orchestrator", "Assigns work, tracks status, escalates"],
-  ["Portfolio Manager", "Turns decisions into sized, costed proposals"],
-  ["Research", "Keeps the thesis for each holding and candidate, every claim sourced"],
-  ["Valuation", "Maintains fair-value ranges and scenarios"],
-  ["Tactical Trading", "Develops short-term candidates for Simat Catalyst"],
-  ["Risk", "Tests exposure, drawdown, concentration and liquidity; argues the bear case"],
-  ["Shariah Compliance", "Screens, watches holdings, tracks purification"],
-  ["Market Intelligence", "Flags material news, earnings and events"],
-  ["Performance and Attribution", "Measures against benchmarks; checks forecasts against outcomes"],
-  ["Investment Committee", "Weighs both sides, records the decision and any dissent"],
-  ["Reporting", "Writes daily, quarterly and annual reports from system records"],
-  ["Data Quality and Infrastructure", "Flags stale data, failed jobs and outages"],
-];
-
-const controls = [
-  ["Eleven pre-trade checks", "Run by code before any order reaches approval. A failed or unknown check blocks the trade."],
-  ["One sender", "One locked-down service is the only thing that can send an order. Agents hold no broker keys."],
-  ["Bound approval", "Passkey approval tied to one exact, versioned order. A material change cancels it."],
-  ["Approval window", "Orders have an approval window. An old approval is refused."],
-  ["No duplicates", "A timeout never leads to a duplicate order."],
-  ["Broker truth", "An order counts as filled only when the broker's own records show it."],
-  ["Reconciliation", "Holdings and cash reconciled to the broker every night and before orders. Any difference stops new orders until explained."],
-  ["Kill switch", "Cancels open orders and blocks new ones in seconds. It never sells a holding by itself."],
-  ["Fail closed", "Stale prices, stale Shariah screens, broker disconnects and unresolved breaks all block new orders."],
-  ["Plain instruments", "No leverage, margin, shorting or derivatives."],
-];
-
-const day = [
-  ["Early morning", "Data refreshed, changed companies re-screened"],
-  ["Early morning", "Accounts reconciled to the broker"],
-  ["Morning", "Morning brief for the CIO, every figure checked"],
-  ["Market hours", "News triage, proposals and alerts to the CIO"],
-  ["After each close", "Closing snapshot of prices, value and results"],
-  ["Evening", "Fills reconciled, end-of-day report delivered"],
-  ["Overnight", "Backup and a locked, tamper-evident audit copy"],
-];
-
-function Block({ id, eyebrow, title, lede, children }: { id: string; eyebrow: string; title: ReactNode; lede?: ReactNode; children?: ReactNode }) {
+function Ch({ id, n, title, summary, children }: { id: string; n: number; title: ReactNode; summary?: string; children: ReactNode }) {
   return (
-    <section id={id} className="border-t py-20 first:border-t-0 first:pt-0 md:py-28" style={{ borderColor: "var(--line-soft)" }}>
+    <section id={id} className="border-t py-20 md:py-28" style={{ borderColor: "var(--hairline)" }} aria-labelledby={`${id}-h`}>
       <Reveal>
-        <span className="chip-gold">{eyebrow}</span>
+        <p className="eyebrow">Chapter {n}</p>
+        <h2 id={`${id}-h`} className="h2 mt-4">
+          {title}
+        </h2>
+        {summary && <p className="lead mt-6">{summary}</p>}
       </Reveal>
-      <Reveal delay={80}>
-        <h2 className="h2 mt-5 max-w-3xl">{title}</h2>
-      </Reveal>
-      {lede && (
-        <Reveal delay={160}>
-          <p className="lede mt-6">{lede}</p>
-        </Reveal>
-      )}
-      {children && <div className="mt-12">{children}</div>}
+      <div className="mt-12">{children}</div>
     </section>
   );
 }
 
-function Bullets({ items }: { items: ReactNode[] }) {
+function Lines({ items }: { items: string[] }) {
   return (
     <ul className="grid gap-x-10 gap-y-4 md:grid-cols-2">
-      {items.map((t, i) => (
-        <Reveal as="li" key={i} delay={i * 60} className="flex gap-4">
-          <span className="mt-[9px] h-[7px] w-[7px] shrink-0 rotate-45" style={{ background: "var(--gold)" }} />
-          <span>{t}</span>
-        </Reveal>
+      {items.map((t) => (
+        <li key={t} className="flex gap-4 text-[16px] secondary">
+          <span className="dia mt-[9px]" aria-hidden />
+          {t}
+        </li>
       ))}
     </ul>
   );
 }
 
+const CONTROLS = [
+  ["Pre-trade checks", "Eleven checks run before any order reaches approval."],
+  ["Single order route", "One authorised service sends orders; research models cannot."],
+  ["Bound approval", "Each approval covers one exact order; any change cancels it."],
+  ["Approval window", "Unused approvals expire."],
+  ["Reconciliation", "Accounts reconciled with the broker every day."],
+  ["Audit trail", "Every proposal, rejection and approval stored with its reasoning."],
+];
+
+const COMPARISON = [
+  ["Selection", "Owns every compliant company at any price", "Buys only at a sensible price"],
+  ["Concentration", "Weights follow the index, often heavy in a few large names", "Hard position and sector limits; conviction over index weight"],
+  ["Compliance timing", "Re-screened at index review dates", "Re-screened on every new filing"],
+  ["Purification", "Often left to the investor", "Calculated and recorded for every holding"],
+  ["Downturns", "Falls with the index", "Risk set before every trade; cash held when ideas are scarce"],
+];
+
+const FAQS: { q: string; a: ReactNode }[] = [
+  {
+    q: "Can I invest today?",
+    a: "No. Simat Capital does not accept external capital. You can join the waitlist to register interest; this is not an offer or a commitment.",
+  },
+  {
+    q: "Is Simat Capital regulated?",
+    a: "No. Simat Capital is not authorised by the Financial Conduct Authority and will not accept external capital unless an appropriate regulatory structure is in place.",
+  },
+  {
+    q: "How is Shariah compliance applied?",
+    a: "Every company passes four screens under a recognised methodology before it can be proposed, and is re-screened on every new filing.",
+  },
+  { q: "How is purification handled?", a: "Calculated for every holding, recorded in a ledger and reported quarterly." },
+  { q: "What role does technology play?", a: "It researches, tests and records. It cannot place an order or make a decision." },
+  {
+    q: "How is my information protected?",
+    a: (
+      <>
+        See our{" "}
+        <Link href="/privacy" className="text-link">
+          Privacy notice
+        </Link>
+        . Submissions are read only by the founder.
+      </>
+    ),
+  },
+];
+
 export default function Institutions() {
   return (
     <>
-      <Hero
-        eyebrow="For family offices and institutions"
-        lines={["The process, the controls", "and the governance,", "*in* *full.*"]}
-        lede="Simat Capital runs a private digital investment team: AI agents research and propose, code enforces the rules, and a person approves every investment decision. This page sets out how, and what is not yet in place."
-        actions={
-          <>
-            <a href="#briefing" className="btn btn-gold">
-              Request the investor briefing <Arrow />
-            </a>
-            <Link href="/demo" className="btn btn-ghost">Watch the demo</Link>
-          </>
-        }
-      />
+      {/* Intro */}
+      <section className="pt-[160px] pb-20 md:pt-[200px] md:pb-24">
+        <div className="wrap">
+          <p className="eyebrow fade-in">For family offices and institutions</p>
+          <h1 className="h1 fade-in mt-6 max-w-[18ch]" style={{ ["--d" as string]: "100ms" }}>
+            The process, the controls and the governance, <span className="em-gold">in full.</span>
+          </h1>
+          <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "200ms" }}>
+            What an allocator would ask, answered plainly.
+          </p>
+          <div className="fade-in mt-9" style={{ ["--d" as string]: "300ms" }}>
+            <Link href="/contact#demo" className="btn btn-gold">
+              Request a demo
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      <div className="wrap grid gap-16 pb-10 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <div className="wrap grid gap-12 pb-24 lg:grid-cols-[220px_1fr] lg:gap-16">
         <aside>
-          <SideIndex items={index} />
+          <SideIndex items={CHAPTERS} />
         </aside>
 
-        <div>
-          <Block
-            id="status"
-            eyebrow="Status, plainly"
-            title={<>What exists today, <span className="italic-gold">and what does not.</span></>}
-            lede="We would rather you hear this from us first."
-          >
-            <div className="grid gap-5 md:grid-cols-2">
-              <Reveal className="card">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--ok)" }}>In place</p>
-                <ul className="mt-4 space-y-2.5 text-[15px]">
-                  <li>The investment process and digital team, end to end</li>
-                  <li>Code-enforced pre-trade checks and passkey approval</li>
-                  <li>MSCI Islamic screening, stored as data</li>
-                  <li>Paper (practice) accounts, reconciled and recorded</li>
-                </ul>
-              </Reveal>
-              <Reveal delay={120} className="card">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] gold">Not yet available</p>
-                <ul className="mt-4 space-y-2.5 text-[15px] muted">
-                  <li>No track record yet: paper trading phase</li>
-                  <li>No outside capital managed</li>
-                  <li>Shariah adviser not yet appointed; interim rulings marked as interim</li>
-                  <li>Independent security review planned before outside money is taken</li>
-                </ul>
-              </Reveal>
-            </div>
-          </Block>
+        <div className="min-w-0">
+          <Ch id="status" n={1} title="Where we are today.">
+            <StatusGlance />
+          </Ch>
 
-          <Block
+          <Ch
             id="process"
-            eyebrow="The investment process"
-            title={<>One cycle, end to end. <span className="italic-gold">The last step feeds the first.</span></>}
+            n={2}
+            title={
+              <>
+                One cycle, end to end. <span className="em-gold">The last step feeds the first.</span>
+              </>
+            }
           >
-            <InvestmentCycle />
-          </Block>
+            <InvestmentLoop />
+            <Reveal className="mt-16">
+              <h3 className="h3">Every idea must answer five questions.</h3>
+              <ol className="mt-6 grid gap-3 sm:grid-cols-2">
+                {["Why this company?", "Why this price?", "What might the market be missing?", "What could go wrong?", "What would change our mind?"].map(
+                  (q, i) => (
+                    <li key={q} className="flex items-baseline gap-4 border-t pt-3" style={{ borderColor: "var(--hairline)" }}>
+                      <span className="ill-num text-[19px]">{i + 1}</span>
+                      <span style={{ color: "var(--text-primary)" }}>{q}</span>
+                    </li>
+                  ),
+                )}
+              </ol>
+            </Reveal>
+          </Ch>
 
-          <Block
-            id="team"
-            eyebrow="The digital investment team"
-            title={<>Twelve roles. <span className="italic-gold">One job each.</span></>}
-            lede="Roles never overlap and none can place an order. The founder sets the mandate and risk appetite and does not direct each agent's next task. He steps in for approvals, exceptions, disputed Shariah rulings, material risk decisions and activating live capital."
+          <Ch
+            id="engine"
+            n={3}
+            title="Specialised research models. One discipline each."
+            summary="Each model covers one discipline, works from stored data and records its reasoning. None can place an order."
           >
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {team.map(([r, j], i) => (
-                <Reveal key={r} delay={(i % 3) * 80} className="card" style={{ padding: 22 }}>
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold" style={{ color: "var(--cream)" }}>{r}</p>
-                    <span className="text-[11px] font-semibold" style={{ color: "var(--faint)" }}>{String(i + 1).padStart(2, "0")}</span>
-                  </div>
-                  <p className="mt-2 text-[14px] muted">{j}</p>
-                </Reveal>
-              ))}
+            <EngineMap />
+            <div className="mt-20">
+              <DecisionEngine withToggle />
             </div>
-          </Block>
+          </Ch>
 
-          <Block
-            id="decision"
-            eyebrow="A person decides"
-            title={<>The same picture, <span className="italic-gold">opened up.</span></>}
-            lede="Switch between depths. The flow does not change; only the detail does."
-          >
-            <DecisionFlow initialMode="technical" />
-          </Block>
-
-          <Block
-            id="controls"
-            eyebrow="The controls"
-            title={<>Fail closed. <span className="italic-gold">Always.</span></>}
-            lede="Short, factual statements of how the platform is designed. Test results will be published only after acceptance testing passes."
-          >
-            <div className="overflow-hidden rounded-2xl border" style={{ borderColor: "var(--line)" }}>
-              {controls.map(([k, v], i) => (
-                <Reveal
-                  key={k}
-                  delay={i * 40}
-                  className="grid gap-2 border-b p-5 last:border-b-0 md:grid-cols-[220px_1fr] md:gap-8 md:p-6"
-                  style={{ borderColor: "var(--line-soft)", background: i % 2 ? "var(--bg)" : "var(--bg-2)" }}
-                >
-                  <p className="flex items-center gap-3 font-semibold" style={{ color: "var(--cream)" }}>
-                    <span className="text-[12px] gold" style={{ fontVariantNumeric: "tabular-nums" }}>{String(i + 1).padStart(2, "0")}</span>
-                    {k}
-                  </p>
-                  <p className="muted">{v}</p>
-                </Reveal>
-              ))}
-            </div>
-          </Block>
-
-          <Block
-            id="shariah"
-            eyebrow="Shariah method"
-            title={<>MSCI Islamic, <span className="italic-gold">stored as data.</span></>}
-            lede="The method is held as data so it can change if the adviser decides otherwise. Shariah-compliant by method; not a certification."
-          >
-            <ShariahGate />
-            <div className="mt-10">
-              <Bullets
+          <Ch id="shariah" n={4} title="Shariah discipline, applied at every stage.">
+            <ShariahFilter expanded />
+            <p className="mt-8 text-[13px] secondary">
+              Thresholds follow the firm&apos;s adopted Shariah methodology and are verified against its current published version.
+            </p>
+            <div className="mt-14">
+              <Lines
                 items={[
-                  <><b style={{ color: "var(--cream)" }}>Screening layers:</b> business activity (excluded sectors), financial ratios (debt, cash and interest-bearing securities, receivables), prohibited income (capped at 5% of income), then a final pre-trade check using a recent screen.</>,
-                  <><b style={{ color: "var(--cream)" }}>Disputes:</b> where two sources disagree, the stock waits for a ruling and the ruling is recorded. Until an adviser is appointed, interim rulings by the CIO are marked as interim.</>,
-                  <><b style={{ color: "var(--cream)" }}>Holdings watch:</b> every holding re-screened after each new report and each quarter. A holding that drifts is flagged, then handled under the method&apos;s exit rule.</>,
-                  <><b style={{ color: "var(--cream)" }}>Purification:</b> calculated and recorded per holding, with a ledger and a quarterly report.</>,
-                  <><b style={{ color: "var(--cream)" }}>Account settings:</b> no interest on cash, no share lending, no borrowing, no short selling.</>,
-                  <><b style={{ color: "var(--cream)" }}>Quarterly Shariah report:</b> every holding against its limits, the watch list, rulings made and the purification ledger.</>,
+                  "Methodology stored as data with every decision",
+                  "Re-screened on every new filing and each quarter",
+                  "Purification calculated per holding, held in a ledger, reported quarterly",
+                  "Uncertain cases excluded until resolved, with the decision recorded",
+                  "Adaptable to a client's own Shariah standard where required",
                 ]}
               />
             </div>
+          </Ch>
 
-            <Reveal className="card mt-12 md:p-10">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="serif text-[26px]" style={{ color: "var(--cream)" }}>Worked example: Northfield Instruments</p>
-                <span className="tag-illustrative">Illustrative</span>
-              </div>
-              <p className="mt-2 text-[13px]" style={{ color: "var(--faint)" }}>Invented company and invented data, to show the shape of a screen only.</p>
-              <div className="mt-8 grid gap-3 md:grid-cols-4">
-                {[
-                  ["Business activity", "Industrial sensors. No excluded activity."],
-                  ["Financial ratios", "Debt, cash and receivables within the method's limits."],
-                  ["Prohibited income", "Below the 5% cap. Impure share recorded for purification."],
-                  ["Pre-trade check", "Screen is recent. Passed to the CIO."],
-                ].map(([t, d], i) => (
-                  <div key={t} className="rounded-xl border p-5" style={{ borderColor: "rgba(63,207,142,0.3)", background: "var(--ok-wash)" }}>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--ok)" }}>Test {i + 1} · Pass</p>
-                    <p className="mt-2 font-semibold" style={{ color: "var(--cream)" }}>{t}</p>
-                    <p className="mt-1 text-[13.5px] muted">{d}</p>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-          </Block>
-
-          <Block
-            id="strategies"
-            eyebrow="Two strategies, one platform"
-            title={<>Two books, <span className="italic-gold">never merged.</span></>}
-            lede="One cannot borrow from the other's cash or limits. The combined view is for reading only."
-          >
-            <TwoBooks detail="full" />
-          </Block>
-
-          <Block
+          <Ch
             id="governance"
-            eyebrow="Governance and the human role"
-            title={<>Risk and Shariah are <span className="italic-gold">hard constraints</span>, never advice.</>}
+            n={5}
+            title="When anything is uncertain, nothing proceeds."
+            summary="Controls are enforced by the system, not by habit, and every exception is recorded."
           >
-            <Reveal className="card md:p-10">
-              <p className="text-[12px] font-semibold uppercase tracking-[0.2em] muted">Limits come in three levels. The stricter rule wins.</p>
-              <div className="mt-8 space-y-4">
-                {[
-                  ["Normal", "Applies every day", 55],
-                  ["Exception", "Needs the CIO's recorded approval", 78],
-                  ["Absolute maximum", "Nothing overrides it", 100],
-                ].map(([k, v, w], i) => (
-                  <div key={k as string} className="grid items-center gap-3 md:grid-cols-[180px_1fr]">
-                    <p className="font-semibold" style={{ color: "var(--cream)" }}>{k}</p>
-                    <div className="relative h-11 overflow-hidden rounded-lg" style={{ background: "var(--bg)" }}>
-                      <div
-                        className="absolute inset-y-0 left-0 flex items-center rounded-lg px-4 text-[13px]"
-                        style={{
-                          width: `${w}%`,
-                          background: i === 2 ? "linear-gradient(90deg, rgba(226,114,107,0.12), rgba(226,114,107,0.3))" : `rgba(214,180,106,${0.1 + i * 0.08})`,
-                          borderRight: `2px solid ${i === 2 ? "var(--stop)" : "var(--gold)"}`,
-                          color: "var(--cream)",
-                        }}
-                      >
-                        {v}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-6 text-[12.5px]" style={{ color: "var(--faint)" }}>Values are not published. Bars show the relationship between levels only.</p>
-            </Reveal>
-            <div className="mt-10">
-              <Bullets
-                items={[
-                  "The founder defines the mandate and makes final capital decisions.",
-                  "Performance never raises risk. A strong year, a gap to the benchmark or a fall from a peak never raises a limit or the risk taken.",
-                  "No trade quota and no target number of holdings. With too few good ideas, the portfolio holds cash.",
-                  "When data is incomplete, Shariah status is unclear or confidence is low, the system stops and sends the decision to the CIO.",
-                  "Live trading is never inferred from the calendar. A readiness report goes to the CIO, who decides.",
-                ]}
-              />
-            </div>
-          </Block>
-
-          <Block
-            id="proof"
-            eyebrow="How we prove it works"
-            title={<>Designed to be <span className="italic-gold">checked.</span></>}
-            lede="How the platform is designed and tested. Results will be stated only once acceptance testing has passed."
-          >
-            <Bullets
-              items={[
-                "Every number in an AI-written memo or report is matched to stored data. Unmatched numbers are struck out.",
-                "Every claim ties to a stored source, with a sample checked by a person each week.",
-                "Forecasts are locked at the time of the decision and scored against what happened.",
-                "Controls are tested before every release, including orders built to fail that must be refused.",
-                "Jobs and reports run on schedule; an alert fires if the end-of-day report is missing.",
-                "Agents are reviewed on the value they add.",
-                "Performance is net of costs, compared with a benchmark over the same period, with sample-size warnings.",
-              ]}
-            />
-          </Block>
-
-          <Block id="day" eyebrow="A day in the life of the platform" title={<>From first data <span className="italic-gold">to locked record.</span></>}>
-            <ol className="relative ml-2 border-l" style={{ borderColor: "var(--line)" }}>
-              {day.map(([t, d], i) => (
-                <Reveal as="li" key={i} delay={i * 90} className="relative pb-8 pl-8 last:pb-0">
-                  <span className="absolute -left-[6px] top-[7px] h-[11px] w-[11px] rotate-45" style={{ background: "var(--bg)", border: "1.5px solid var(--gold)" }} />
-                  <p className="text-[12px] font-semibold uppercase tracking-[0.18em] gold">{t}</p>
-                  <p className="mt-1 text-[17px]" style={{ color: "var(--cream)" }}>{d}</p>
-                </Reveal>
+            <div className="grid gap-px sm:grid-cols-2 xl:grid-cols-3" style={{ background: "var(--hairline)" }}>
+              {CONTROLS.map(([t, d]) => (
+                <div key={t} className="p-6" style={{ background: "var(--bg-base)" }}>
+                  <p className="flex items-center gap-3">
+                    <span className="dia dia-outline" aria-hidden />
+                    <span className="ill-label">{t}</span>
+                  </p>
+                  <p className="ill-sub mt-2 !text-[14px]">{d}</p>
+                </div>
               ))}
-            </ol>
-          </Block>
-
-          <Block id="security" eyebrow="Security and data" title={<>AI drafts. <span className="italic-gold">It never holds a key.</span></>}>
-            <Bullets
-              items={[
-                "Private sign-in with passkeys. No page loads before sign-in.",
-                "Audit records are chained, so any edit is detected and raises an alert.",
-                "Secrets are kept in a protected store. Only the execution service can read the order key. Keys are rotated regularly.",
-                "Backups allow recovery to any point in a recent window.",
-                "An independent security review is planned before outside money is taken.",
-                "AI is used for research and drafting only. It never holds a key or sends an order.",
-              ]}
-            />
-          </Block>
-
-          <Block id="benchmarks" eyebrow="Benchmarks and measurement" title={<>Principles, <span className="italic-gold">stated in advance.</span></>}>
-            <div className="grid gap-5 md:grid-cols-2">
-              <Reveal className="card">
-                <p className="serif text-[24px]" style={{ color: "var(--cream)" }}>Flagship Fund</p>
-                <p className="mt-2 muted">Compared first with a recognised Shariah global benchmark, with a Shariah US index and a conventional market index as references.</p>
-              </Reveal>
-              <Reveal delay={120} className="card">
-                <p className="serif text-[24px]" style={{ color: "var(--cream)" }}>Simat Catalyst</p>
-                <p className="mt-2 muted">Compared first with a broad Shariah global market index, with the same Shariah global benchmark as a second reference.</p>
-              </Reveal>
             </div>
-            <div className="mt-10">
-              <Bullets
-                items={[
-                  "Measured in pounds sterling.",
-                  "Simple excess return reported separately from risk-adjusted measures.",
-                  "Money added or withdrawn by investors never counts as performance.",
-                ]}
-              />
+            <Reveal className="mt-14">
+              <h3 className="h3">Governance</h3>
+              <div className="mt-6">
+                <Lines
+                  items={[
+                    "The founder sets the mandate and makes every final decision",
+                    "Strong results never loosen risk limits automatically; changes are proposed, reviewed and recorded",
+                    "No trade quota; cash is held when ideas are scarce",
+                  ]}
+                />
+              </div>
+            </Reveal>
+          </Ch>
+
+          <Ch id="measurement" n={6} title="Principles, stated in advance.">
+            <TwoStrategies full />
+            <Reveal className="mt-16">
+              <h3 className="h3">Measurement</h3>
+              <div className="mt-6">
+                <Lines
+                  items={[
+                    "Net of all costs",
+                    "Against a stated benchmark",
+                    "Risk-adjusted: volatility, Sharpe and Sortino ratios, maximum drawdown",
+                    "Sample size always shown",
+                    "No figures published until independently verified and cleared by legal review",
+                  ]}
+                />
+              </div>
+            </Reveal>
+            <Reveal className="mt-16">
+              <h3 className="h3">Why not simply buy a Shariah ETF?</h3>
+              <p className="body mt-3">ETFs are not bad. They make different trade-offs.</p>
+              <div className="mt-8 overflow-x-auto">
+                <table className="table min-w-[560px]">
+                  <thead>
+                    <tr>
+                      <th scope="col">Topic</th>
+                      <th scope="col">Passive Shariah ETF</th>
+                      <th scope="col">Simat Capital</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {COMPARISON.map(([t, etf, simat]) => (
+                      <tr key={t}>
+                        <th scope="row" className="!border-b !py-[18px] !text-[15px] !font-medium !normal-case !tracking-normal" style={{ color: "var(--text-primary)", borderColor: "var(--hairline)" }}>
+                          {t}
+                        </th>
+                        <td>{etf}</td>
+                        <td style={{ color: "var(--text-primary)" }}>{simat}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-5 text-[13px] secondary">A general comparison of approaches, not of any named product.</p>
+            </Reveal>
+          </Ch>
+
+          <Ch id="questions" n={7} title="Founder and questions">
+            <Founder condensed />
+            <div className="faq mt-16 border-t" style={{ borderColor: "var(--hairline)" }}>
+              {FAQS.map((f) => (
+                <details key={f.q}>
+                  <summary>
+                    {f.q}
+                    <span className="plus" aria-hidden />
+                  </summary>
+                  <p className="answer">{f.a}</p>
+                </details>
+              ))}
             </div>
-          </Block>
-
-          <Block id="etf" eyebrow="A fair question" title={<>Why not simply buy a <span className="italic-gold">Shariah ETF?</span></>}>
-            <EtfTable full />
-          </Block>
-
-          <section id="founder" className="border-t py-20 md:py-28" style={{ borderColor: "var(--line-soft)" }}>
-            <Founder long />
-          </section>
-
-          <Block id="faq" eyebrow="Questions" title={<>For investors <span className="italic-gold">and advisers.</span></>}>
-            <Faq
-              items={[
-                faqCore[2],
-                faqCore[1],
-                faqCore[0],
-                { q: "Do you have a track record?", a: "Not yet. Simat Capital is in a paper trading phase. Our record is being built transparently: forecasts are locked at decision time and scored, and performance will be reported net of costs against a stated benchmark, with sample size and drawdown shown." },
-                faqCore[4],
-                { q: "Can I see the platform?", a: "Yes. Request access to the demo, or ask for it as part of the investor briefing. Any figures in the demo are illustrative." },
-                faqCore[5],
-              ]}
-            />
-          </Block>
-
-          <Block
-            id="briefing"
-            eyebrow="Request the investor briefing"
-            title={<>Ask for <span className="italic-gold">a conversation.</span></>}
-            lede="Tell us a little about your organisation. A PDF summary of this page will be available on request."
-          >
-            <LeadForm variant="briefing" />
-          </Block>
+            <div className="mt-12">
+              <Link href="/contact#enquiry" className="btn btn-gold">
+                Make an enquiry
+              </Link>
+            </div>
+          </Ch>
         </div>
       </div>
     </>
