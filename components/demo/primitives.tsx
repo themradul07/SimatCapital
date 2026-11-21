@@ -155,12 +155,17 @@ export function Pill({ color, children }: { color: string; children: ReactNode }
   );
 }
 
-/** The flat Simat mark (same path as components/site/Logo.tsx), drawn into an existing <svg>. */
+/** The official Simat mark (simat-mark.png), drawn into an existing <svg>. */
 export function MarkPath({ stroke = "var(--gold-accent)", width = 9 }: { stroke?: string; width?: number }) {
   return (
-    <g transform="rotate(45 50 50)" fill="none" stroke={stroke} strokeWidth={width} strokeLinecap="square" strokeLinejoin="miter">
-      <path d="M80 40 H100 V100 H0 V0 H62 V64 H24 V24 H43 V44" />
-    </g>
+    <image
+      href="/simat-mark.png"
+      x="-22"
+      y="-22"
+      width="144"
+      height="144"
+      preserveAspectRatio="xMidYMid meet"
+    />
   );
 }
 

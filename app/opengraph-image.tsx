@@ -1,4 +1,6 @@
 import { ImageResponse } from "next/og";
+import fs from "fs";
+import path from "path";
 
 /** Brief, Section 13: Open Graph image 1200×630, mark and wordmark on the dark background. */
 export const alt = "Simat Capital";
@@ -12,6 +14,9 @@ const THEME = {
 } as const;
 
 export default async function Image() {
+  const markBuffer = fs.readFileSync(path.join(process.cwd(), "public", "simat-mark.png"));
+  const markBase64 = `data:image/png;base64,${markBuffer.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -26,11 +31,8 @@ export default async function Image() {
           gap: 36,
         }}
       >
-        <svg width="170" height="170" viewBox="-22 -22 144 144" aria-hidden="true">
-          <g transform="rotate(45 50 50)" fill="none" stroke={THEME.gold} strokeWidth="9" strokeLinecap="square">
-            <path d="M80 40 H100 V100 H0 V0 H62 V64 H24 V24 H43 V44" />
-          </g>
-        </svg>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={markBase64} width={180} height={180} alt="Simat Capital" />
         <div style={{ display: "flex", color: THEME.primary, fontSize: 64, letterSpacing: 18, fontFamily: "serif" }}>
           SIMAT CAPITAL
         </div>

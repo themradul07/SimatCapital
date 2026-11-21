@@ -70,12 +70,14 @@ export default function HeroMark() {
         ))}
         <g style={{ opacity: on ? 1 : 0, transition: "opacity 600ms var(--ease) 300ms" }}>
           <g className="mark-pulse">
-            {/* mark path lives in a 144-unit box (-22..122); scale it to ~84px and centre it */}
-            <g transform={`translate(${C} ${C}) scale(0.58) translate(-50 -50)`}>
-              <g transform="rotate(45 50 50)" fill="none" stroke="var(--gold-accent)" strokeWidth="9" strokeLinecap="square">
-                <path d="M80 40 H100 V100 H0 V0 H62 V64 H24 V24 H43 V44" />
-              </g>
-            </g>
+            <image
+              href="/simat-mark.png"
+              x={C - 50}
+              y={C - 50}
+              width={100}
+              height={100}
+              preserveAspectRatio="xMidYMid meet"
+            />
           </g>
         </g>
       </svg>
