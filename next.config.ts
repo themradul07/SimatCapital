@@ -11,7 +11,6 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/individuals", destination: "/private-investors", statusCode: 301 },
-      { source: "/demo", destination: "/contact#demo", statusCode: 301 },
       { source: "/sign-up", destination: "/contact#waitlist", statusCode: 301 },
     ];
   },

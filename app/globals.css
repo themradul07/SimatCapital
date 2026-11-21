@@ -24,8 +24,20 @@
   --line-link: rgba(214, 180, 106, 0.4);
   --hairline: rgba(243, 236, 220, 0.09);
   --bg-card-hover: rgba(21, 18, 14, 0.9);
+  --gold-glow: rgba(214, 180, 106, 0.6);
+  --gold-glow-soft: rgba(214, 180, 106, 0.25);
   --error-border: #e0a093;
   --error-text: #e8ab9e;
+
+  /* Demo status tokens */
+  --status-pass: #3ccb8f;
+  --status-pass-bg: rgba(60, 203, 143, 0.12);
+  --status-breach: #ff8a73;
+  --status-breach-bg: rgba(255, 138, 115, 0.12);
+  --status-info: #6ea8ff;
+  --status-info-bg: rgba(110, 168, 255, 0.12);
+  --status-review: #b48cff;
+  --status-review-bg: rgba(180, 140, 255, 0.12);
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --fade: 560ms;
@@ -37,6 +49,10 @@
   --color-gold: var(--gold-accent);
   --color-primary: var(--text-primary);
   --color-secondary: var(--text-secondary);
+  --color-pass: var(--status-pass);
+  --color-breach: var(--status-breach);
+  --color-info: var(--status-info);
+  --color-review: var(--status-review);
   --font-sans: var(--font-inter);
   --font-serif: var(--font-cormorant);
 }
@@ -62,6 +78,7 @@
     -webkit-font-smoothing: antialiased;
     overflow-x: clip;
   }
+
   @media (min-width: 768px) {
     body {
       font-size: 17px;
@@ -86,6 +103,7 @@
 }
 
 @layer components {
+
   /* ------------------------------ layout ------------------------------ */
   .wrap {
     width: 100%;
@@ -93,6 +111,7 @@
     margin: 0 auto;
     padding: 0 16px;
   }
+
   @media (min-width: 768px) {
     .wrap {
       padding: 0 32px;
@@ -104,20 +123,24 @@
     position: relative;
     padding: 48px 0;
   }
-  .section + .section {
+
+  .section+.section {
     margin-top: 0;
   }
-  .stack > .section {
+
+  .stack>.section {
     padding: 48px 0;
   }
+
   @media (min-width: 900px) {
+
     .section,
-    .stack > .section {
+    .stack>.section {
       padding: 80px 0;
     }
   }
 
-  /* Story thread: left margin line, sits 32px outside the content column (xl and up) */
+  /* Story thread: left margin line, sits 24px outside the content column (xl and up) */
   .thread-x {
     left: max(16px, calc((100% - 1200px) / 2 - 24px));
   }
@@ -152,6 +175,7 @@
     line-height: 1.05;
     letter-spacing: -0.01em;
   }
+
   .h2 {
     font-family: var(--font-cormorant), Georgia, serif;
     font-weight: 500;
@@ -160,10 +184,12 @@
     line-height: 1.1;
     letter-spacing: -0.005em;
   }
+
   @media (min-width: 900px) {
     .h1 {
       font-size: 68px;
     }
+
     .h2 {
       font-size: 46px;
     }
@@ -181,17 +207,20 @@
     color: var(--text-secondary);
     max-width: 65ch;
   }
+
   .lead {
     color: var(--text-primary);
     font-size: 18px;
     line-height: 1.6;
     max-width: 60ch;
   }
+
   @media (min-width: 900px) {
     .lead {
       font-size: 20px;
     }
   }
+
   .small {
     font-size: 14px;
     color: var(--text-secondary);
@@ -201,6 +230,7 @@
     font-style: italic;
     color: var(--gold-accent);
   }
+
   .secondary {
     color: var(--text-secondary);
   }
@@ -212,11 +242,13 @@
     color: var(--text-primary);
     line-height: 1.35;
   }
+
   .ill-sub {
     font-size: 12.5px;
     color: var(--text-secondary);
     line-height: 1.45;
   }
+
   .ill-num {
     font-family: var(--font-cormorant), Georgia, serif;
     color: var(--gold-accent);
@@ -255,31 +287,39 @@
       border-color 400ms var(--ease),
       transform 150ms var(--ease);
   }
+
   .btn:active {
     transform: translateY(1px);
   }
+
   .btn-gold {
     background: var(--gold-accent);
     color: var(--bg-base);
     border: 1px solid var(--gold-accent);
   }
+
   .btn-gold:hover {
     background: var(--btn-gold-hover);
   }
+
   .btn-gold:active {
     background: var(--gold-accent);
   }
+
   .btn-outline {
     border: 1px solid var(--gold-accent);
     color: var(--gold-accent);
     background: transparent;
   }
+
   .btn-outline:hover {
     background: var(--btn-outline-hover);
   }
+
   .btn-outline:active {
     background: var(--btn-outline-hover);
   }
+
   .btn[disabled],
   .btn:disabled {
     background: var(--bg-raised);
@@ -295,9 +335,11 @@
     transition: border-color 400ms var(--ease), opacity 150ms var(--ease);
     font-weight: 500;
   }
+
   .text-link:hover {
     border-color: var(--gold-accent);
   }
+
   .text-link:active {
     opacity: 0.8;
   }
@@ -309,6 +351,7 @@
     border: 1px solid var(--hairline);
     border-radius: 2px;
   }
+
   .rule {
     border-top: 1px solid var(--hairline);
   }
@@ -322,6 +365,7 @@
     background: var(--gold-accent);
     flex-shrink: 0;
   }
+
   .dia-outline {
     background: transparent;
     border: 1px solid var(--gold-accent);
@@ -333,6 +377,7 @@
     border-collapse: collapse;
     font-size: 15px;
   }
+
   .table th {
     text-align: left;
     font-size: 13px;
@@ -343,12 +388,14 @@
     padding: 0 16px 16px 0;
     border-bottom: 1px solid var(--line);
   }
+
   .table td {
     padding: 16px 16px 16px 0;
     border-bottom: 1px solid var(--hairline);
     vertical-align: top;
     color: var(--text-secondary);
   }
+
   .table td:first-child {
     color: var(--text-primary);
     font-weight: 500;
@@ -360,12 +407,14 @@
     flex-direction: column;
     gap: 8px;
   }
+
   .field label,
   .field legend {
     font-size: 14px;
     font-weight: 500;
     color: var(--text-primary);
   }
+
   .input {
     width: 100%;
     min-height: 48px;
@@ -378,10 +427,12 @@
     font-size: 16px;
     transition: border-color 300ms var(--ease);
   }
+
   textarea.input {
     min-height: 130px;
     resize: vertical;
   }
+
   select.input {
     appearance: none;
     background-image:
@@ -394,13 +445,16 @@
     background-repeat: no-repeat;
     padding-right: 40px;
   }
+
   .input:focus {
     outline: none;
     border-color: var(--gold-accent);
   }
+
   .input[aria-invalid="true"] {
     border-color: var(--error-border);
   }
+
   .error {
     font-size: 14px;
     color: var(--error-text);
@@ -410,6 +464,7 @@
   .faq details {
     border-bottom: 1px solid var(--hairline);
   }
+
   .faq summary {
     list-style: none;
     cursor: pointer;
@@ -424,21 +479,26 @@
     font-weight: 500;
     transition: color 200ms var(--ease);
   }
+
   .faq summary:hover {
     color: var(--gold-accent);
   }
+
   .faq summary:active {
     opacity: 0.85;
   }
+
   .faq summary::-webkit-details-marker {
     display: none;
   }
+
   .faq .plus {
     position: relative;
     width: 12px;
     height: 12px;
     flex-shrink: 0;
   }
+
   .faq .plus::before,
   .faq .plus::after {
     content: "";
@@ -450,12 +510,15 @@
     height: 1.25px;
     transition: transform 400ms var(--ease);
   }
+
   .faq .plus::after {
     transform: rotate(90deg);
   }
+
   .faq details[open] .plus::after {
     transform: rotate(0deg);
   }
+
   .faq .answer {
     color: var(--text-secondary);
     padding: 0 0 24px;
@@ -468,23 +531,28 @@
     color: var(--text-secondary);
     max-width: 70ch;
   }
-  .prose-legal p + p {
+
+  .prose-legal p+p {
     margin-top: 16px;
   }
+
   .prose-legal ul {
     margin-top: 12px;
     display: grid;
     gap: 16px;
   }
+
   .prose-legal strong {
     color: var(--text-primary);
     font-weight: 600;
   }
+
   .prose-legal a {
     color: var(--gold-accent);
     border-bottom: 1px solid var(--line-link);
     transition: border-color 300ms var(--ease);
   }
+
   .prose-legal a:hover {
     border-color: var(--gold-accent);
   }
@@ -499,10 +567,12 @@
       transform var(--fade) var(--ease);
     transition-delay: var(--d, 0ms);
   }
+
   html.js .reveal:not(.in) {
     opacity: 0;
     transform: translate3d(0, 12px, 0);
   }
+
   .reveal.in {
     opacity: 1;
     transform: none;
@@ -521,6 +591,7 @@
     transition: stroke-dashoffset var(--dur, 1200ms) var(--ease);
     transition-delay: var(--d, 0ms);
   }
+
   .on .draw,
   .draw.on {
     stroke-dashoffset: 0;
@@ -550,10 +621,12 @@
     cursor: pointer;
     min-height: 104px;
   }
+
   .audience-card:hover {
     border-color: var(--gold-accent);
     background: var(--bg-card-hover);
   }
+
   .audience-card:active {
     transform: translateY(1px);
   }
@@ -563,15 +636,42 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
+
+/* mobile menu: panel fades in, items rise in sequence */
+.mobile-menu {
+  animation: fadeIn 280ms var(--ease) both;
+}
+
+.menu-item {
+  opacity: 0;
+  animation: menuRise 520ms var(--ease) forwards;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes menuRise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes markPulse {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.72;
   }
@@ -582,17 +682,21 @@
   html {
     scroll-behavior: auto;
   }
+
   *,
   *::before,
   *::after {
     animation: none !important;
     transition: none !important;
   }
+
   .reveal,
-  .fade-in {
+  .fade-in,
+  .menu-item {
     opacity: 1 !important;
     transform: none !important;
   }
+
   .draw {
     stroke-dashoffset: 0 !important;
   }

@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "../useInView";
 
 /**
  * I3 — The decision engine. Six diamond nodes, a return line from the last to the first.
- * One gold point travels nodes 1→6 once when in view, then the return line draws.
+ * A glowing gold point travels nodes 1→6 in sync with scroll, illuminating nodes with a glow.
  * Home: summary state (detail on hover / focus / tap). Institutions: "In plain words · In detail" toggle.
  */
 const NODES = [
@@ -18,15 +18,39 @@ const NODES = [
 ];
 const RETURN = "Every outcome is reviewed against its thesis.";
 const PERSON = 4; // node 5
-const TRAVEL = 2600;
 
 export default function DecisionEngine({ withToggle = false }: { withToggle?: boolean }) {
   const ref = useRef<HTMLElement>(null);
-  const on = useInView(ref, 0.35);
+  const on = useInView(ref, 0.25);
   const [hover, setHover] = useState<number | null>(null);
   const [detailed, setDetailed] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
-  const nodeDelay = (i: number) => (TRAVEL / (NODES.length - 1)) * i;
+  useEffect(() => {
+    let rafId = 0;
+    const handleScroll = () => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // Start as the component enters the mid-lower viewport (0.85) to upper viewport (0.2)
+      const start = vh * 0.85;
+      const end = vh * 0.2;
+      const progress = (start - rect.top) / (start - end);
+      const clamped = Math.max(0, Math.min(1, progress));
+      setScrollProgress(clamped);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   const showDetail = (i: number) => detailed || hover === i;
 
   const handlers = (i: number) => ({
@@ -37,16 +61,21 @@ export default function DecisionEngine({ withToggle = false }: { withToggle?: bo
     onClick: () => setHover((h) => (h === i ? null : i)),
   });
 
-  const diamond = (i: number) => (
-    <span
-      className="block h-[14px] w-[14px] rotate-45 border"
-      style={{
-        borderColor: "var(--gold-accent)",
-        background: on ? (i === PERSON ? "var(--gold-accent)" : "var(--bg-raised)") : "var(--bg-base)",
-        transition: `background-color 400ms var(--ease) ${nodeDelay(i)}ms`,
-      }}
-    />
-  );
+  const diamond = (i: number) => {
+    const isPassed = scrollProgress >= i / (NODES.length - 1);
+    const active = isPassed || (on && i === PERSON);
+    return (
+      <span
+        className="block h-[14px] w-[14px] rotate-45 border"
+        style={{
+          borderColor: "var(--gold-accent)",
+          background: active ? "var(--gold-accent)" : "var(--bg-base)",
+          boxShadow: active ? "0 0 10px var(--gold-accent), 0 0 18px var(--gold-glow)" : "none",
+          transition: "background-color 300ms var(--ease), box-shadow 300ms var(--ease)",
+        }}
+      />
+    );
+  };
 
   return (
     <figure ref={ref} aria-label="The decision engine: six stages from signals to execution and record, with every outcome reviewed against its thesis.">
@@ -79,7 +108,11 @@ export default function DecisionEngine({ withToggle = false }: { withToggle?: bo
               {i === PERSON && (
                 <span
                   className="flex flex-col items-center text-[13px] font-medium"
-                  style={{ color: "var(--gold-accent)", opacity: on ? 1 : 0, transition: `opacity 500ms var(--ease) ${nodeDelay(PERSON)}ms` }}
+                  style={{
+                    color: "var(--gold-accent)",
+                    opacity: on ? 1 : 0,
+                    transition: "opacity 500ms var(--ease)",
+                  }}
                 >
                   A person decides
                   <span className="mt-1 h-3 w-px" style={{ background: "var(--gold-accent)" }} />
@@ -91,15 +124,16 @@ export default function DecisionEngine({ withToggle = false }: { withToggle?: bo
 
         <div className="relative mt-2">
           <div className="absolute top-1/2 h-px" style={{ left: "8.333%", right: "8.333%", background: "var(--line)" }} />
-          {/* travelling gold point */}
+          {/* Travelling glowing gold dot that follows scroll */}
           <span
             aria-hidden
-            className="absolute top-1/2 z-10 h-[7px] w-[7px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+            className="absolute top-1/2 z-10 h-[9px] w-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
             style={{
               background: "var(--gold-accent)",
-              left: on ? "91.667%" : "8.333%",
-              opacity: on ? 0 : 1,
-              transition: `left ${TRAVEL}ms cubic-bezier(0.45, 0, 0.55, 1), opacity 300ms ease ${TRAVEL}ms`,
+              left: `${8.333 + scrollProgress * 83.334}%`,
+              boxShadow: "0 0 10px var(--gold-accent), 0 0 20px var(--gold-glow), 0 0 32px var(--gold-glow-soft)",
+              opacity: on ? 1 : 0.4,
+              transition: "left 80ms linear, opacity 300ms var(--ease)",
             }}
           />
           <ol className="relative grid grid-cols-6">
@@ -137,46 +171,51 @@ export default function DecisionEngine({ withToggle = false }: { withToggle?: bo
             strokeOpacity="0.55"
             strokeWidth="1.2"
             vectorEffect="non-scaling-stroke"
-            className={`draw ${on ? "on" : ""}`}
-            style={{ ["--len" as string]: 1100, ["--dur" as string]: "1200ms", ["--d" as string]: `${TRAVEL}ms` }}
+            className={`draw ${scrollProgress > 0.8 ? "on" : ""}`}
+            style={{ ["--len" as string]: 1100, ["--dur" as string]: "1200ms", ["--d" as string]: "200ms" }}
           />
         </svg>
         <p
           className="ill-sub mt-2 text-center"
-          style={{ opacity: on ? 1 : 0, transition: `opacity 500ms var(--ease) ${TRAVEL + 900}ms` }}
+          style={{ opacity: scrollProgress > 0.85 ? 1 : 0.5, transition: "opacity 500ms var(--ease)" }}
         >
-          ← {RETURN}
+          {RETURN}
         </p>
       </div>
 
-      {/* Mobile: vertical, same content */}
-      <div className="relative md:hidden">
-        <div className="absolute bottom-6 left-[7px] top-2 w-px" style={{ background: "var(--line)" }} />
-        <ol className="relative space-y-7">
-          {NODES.map((n, i) => (
-            <li key={n.title} className="flex gap-5">
-              <span className="mt-1.5 shrink-0">
-                {diamond(i)}
-              </span>
+      {/* Mobile: stacked list */}
+      <ol className="relative space-y-6 md:hidden">
+        <div className="absolute bottom-4 left-3 top-4 w-px" style={{ background: "var(--line)" }} />
+        {NODES.map((n, i) => {
+          const isPassed = scrollProgress >= i / (NODES.length - 1);
+          const active = isPassed || (on && i === PERSON);
+          return (
+            <li key={n.title} className="relative flex gap-4 pl-8">
+              <span
+                className="absolute left-1 top-2 block h-[12px] w-[12px] rotate-45 border"
+                style={{
+                  borderColor: "var(--gold-accent)",
+                  background: active ? "var(--gold-accent)" : "var(--bg-base)",
+                  boxShadow: active ? "0 0 8px var(--gold-accent), 0 0 16px var(--gold-glow)" : "none",
+                  transition: "background-color 300ms var(--ease), box-shadow 300ms var(--ease)",
+                }}
+              />
               <button type="button" className="text-left" aria-expanded={showDetail(i)} {...handlers(i)}>
-                {i === PERSON && (
-                  <span className="mb-1 block text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>
-                    A person decides
-                  </span>
-                )}
-                <span className="ill-label block">{n.title}</span>
-                <span className="ill-sub mt-1 block">{n.sub}</span>
+                <div className="flex items-baseline gap-3">
+                  <span className="ill-label font-medium">{n.title}</span>
+                  {i === PERSON && <span className="text-[12px]" style={{ color: "var(--gold-accent)" }}>(Person decides)</span>}
+                </div>
+                <p className="ill-sub mt-1">{n.sub}</p>
                 {showDetail(i) && (
-                  <span className="ill-sub mt-1.5 block" style={{ color: "var(--gold-accent)" }}>
+                  <p className="ill-sub mt-2" style={{ color: "var(--gold-accent)" }}>
                     {n.detail}
-                  </span>
+                  </p>
                 )}
               </button>
             </li>
-          ))}
-        </ol>
-        <p className="ill-sub mt-6 pl-9">↺ {RETURN}</p>
-      </div>
+          );
+        })}
+      </ol>
     </figure>
   );
 }

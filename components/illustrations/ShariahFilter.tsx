@@ -32,6 +32,17 @@ const GATES = [
 const BRANCH = "Uncertain? Excluded until resolved.";
 const GATE_POS = [0.125, 0.375, 0.625, 0.875];
 
+/** Expanded detail: each " · "-separated clause on its own line, so thresholds never wrap mid-list. */
+function detail(text: string): ReactNode {
+  const parts = text.split(" · ");
+  if (parts.length === 1) return withNumbers(text);
+  return parts.map((p, i) => (
+    <span key={i} className="block [&+&]:mt-1">
+      {withNumbers(p)}
+    </span>
+  ));
+}
+
 /** Numbers in illustrations: serif, gold, tabular figures. */
 function withNumbers(text: string): ReactNode[] {
   return text.split(/(\d+(?:\.\d+)?%)/g).map((part, i) =>
@@ -132,7 +143,7 @@ export default function ShariahFilter({ expanded = false }: { expanded?: boolean
             <li key={g.title} className="text-center">
               <span className="ill-num block text-[15px]">Gate {i + 1}</span>
               <span className="ill-label mt-1 block">{g.title}</span>
-              <span className="ill-sub mt-1.5 block">{withNumbers(expanded ? g.expanded : g.summary)}</span>
+              <span className="ill-sub mt-1.5 block">{expanded ? detail(g.expanded) : withNumbers(g.summary)}</span>
             </li>
           ))}
         </ol>
@@ -148,10 +159,13 @@ export default function ShariahFilter({ expanded = false }: { expanded?: boolean
               <span aria-hidden className="absolute left-0 h-px w-[15px]" style={{ marginTop: 10, background: passed(i) ? "var(--gold-accent)" : "var(--line)" }} />
               <span className="ill-num block text-[15px]">Gate {i + 1}</span>
               <span className="ill-label block">{g.title}</span>
-              <span className="ill-sub mt-1 block">{withNumbers(expanded ? g.expanded : g.summary)}</span>
+              <span className="ill-sub mt-1 block">{expanded ? detail(g.expanded) : withNumbers(g.summary)}</span>
               {i === 1 && (
-                <span className="ill-sub mt-2 block" style={{ color: "var(--text-primary)" }}>
-                  ↳ {BRANCH}
+                <span className="ill-sub mt-2 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+                  <svg width="14" height="12" viewBox="0 0 14 12" aria-hidden className="shrink-0">
+                    <path d="M1 0 V 6 Q 1 10 5 10 H 14" fill="none" stroke="var(--gold-accent)" strokeOpacity="0.7" strokeWidth="1.2" />
+                  </svg>
+                  {BRANCH}
                 </span>
               )}
             </li>
