@@ -18,13 +18,13 @@ export const metadata: Metadata = {
 };
 
 const CHAPTERS = [
-  { id: "status", label: "Status, plainly" },
-  { id: "process", label: "The investment process" },
-  { id: "engine", label: "The research engine" },
-  { id: "shariah", label: "Shariah method" },
-  { id: "governance", label: "Governance and controls" },
-  { id: "measurement", label: "Strategies and measurement" },
-  { id: "questions", label: "Founder and questions" },
+  { id: "status", label: "Where we stand today" },
+  { id: "process", label: "From idea to decision" },
+  { id: "engine", label: "Our research engine" },
+  { id: "shariah", label: "Shariah at every stage" },
+  { id: "governance", label: "Controls and oversight" },
+  { id: "measurement", label: "Strategies and metrics" },
+  { id: "questions", label: "Founder and FAQs" },
 ];
 
 function Ch({ id, n, title, summary, children }: { id: string; n: number; title: ReactNode; summary?: string; children: ReactNode }) {
