@@ -144,7 +144,7 @@ export default function Institutions() {
             <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "200ms" }}>
               What an allocator would ask, answered plainly.
             </p>
-            <div className="fade-in mt-9" style={{ ["--d" as string]: "300ms" }}>
+            <div className="fade-in mt-28" style={{ ["--d" as string]: "300ms" }}>
               <Link href="/contact#demo" className="btn btn-gold">
                 Request a demo
               </Link>
