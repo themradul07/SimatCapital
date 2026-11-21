@@ -9,6 +9,7 @@ import EngineMap from "@/components/illustrations/EngineMap";
 import DecisionEngine from "@/components/illustrations/DecisionEngine";
 import ShariahFilter from "@/components/illustrations/ShariahFilter";
 import TwoStrategies from "@/components/illustrations/TwoStrategies";
+import ControlGate from "@/components/illustrations/ControlGate";
 import Founder from "@/components/home/Founder";
 
 export const metadata: Metadata = {
@@ -134,18 +135,23 @@ export default function Institutions() {
     <>
       {/* Intro */}
       <section className="pt-[160px] pb-20 md:pt-[200px] md:pb-24">
-        <div className="wrap">
-          <p className="eyebrow fade-in">For family offices and institutions</p>
-          <h1 className="h1 fade-in mt-5 max-w-[18ch]" style={{ ["--d" as string]: "100ms" }}>
-            The process, the controls and the governance, <span className="em-gold">in full.</span>
-          </h1>
-          <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "200ms" }}>
-            What an allocator would ask, answered plainly.
-          </p>
-          <div className="fade-in mt-9" style={{ ["--d" as string]: "300ms" }}>
-            <Link href="/contact#demo" className="btn btn-gold">
-              Request a demo
-            </Link>
+        <div className="wrap grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
+          <div>
+            <p className="eyebrow fade-in">For family offices and institutions</p>
+            <h1 className="h1 fade-in mt-5 max-w-[18ch]" style={{ ["--d" as string]: "100ms" }}>
+              The process, the controls and the governance, <span className="em-gold">in full.</span>
+            </h1>
+            <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "200ms" }}>
+              What an allocator would ask, answered plainly.
+            </p>
+            <div className="fade-in mt-9" style={{ ["--d" as string]: "300ms" }}>
+              <Link href="/contact#demo" className="btn btn-gold">
+                Request a demo
+              </Link>
+            </div>
+          </div>
+          <div className="fade-in" style={{ ["--d" as string]: "250ms" }}>
+            <ControlGate />
           </div>
         </div>
       </section>

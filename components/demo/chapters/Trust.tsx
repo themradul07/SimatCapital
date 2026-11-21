@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useInView } from "@/components/useInView";
 import { C, MEASURE, PROVIDERS, RISK_WARNING, RISKS, chapter } from "../content";
@@ -21,10 +22,15 @@ function GovernanceVisual() {
   return (
     <div className="grid gap-5">
       <div className="dm-panel flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:p-8" style={{ borderColor: "var(--line)" }}>
-        <div className="grid h-[104px] w-[104px] shrink-0 place-items-center rounded-full border border-[var(--line)] bg-black/30">
-          <svg width="58" height="58" viewBox="-22 -22 144 144" aria-hidden className="mark-pulse">
-            <MarkPath width={10} />
-          </svg>
+        <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-full border border-[var(--line)] bg-black/30">
+          <Image
+            src="/essaSimat.png"
+            alt="Eesaa Simat, Founder and Chief Investment Officer"
+            fill
+            sizes="104px"
+            className="object-cover"
+            style={{ filter: "saturate(0.85)" }}
+          />
         </div>
         <div>
           <p className="dm-tag" style={{ color: C.gold }}>

@@ -677,6 +677,408 @@
   }
 }
 
+/* ------------------------------ hero mark (HeroMark.tsx) ------------------------------ */
+.hm-par {
+  transition: transform 700ms var(--ease);
+}
+
+.hm-spin,
+.hm-spin-rev {
+  transform-box: view-box;
+  transform-origin: 250px 250px;
+  animation: hmSpin 80s linear infinite;
+}
+
+.hm-spin-rev {
+  animation-duration: 120s;
+  animation-direction: reverse;
+}
+
+.hm-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hmBreathe 6s ease-in-out infinite;
+  transition: opacity 600ms var(--ease);
+}
+
+.hm:hover .hm-glow {
+  filter: brightness(1.6);
+}
+
+.hm-march {
+  stroke-dashoffset: 0;
+  animation: hmMarch 14s linear infinite;
+  opacity: 0;
+  transition: opacity 900ms var(--ease) 900ms;
+}
+
+.on .hm-march {
+  opacity: 1;
+}
+
+.hm-mark {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 700ms var(--ease), filter 700ms var(--ease);
+}
+
+.hm:hover .hm-mark {
+  transform: scale(1.07);
+  filter: drop-shadow(0 0 14px var(--gold-glow-soft));
+}
+
+.hm-comet {
+  opacity: 0;
+  transition: opacity 900ms var(--ease);
+}
+
+.is-live .hm-comet {
+  opacity: 1;
+}
+
+.hm-spoke {
+  stroke-opacity: 0;
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  transition: stroke-dashoffset 700ms var(--ease), stroke-opacity 500ms var(--ease);
+}
+
+.hm-spoke.is-active {
+  stroke-opacity: 0.45;
+  stroke-dashoffset: 0;
+}
+
+.hm-node {
+  fill: var(--bg-base);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: fill 400ms var(--ease), transform 500ms var(--ease);
+}
+
+.hm-node.is-active {
+  fill: var(--gold-accent);
+  transform: scale(1.4);
+}
+
+.hm-ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hmRipple 1400ms var(--ease) forwards;
+}
+
+.hm-label {
+  background: none;
+  border: 0;
+  padding: 2px 4px;
+  cursor: default;
+  transition: color 450ms var(--ease), opacity 500ms var(--ease), text-shadow 450ms var(--ease);
+}
+
+.is-live .hm-label:not(.is-active) {
+  opacity: 0.6;
+}
+
+.hm-label:hover,
+.hm-label.is-active {
+  color: var(--gold-accent);
+  opacity: 1;
+  text-shadow: 0 0 18px var(--gold-glow-soft);
+}
+
+.hm-caption {
+  min-height: 3em;
+  opacity: 0;
+  transition: opacity 700ms var(--ease) 1200ms;
+}
+
+.on .hm-caption {
+  opacity: 1;
+}
+
+.hm-caption-in {
+  animation: hmCaption 520ms var(--ease) both;
+}
+
+@keyframes hmSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hmBreathe {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes hmMarch {
+  to {
+    stroke-dashoffset: -160;
+  }
+}
+
+@keyframes hmRipple {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  to {
+    transform: scale(3.4);
+    opacity: 0;
+  }
+}
+
+@keyframes hmCaption {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------ control gate (ControlGate.tsx) ------------------------------ */
+.cg-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hmBreathe 6s ease-in-out infinite;
+}
+
+.cg-core {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 700ms var(--ease) 200ms, transform 700ms var(--ease) 200ms, stroke 500ms var(--ease);
+}
+
+.on .cg-core {
+  opacity: 1;
+  transform: none;
+}
+
+.cg:hover .cg-core {
+  filter: drop-shadow(0 0 12px var(--gold-glow-soft));
+}
+
+.cg-big {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  fill: var(--text-primary);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.cg-sub {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  fill: var(--text-secondary);
+}
+
+.cg-big,
+.cg-sub {
+  opacity: 0;
+  transition: opacity 500ms var(--ease) 600ms, fill 400ms var(--ease);
+}
+
+.on .cg-big,
+.on .cg-sub {
+  opacity: 1;
+}
+
+.is-halted .cg-core {
+  stroke: var(--status-breach);
+}
+
+.is-halted .cg-big {
+  fill: var(--status-breach);
+}
+
+.cg-arm {
+  transform-box: view-box;
+  transform-origin: 240px 220px;
+  transition: transform 190ms linear;
+}
+
+.cg-arm-line {
+  stroke: var(--gold-accent);
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 400ms var(--ease), stroke 300ms var(--ease);
+}
+
+.cg-arm.is-on .cg-arm-line {
+  opacity: 0.8;
+}
+
+.is-halted .cg-arm-line {
+  stroke: var(--status-breach);
+}
+
+.cg-check {
+  fill: var(--bg-base);
+  stroke: var(--gold-accent);
+  stroke-opacity: 0.55;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: fill 300ms var(--ease), stroke 300ms var(--ease), stroke-opacity 300ms var(--ease), transform 400ms var(--ease);
+}
+
+.cg-check.is-pass {
+  fill: var(--gold-accent);
+  stroke-opacity: 1;
+  transform: scale(1.25);
+}
+
+.cg-check.is-fail {
+  fill: var(--status-breach);
+  stroke: var(--status-breach);
+  stroke-opacity: 1;
+  transform: scale(1.5);
+}
+
+.cg-check.is-hover {
+  transform: scale(1.8);
+  stroke-opacity: 1;
+}
+
+.cg-ripple {
+  stroke: var(--gold-accent);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hmRipple 1000ms var(--ease) forwards;
+}
+
+.cg-ripple.is-fail {
+  stroke: var(--status-breach);
+  animation-duration: 1400ms;
+  animation-iteration-count: 2;
+}
+
+.cg-approve {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  transition: stroke-dashoffset 500ms var(--ease);
+}
+
+.cg-approve.is-on {
+  stroke-dashoffset: 0;
+  transition-duration: 1000ms;
+  filter: drop-shadow(0 0 6px var(--gold-glow-soft));
+}
+
+.cg-seal,
+.cg-exit {
+  fill: var(--bg-base);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: fill 400ms var(--ease) 0ms, transform 500ms var(--ease);
+}
+
+.cg-seal.is-on {
+  fill: var(--gold-accent);
+  transform: scale(1.2);
+  transition-delay: 700ms;
+}
+
+.cg-exit.is-on {
+  fill: var(--gold-accent);
+  transform: scale(1.2);
+  transition-delay: 900ms;
+}
+
+.cg-route,
+.cg-ledger {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  transition: stroke-dashoffset 400ms var(--ease);
+}
+
+.cg-route.is-on {
+  stroke-dashoffset: 0;
+  transition-duration: 1000ms;
+}
+
+.cg-ledger.is-on {
+  stroke-dashoffset: 0;
+  transition-duration: 600ms;
+  transition-delay: var(--d, 0ms);
+}
+
+.is-halted .cg-ledger {
+  stroke: var(--status-breach);
+}
+
+.cg-pulse {
+  animation: cgRoute 1000ms var(--ease) forwards;
+}
+
+.cg-block {
+  animation: fadeIn 400ms var(--ease) both;
+}
+
+.cg-chip {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 12px;
+  text-align: left;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: default;
+  transition: border-color 400ms var(--ease), background-color 400ms var(--ease), color 400ms var(--ease), opacity 400ms var(--ease);
+}
+
+.cg-chip:hover,
+.cg-chip.is-active {
+  border-color: var(--gold-accent);
+  background: var(--btn-outline-hover);
+  color: var(--text-primary);
+}
+
+.cg-chip.is-blocked {
+  opacity: 0.4;
+}
+
+.is-halted .cg-chip.is-active {
+  border-color: var(--status-breach);
+  background: var(--status-breach-bg);
+}
+
+.cg-caption-in {
+  animation: hmCaption 480ms var(--ease) both;
+}
+
+@keyframes cgRoute {
+  from {
+    transform: translateX(390px);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(540px);
+    opacity: 0.2;
+  }
+}
+
 /* ------------------------------ reduced motion: all off, final state ------------------------------ */
 @media (prefers-reduced-motion: reduce) {
   html {

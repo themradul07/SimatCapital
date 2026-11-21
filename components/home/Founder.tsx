@@ -19,7 +19,8 @@ export default function Founder({ condensed = false }: { condensed?: boolean }) 
             fill
             sizes="(min-width: 768px) 340px, 100vw"
             className="object-cover"
-            style={{ filter: "saturate(0.8)" }}
+            style={{ filter: "saturate(0.85)" }}
+            priority={!condensed}
           />
         ) : (
           <div className="absolute inset-0 flex items-end p-5" aria-hidden>
