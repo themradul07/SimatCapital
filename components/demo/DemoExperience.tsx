@@ -18,7 +18,6 @@ import { Governance, Measure, NextStep, Risks } from "./chapters/Trust";
  * then answers it with something the visitor can try. Guided tour = the brief's auto-play.
  */
 
-const TOUR_MS = 14000;
 const IDS = CHAPTERS.map((c) => c.id);
 
 /* ------------------------------ opening notice (session) ------------------------------ */
@@ -105,11 +104,41 @@ const LABEL_AT = [
   "right-full top-1/2 -translate-y-1/2 pr-1.5 sm:pr-2.5",
 ];
 
-function Intro({ onBegin }: { onBegin: (tour: boolean) => void }) {
+function Intro({ onBegin, ready = true }: { onBegin: () => void; ready?: boolean }) {
   const [split, setSplit] = useState(false);
-  const begin = (tour: boolean) => {
+
+  // Automatically break the mark: min(scroll to begin, 2 sec)
+  useEffect(() => {
+    if (!ready || split) return;
+
+    let triggered = false;
+    const trigger = () => {
+      if (triggered) return;
+      triggered = true;
+      setSplit(true);
+    };
+
+    const timer = window.setTimeout(trigger, 2000);
+
+    const onScrollOrAction = () => {
+      trigger();
+    };
+
+    window.addEventListener("scroll", onScrollOrAction, { passive: true });
+    window.addEventListener("wheel", onScrollOrAction, { passive: true });
+    window.addEventListener("touchmove", onScrollOrAction, { passive: true });
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("scroll", onScrollOrAction);
+      window.removeEventListener("wheel", onScrollOrAction);
+      window.removeEventListener("touchmove", onScrollOrAction);
+    };
+  }, [ready, split]);
+
+  const begin = () => {
     setSplit(true);
-    onBegin(tour);
+    onBegin();
   };
 
   return (
@@ -145,7 +174,7 @@ function Intro({ onBegin }: { onBegin: (tour: boolean) => void }) {
             </span>
           </button>
           <span className="mt-16 text-[12px] font-semibold uppercase tracking-[0.2em] text-[var(--text-secondary)]">
-            {split ? "Tap to bring it together" : "Tap to begin"}
+            {split ? "Tap to bring it together" : "Scroll to begin"}
           </span>
         </div>
 
@@ -160,14 +189,11 @@ function Intro({ onBegin }: { onBegin: (tour: boolean) => void }) {
             <Words text="The pursuit of Shariah-compliant alpha." start={420} step={60} />
           </p>
           <div className="dm-x mt-10 flex flex-wrap justify-center gap-4 lg:justify-start" style={{ ["--d" as string]: "900ms" }}>
-            <button className="btn btn-gold" onClick={() => begin(true)}>
+            <button className="btn btn-gold" onClick={begin}>
               <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
                 <path d="M2 1 L11 6 L2 11 Z" fill="currentColor" />
               </svg>
-              Take the guided tour
-            </button>
-            <button className="btn btn-outline" onClick={() => begin(false)}>
-              Explore at your own pace
+              Explore the walkthrough
             </button>
           </div>
           <p className="small dm-x mt-6" style={{ ["--d" as string]: "1050ms" }}>
@@ -283,110 +309,6 @@ function ProgressBar() {
   );
 }
 
-function Dock({
-  active,
-  playing,
-  setPlaying,
-  goTo,
-  hidden,
-}: {
-  active: number;
-  playing: boolean;
-  setPlaying: (p: boolean) => void;
-  goTo: (i: number) => void;
-  hidden: boolean;
-}) {
-  const [elapsed, setElapsed] = useState(0);
-  const dock = useRef<HTMLDivElement>(null);
-  const last = IDS.length - 1;
-
-  // Advance the tour. Elapsed is reset by the chapter change, not here.
-  useEffect(() => {
-    if (!playing) return;
-    const started = performance.now() - elapsed;
-    const id = window.setInterval(() => {
-      const t = performance.now() - started;
-      if (t >= TOUR_MS) {
-        window.clearInterval(id);
-        setElapsed(0);
-        if (active >= last) setPlaying(false);
-        else goTo(active + 1);
-      } else setElapsed(t);
-    }, 100);
-    return () => window.clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `elapsed` is read once to resume from where the tour paused
-  }, [playing, active, last, goTo, setPlaying]);
-
-  // Any hands-on interaction pauses the tour, so the visitor is never pulled away mid-thought.
-  useEffect(() => {
-    if (!playing) return;
-    const pause = (e: Event) => {
-      if (dock.current?.contains(e.target as Node)) return;
-      setPlaying(false);
-    };
-    window.addEventListener("wheel", pause, { passive: true });
-    window.addEventListener("touchstart", pause, { passive: true });
-    window.addEventListener("pointerdown", pause);
-    return () => {
-      window.removeEventListener("wheel", pause);
-      window.removeEventListener("touchstart", pause);
-      window.removeEventListener("pointerdown", pause);
-    };
-  }, [playing, setPlaying]);
-
-  const cur = CHAPTERS[Math.max(0, active)];
-  const R = 17;
-  const circ = 2 * Math.PI * R;
-
-  return (
-    <div
-      ref={dock}
-      className="fixed bottom-[84px] right-3 z-30 flex sm:bottom-[56px] sm:right-6"
-      style={{ opacity: hidden ? 0 : 1, transform: hidden ? "translateY(12px)" : "none", pointerEvents: hidden ? "none" : "auto", transition: "opacity 500ms var(--ease), transform 500ms var(--ease)" }}
-    >
-      <div className="flex items-center gap-1 rounded-full border border-[var(--line)] bg-[rgba(16,14,11,0.92)] p-1.5 pl-4 shadow-[0_18px_50px_rgba(0,0,0,0.5)] backdrop-blur-md">
-        <span className="mr-2 hidden min-w-0 max-w-[200px] truncate text-[13px] sm:block" aria-live="polite">
-          <span className="serif mr-1.5 text-[15px]" style={{ color: cur.accent }}>
-            {cur.n}
-          </span>
-          {cur.short}
-        </span>
-        <button aria-label="Previous chapter" onClick={() => goTo(Math.max(0, active - 1))} disabled={active <= 0} className="grid h-10 w-10 place-items-center rounded-full text-[var(--text-primary)] transition-colors hover:bg-white/[0.06] disabled:opacity-30">
-          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
-            <path d="M9 2 L4 7 L9 12" fill="none" stroke="currentColor" strokeWidth="1.6" />
-          </svg>
-        </button>
-        <button
-          aria-label={playing ? "Pause the guided tour" : "Play the guided tour"}
-          aria-pressed={playing}
-          onClick={() => setPlaying(!playing)}
-          className="relative grid h-11 w-11 place-items-center rounded-full bg-[var(--gold-accent)] text-[#0a0907] transition-colors hover:bg-[var(--btn-gold-hover)]"
-        >
-          <svg className="absolute inset-0 -rotate-90" viewBox="0 0 44 44" aria-hidden>
-            <circle cx="22" cy="22" r={R} fill="none" stroke="rgba(10,9,7,0.25)" strokeWidth="2" />
-            <circle cx="22" cy="22" r={R} fill="none" stroke="#0a0907" strokeWidth="2" strokeDasharray={circ} strokeDashoffset={circ * (1 - (playing ? elapsed / TOUR_MS : 0))} />
-          </svg>
-          {playing ? (
-            <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
-              <rect x="2" y="1" width="3" height="10" fill="currentColor" />
-              <rect x="7" y="1" width="3" height="10" fill="currentColor" />
-            </svg>
-          ) : (
-            <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
-              <path d="M3 1 L11 6 L3 11 Z" fill="currentColor" />
-            </svg>
-          )}
-        </button>
-        <button aria-label="Next chapter" onClick={() => goTo(Math.min(last, active + 1))} disabled={active >= last} className="grid h-10 w-10 place-items-center rounded-full text-[var(--text-primary)] transition-colors hover:bg-white/[0.06] disabled:opacity-30">
-          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
-            <path d="M5 2 L10 7 L5 12" fill="none" stroke="currentColor" strokeWidth="1.6" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  );
-}
-
 function Disclaimer({ hidden }: { hidden: boolean }) {
   return (
     <div
@@ -404,7 +326,6 @@ export function DemoExperience() {
   const accepted = useNoticeAccepted();
   const reduced = useReducedMotion();
   const [active, setActive] = useState(-1);
-  const [playing, setPlaying] = useState(false);
   const [footerInView, setFooterInView] = useState(false);
 
   // Lock page scroll behind the notice.
@@ -464,11 +385,9 @@ export function DemoExperience() {
       if (e.altKey || e.ctrlKey || e.metaKey || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName)) return;
       if (e.key === "ArrowRight") {
         e.preventDefault();
-        setPlaying(false);
         goTo(active + 1);
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
-        setPlaying(false);
         goTo(active - 1);
       }
     };
@@ -476,10 +395,9 @@ export function DemoExperience() {
     return () => window.removeEventListener("keydown", onKey);
   }, [accepted, active, goTo]);
 
-  const begin = (tour: boolean) => {
+  const begin = () => {
     window.setTimeout(() => {
       goTo(0);
-      if (tour) setPlaying(true);
     }, reduced ? 0 : 900);
   };
 
@@ -489,7 +407,7 @@ export function DemoExperience() {
       <ProgressBar />
       <Rail active={active} goTo={goTo} />
 
-      <Intro onBegin={begin} />
+      <Intro onBegin={begin} ready={accepted} />
       <ChapterIndex goTo={goTo} />
 
       <Beliefs />
@@ -509,7 +427,6 @@ export function DemoExperience() {
       <Measure />
       <NextStep />
 
-      <Dock active={active} playing={playing} setPlaying={setPlaying} goTo={goTo} hidden={active < 0 || footerInView} />
       <Disclaimer hidden={footerInView} />
     </div>
   );

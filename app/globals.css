@@ -1079,6 +1079,25 @@
   }
 }
 
+/* ------------------------------ investment loop (InvestmentLoop.tsx) ------------------------------ */
+.loop-node {
+  transition: transform 450ms var(--ease);
+}
+
+.loop-ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hmRipple 1100ms var(--ease) forwards;
+}
+
+.loop-num {
+  animation: hmCaption 420ms var(--ease) both;
+}
+
+.loop-row:hover {
+  background: rgba(214, 180, 106, 0.05) !important;
+}
+
 /* ------------------------------ reduced motion: all off, final state ------------------------------ */
 @media (prefers-reduced-motion: reduce) {
   html {
