@@ -112,12 +112,14 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 .aurora { position: absolute; width: 900px; height: 900px; border-radius: 50%; opacity: .2; pointer-events: none; will-change: transform; }
 @keyframes liveDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
 .slide [style*="border-radius: 14px"], .slide [style*="border-radius: 16px"], .slide [style*="border-radius: 18px"] { transition: border-color .5s ease, background .5s ease, box-shadow .5s ease, transform .5s ease; }
-@media (max-height: 820px) { .slide { top: 80px !important; } .rail { display: none !important; } }
+
 @media (prefers-reduced-motion: reduce) { .slide, .slide h1, .aurora, .fu, .fr { animation: none !important; } .slide h1 { color: #F7F3E8; background: none; } }
+.lscroll { scrollbar-width: thin; scrollbar-color: #B8892B transparent; padding-bottom: 12px; }
+.lscroll::-webkit-scrollbar-track { background: transparent; }
 </style>
 </helmet>
 
-<div style="width: 100vw; min-width: 1280px; height: 100vh; min-height: 720px; box-sizing: border-box; background: #0A0A0A; color: #F7F3E8; font-family: 'Inter', system-ui, sans-serif; position: relative; overflow: hidden;">
+<div id="stage" style="width: 100vw; height: 100vh; box-sizing: border-box; background: #0A0A0A; color: #F7F3E8; font-family: 'Inter', system-ui, sans-serif; position: relative; overflow: hidden;">
 
   <!-- Rotating Concentric Orbit Rings Background -->
   <div class="ring" aria-hidden="true" style="position: absolute; left: 50%; top: 46%; width: 1080px; height: 1080px; border: 1px dashed #4A3F22; border-radius: 50%; animation: ringSpin 400s linear infinite; pointer-events: none; opacity: 0.55;"></div>
@@ -220,15 +222,12 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
         </svg>
         <div style="display: flex; align-items: baseline; gap: 10px;">
           <span style="font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; letter-spacing: 0.08em; color: #F7F3E8;">Simat Capital</span>
-          <span style="font-size: 9px; letter-spacing: 0.16em; font-weight: 700; padding: 2px 7px; border-radius: 4px; border: 1px solid {{ brandTagColor }}; color: {{ brandTagColor }};">{{ brandTag }}</span>
         </div>
       </div>
 
       <!-- Middle: Deck switcher pills -->
       <div style="display: flex; align-items: center; gap: 8px;">
         <button onClick="{{ setAll }}" style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid {{ deckAllBd }}; background: {{ deckAllBg }}; color: {{ deckAllFg }}; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all .25s;">All (38)</button>
-        <button onClick="{{ setInv }}" style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid {{ deckInvBd }}; background: {{ deckInvBg }}; color: {{ deckInvFg }}; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all .25s;">Fund Strategy (21)</button>
-        <button onClick="{{ setOps }}" style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid {{ deckOpsBd }}; background: {{ deckOpsBg }}; color: {{ deckOpsFg }}; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all .25s;">Shariah Ops (17)</button>
         <button onClick="{{ setLoop }}" style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid {{ deckLoopBd }}; background: {{ deckLoopBg }}; color: {{ deckLoopFg }}; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 6px;">
           <span>Interactive Engine</span>
           <span style="color: #E8C97A;">↺</span>
@@ -253,27 +252,27 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 
       <!-- Milestone Markers along the horizontal path -->
       <div style="position: relative; width: 100%; display: flex; justify-content: space-between; align-items: center;">
-        <button onClick="{{ jumpBeliefs }}" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2;">
+        <button onClick="{{ jumpBeliefs }}" style="background: #0E0E0E; border: none; padding: 2px 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2; position: relative;">
           <span style="width: 8px; height: 8px; border-radius: 4px; background: {{ mBeliefsBg }}; border: 1px solid #C9A84C; transition: all .3s;"></span>
           <span style="font-size: 11px; letter-spacing: 0.12em; color: {{ mBeliefsFg }}; font-weight: 600; text-transform: uppercase;">Beliefs</span>
         </button>
-        <button onClick="{{ jumpProblems }}" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2;">
+        <button onClick="{{ jumpProblems }}" style="background: #0E0E0E; border: none; padding: 2px 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2; position: relative;">
           <span style="width: 8px; height: 8px; border-radius: 4px; background: {{ mProblemsBg }}; border: 1px solid #C9A84C; transition: all .3s;"></span>
           <span style="font-size: 11px; letter-spacing: 0.12em; color: {{ mProblemsFg }}; font-weight: 600; text-transform: uppercase;">Problems</span>
         </button>
-        <button onClick="{{ jumpAlpha }}" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2;">
+        <button onClick="{{ jumpAlpha }}" style="background: #0E0E0E; border: none; padding: 2px 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2; position: relative;">
           <span style="width: 8px; height: 8px; border-radius: 4px; background: {{ mAlphaBg }}; border: 1px solid #C9A84C; transition: all .3s;"></span>
           <span style="font-size: 11px; letter-spacing: 0.12em; color: {{ mAlphaFg }}; font-weight: 600; text-transform: uppercase;">Alpha</span>
         </button>
-        <button onClick="{{ jumpEngine }}" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2;">
+        <button onClick="{{ jumpEngine }}" style="background: #0E0E0E; border: none; padding: 2px 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2; position: relative;">
           <span style="width: 8px; height: 8px; border-radius: 4px; background: {{ mEngineBg }}; border: 1px solid #C9A84C; transition: all .3s;"></span>
           <span style="font-size: 11px; letter-spacing: 0.12em; color: {{ mEngineFg }}; font-weight: 600; text-transform: uppercase;">Engine</span>
         </button>
-        <button onClick="{{ jumpOps }}" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2;">
+        <button onClick="{{ jumpOps }}" style="background: #0E0E0E; border: none; padding: 2px 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2; position: relative;">
           <span style="width: 8px; height: 8px; border-radius: 4px; background: {{ mOpsBg }}; border: 1px solid #6EA8FF; transition: all .3s;"></span>
           <span style="font-size: 11px; letter-spacing: 0.12em; color: {{ mOpsFg }}; font-weight: 600; text-transform: uppercase;">Ops Platform</span>
         </button>
-        <button onClick="{{ jumpProof }}" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2;">
+        <button onClick="{{ jumpProof }}" style="background: #0E0E0E; border: none; padding: 2px 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; z-index: 2; position: relative;">
           <span style="width: 8px; height: 8px; border-radius: 4px; background: {{ mProofBg }}; border: 1px solid #C9A84C; transition: all .3s;"></span>
           <span style="font-size: 11px; letter-spacing: 0.12em; color: {{ mProofFg }}; font-weight: 600; text-transform: uppercase;">Governance &amp; Proof</span>
         </button>
@@ -284,7 +283,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
   <!-- ALL 38 SLIDES (Widescreen Horizontal Layout) -->
   <sc-if value="{{ isSlideDeck }}" hint-placeholder-val="{{ false }}">
     <sc-if value="{{ inv_s1 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 26px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 26px; justify-content: center">
       <div class="fu" style="display: flex; flex-direction: column; gap: 10px">
         <span style="font-size: 12px; letter-spacing: 0.22em; color: #C9A84C; font-weight: 600">OUR FOUR BELIEFS</span>
         <h1 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 48px; line-height: 1.08">Four principles hold the whole mark together.</h1>
@@ -313,7 +312,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s2 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px">
         <div style="display: flex; flex-direction: column; gap: 8px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #C9A84C; font-weight: 600">THE PROBLEMS WE SOLVE</span>
@@ -352,7 +351,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s15 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 16px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 16px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #B48CFF; font-weight: 600">WHY SHARIAH IS HARD</span>
@@ -393,7 +392,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s3 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; gap: 56px; align-items: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; gap: 56px; align-items: center">
       <div style="flex: 0 0 420px; display: flex; flex-direction: column; gap: 16px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #C9A84C; font-weight: 600">TRACK RECORD · FLAGSHIP FUND</span>
         <span class="fu d1" style="font-size: 15px; color: #B9AF9C">{{ perLabel }}</span>
@@ -431,7 +430,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s16 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 12px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 12px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #FF8A73; font-weight: 600">THE COMPETITION · WHAT A SHARIAH ETF CAN'T DO</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 38px; line-height: 1.05">An index fund can't protect you from its own design.</h1>
@@ -478,7 +477,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s23 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #3CCB8F; font-weight: 600">ACTIVE MANAGEMENT · OUR ALPHA PLAYBOOK</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.05">A Shariah ETF owns what is left after screening. We own what is best.</h1>
@@ -515,7 +514,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s8 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 16px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 16px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #E8CF83; font-weight: 600">THE SIMAT ENGINE</span>
@@ -569,7 +568,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s17 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; gap: 32px; align-items: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; gap: 32px; align-items: center">
       <div class="rise" style="flex: 0 0 480px; height: 480px; position: relative">
         <svg width="480" height="480" viewBox="0 0 480 480" role="img" aria-label="Illustrative globe of listed companies">
           <circle cx="240" cy="240" r="226" fill="rgba(110,168,255,0.05)" stroke="rgba(110,168,255,0.35)" stroke-width="1"></circle>
@@ -612,7 +611,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s19 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #E8CF83; font-weight: 600">BUILDING THE PORTFOLIO</span>
@@ -660,7 +659,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s4 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #C9A84C; font-weight: 600">THE NEXT 12 MONTHS</span>
@@ -726,7 +725,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s5 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 20px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 20px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #FF8A73; font-weight: 600">THE DOWNSIDE</span>
@@ -770,7 +769,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s18 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #FF5A4E; font-weight: 600">WHAT "11% A YEAR" FEELS LIKE</span>
@@ -820,7 +819,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s9 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; gap: 48px; align-items: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; gap: 48px; align-items: center">
       <div style="flex: 1 1 0; display: flex; flex-direction: column; gap: 18px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #C9A84C; font-weight: 600">SHARIAH IN ACTION · A REAL CASE FROM Q3 2026</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.1">A spin-off pushed Honeywell over the line. We caught it.</h1>
@@ -854,7 +853,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s10 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 22px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 22px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end">
         <div style="display: flex; flex-direction: column; gap: 8px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #C9A84C; font-weight: 600">WHAT YOU RECEIVE</span>
@@ -894,7 +893,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s11 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; gap: 48px; align-items: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; gap: 48px; align-items: center">
       <div class="fl" style="flex: 0 0 440px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); padding: 34px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
         <div style="display: flex; gap: 18px; align-items: center">
           <div role="img" aria-label="Founder portrait placeholder" style="width: 104px; height: 104px; border-radius: 52px; border: 1px solid #C9A84C; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #8F8676">Portrait</div>
@@ -927,7 +926,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s12 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 22px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 22px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 8px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #C9A84C; font-weight: 600">THE RISKS, STATED PLAINLY</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 42px; line-height: 1.08">Every risk named, with an answer for each.</h1>
@@ -945,7 +944,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s13 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; gap: 48px; align-items: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; gap: 48px; align-items: center">
       <div style="flex: 0 0 380px; display: flex; flex-direction: column; gap: 18px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #C9A84C; font-weight: 600">HOW TO INVEST</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 42px; line-height: 1.1">A partnership, not a fee schedule.</h1>
@@ -979,7 +978,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s22 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #3CCB8F; font-weight: 600">HOW OUR FEES WORK · ILLUSTRATIVE £10,000</span>
@@ -1059,7 +1058,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s20 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #E8CF83; font-weight: 600">FACTSHEET · 30 SEPTEMBER 2026</span>
@@ -1100,7 +1099,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s21 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 16px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 16px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #6EA8FF; font-weight: 600">HOW WE MEASURE</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 38px; line-height: 1.05">Every number in this demo, and where it comes from.</h1>
@@ -1117,7 +1116,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ inv_s14 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center">
       <div class="rise" role="img" aria-label="Simat Capital" style="width: 340px; height: 138px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px"><span style="font-family: 'Cormorant Garamond', serif; font-size: 72px; line-height: 1; font-weight: 600; letter-spacing: 0.16em; padding-left: 0.16em; color: #E2C778">SIMAT</span><span style="font-family: 'Cormorant Garamond', serif; font-size: 22px; line-height: 1; font-weight: 600; letter-spacing: 0.52em; padding-left: 0.52em; color: #C9A84C">CAPITAL</span></div>
       <h1 class="fu d2" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 36px; line-height: 1.15; max-width: 860px">Shariah-compliant investing, with the judgement of an active manager and the discipline of a system.</h1>
       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 900px; text-align: left">
@@ -1141,7 +1140,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s20 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #E8CF83; font-weight: 600">WHY THIS NEEDS TO EXIST</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.05">Screening tells you what is halal. The hard part is everything after.</h1>
@@ -1179,7 +1178,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s12 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #E8CF83; font-weight: 600">MEET THE BUYER</span>
@@ -1214,7 +1213,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s1 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #FF8A73; font-weight: 600">THE PROBLEM</span>
@@ -1262,7 +1261,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s13 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #6EA8FF; font-weight: 600">WHY NOW</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.05">The market is growing faster than the back office behind it.</h1>
@@ -1281,7 +1280,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s2 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #E8CF83; font-weight: 600">WHAT IT IS</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 42px; line-height: 1.05">Three modules. One Shariah back office.</h1>
@@ -1308,7 +1307,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s11 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #E8CF83; font-weight: 600">THE BUILD PLAN · ESTIMATED DATES, TO BE AGREED</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.05">Proposed: engine by mid-December, clients from mid-January.</h1>
@@ -1344,7 +1343,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s3 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="align-self: flex-start; font-size: 10px; letter-spacing: 0.16em; font-weight: 700; padding: 4px 10px; border-radius: 10px; background: #E8CF83; color: #06080C">PHASE 2 · CLIENT PORTAL · EST. MID-JAN 2027</span>
@@ -1405,7 +1404,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s4 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="align-self: flex-start; font-size: 10px; letter-spacing: 0.16em; font-weight: 700; padding: 4px 10px; border-radius: 10px; background: #E8CF83; color: #06080C">ENGINE: PHASE 1 · CLIENT VIEW: PHASE 2</span>
@@ -1468,7 +1467,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s5 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px">
         <div style="display: flex; flex-direction: column; gap: 6px">
           <span class="fu" style="align-self: flex-start; font-size: 10px; letter-spacing: 0.16em; font-weight: 700; padding: 4px 10px; border-radius: 10px; background: #6EA8FF; color: #06080C">ENGINE: PHASE 1 · CLIENT VIEW: PHASE 2</span>
@@ -1529,7 +1528,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s6 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="align-self: flex-start; font-size: 10px; letter-spacing: 0.16em; font-weight: 700; padding: 4px 10px; border-radius: 10px; background: #6EA8FF; color: #06080C">PHASE 2 · SCHOLAR GOVERNANCE PORTAL</span>
           <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #B48CFF; font-weight: 600">MODULE 3 · SCHOLAR OVERRIDE AND AUDIT TRAIL PORTAL</span>
@@ -1578,7 +1577,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s14 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; gap: 22px; align-items: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; gap: 22px; align-items: center">
       <div style="flex: 1 1 0; display: flex; flex-direction: column; gap: 12px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #B48CFF; font-weight: 600">THE AUDIT PACK · WHAT YOUR SHARIAH BOARD RECEIVES</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 36px; line-height: 1.08">Five pages. Everything the board must see, nothing it must chase.</h1>
@@ -1647,7 +1646,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s7 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #6EA8FF; font-weight: 600">HOW IT PLUGS IN</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.05">No new platform to learn. It sits beside the one you have.</h1>
@@ -1673,7 +1672,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s15 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #3CCB8F; font-weight: 600">WHY TRUST US</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.05">Built to pass a Shariah audit, and a security review.</h1>
@@ -1695,7 +1694,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s8 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #3CCB8F; font-weight: 600">WHO BUYS AND WHY</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.05">Four buyers with the same spreadsheet problem.</h1>
@@ -1719,7 +1718,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s9 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 18px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #E8CF83; font-weight: 600">ROUTE TO MARKET</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.05">From engine to fully connected in four steps. Dates are estimates.</h1>
@@ -1744,7 +1743,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s16 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 16px; justify-content: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 16px; justify-content: center">
       <div style="display: flex; flex-direction: column; gap: 6px">
         <span class="fu" style="font-size: 12px; letter-spacing: 0.22em; color: #E8CF83; font-weight: 600">THE PILOT OFFER</span>
         <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 40px; line-height: 1.05">60 days. Your own portfolio. Judge us on your own numbers.</h1>
@@ -1776,7 +1775,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
     </div>
   </sc-if>
   <sc-if value="{{ ops_s10 }}" hint-placeholder-val="{{ false }}">
-    <div class="slide" style="position: absolute; top: 112px; bottom: 88px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 26px; justify-content: center; align-items: center; text-align: center">
+    <div class="slide" style="position: absolute; top: 112px; bottom: 70px; left: 56px; right: 56px; display: flex; flex-direction: column; gap: 26px; justify-content: center; align-items: center; text-align: center">
       <div class="rise"><svg width="110" height="110" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="ops_sg4" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="100"><stop offset="0" stop-color="#F0D98E"></stop><stop offset="1" stop-color="#C49A3C"></stop></linearGradient></defs><g transform="translate(50 50) scale(0.86 1) rotate(45) scale(0.78) translate(-49 -49.5)" fill="none" stroke-linejoin="miter" stroke-miterlimit="10" stroke-linecap="butt"><path d="M65 11 H10 V88 H88 V13 H75 M10 68 H75 V49 H28 V30 H80" stroke="url(#ops_sg4)" stroke-width="9"></path></g></svg></div>
       <h1 class="fu d1" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 52px; line-height: 1.08; max-width: 900px">Send us 20 holdings. See your Shariah position before the call ends.</h1>
       <div class="fu d2" style="display: flex; gap: 14px">
@@ -1890,7 +1889,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 <button onClick="{{ finishIntro }}" style="min-height:44px;padding:0 20px;background:transparent;border:1.5px solid #141414;border-radius:4px;color:#141414;font-weight:600;font-size:14px;{{skipStyle}}">Skip to the loop</button>
 </div>
 
-<div style="flex:1;min-height:0;overflow:hidden">
+<div class="lscroll" style="flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain">
 <div class="mv" style="{{trackStyle}}">
 
 <div style="flex:0 0 20%;box-sizing:border-box;padding:8px 64px 0;color:#141414;display:flex;flex-direction:column;justify-content:center">
@@ -2086,7 +2085,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 <button onClick="{{ backToLoop }}" style="min-height:44px;padding:0 20px;background:transparent;border:1.5px solid #141414;border-radius:4px;color:#141414;font-weight:600;font-size:14px">Back to the loop</button>
 </div>
 
-<div style="flex:1;min-height:0;padding:8px 64px 0;color:#141414">
+<div class="lscroll" style="flex:1;min-height:0;padding:8px 64px 0;color:#141414;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain">
 <div class="mv" style="{{p.r0}}">
 <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:52px;line-height:1.05">Finding the best ideas.</h2>
 </div>
@@ -2182,7 +2181,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 <div style="display:flex;justify-content:space-between;gap:16px;font-size:13px;color:#4A463C;margin-top:12px"><span>Fictional Flagship portfolio · £1m · simulated</span><span>{{cn.holdTxt}} · Cash {{cn.cashTxt}}</span></div>
 </div>
 
-<div style="flex:1;min-height:0;overflow:hidden;margin-top:20px">
+<div class="lscroll" style="flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;margin-top:20px">
 <div class="mv" style="{{cn.track}}">
 
 <div style="flex:0 0 33.3333%;box-sizing:border-box;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px;align-items:start">
@@ -2298,7 +2297,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1.08">{{ap.title}}</h2>
 </div>
 
-<div style="flex:1;min-height:0;overflow:hidden;margin-top:14px">
+<div class="lscroll" style="flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;margin-top:14px">
 <div class="mv" style="{{ap.track}}">
 
 <div style="flex:0 0 33.3333%;box-sizing:border-box;display:flex;flex-direction:column;gap:14px">
@@ -2488,7 +2487,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1.08">{{mon.title}}</h2>
 </div>
 
-<div style="flex:1;min-height:0;overflow:hidden;margin-top:14px">
+<div class="lscroll" style="flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;margin-top:14px">
 <div class="mv" style="{{mon.track}}">
 
 <div style="flex:0 0 33.3333%;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start">
@@ -2653,7 +2652,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 <div class="mv" style="{{rs.titleStyle}}">
 <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1.08">{{rs.title}}</h2>
 </div>
-<div style="flex:1;min-height:0;overflow:hidden;margin-top:14px">
+<div class="lscroll" style="flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;margin-top:14px">
 <div class="mv" style="{{rs.track}}">
 
 <div style="flex:0 0 33.3333%;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:start">
@@ -2783,7 +2782,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 <div class="mv" style="{{rp.titleStyle}}">
 <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1.08">{{rp.title}}</h2>
 </div>
-<div style="flex:1;min-height:0;overflow:hidden;margin-top:14px">
+<div class="lscroll" style="flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;margin-top:14px">
 <div class="mv" style="{{rp.track}}">
 
 <div style="flex:0 0 33.3333%;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:28px;align-items:start">
@@ -2894,7 +2893,7 @@ input[type=range] { width: 100%; height: 32px; margin: 0; cursor: pointer; }
 
   <!-- PERSISTENT BOTTOM CONTROLS & FOOTER (When inside demo and in slide mode) -->
   <sc-if value="{{ isSlideDeck }}" hint-placeholder-val="{{ false }}">
-    <footer style="position: absolute; bottom: 0; left: 0; right: 0; height: 84px; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 0 48px; box-sizing: border-box; z-index: 50; border-top: 1px solid #2E2814; background: rgba(10,10,10,0.92); backdrop-filter: blur(12px);">
+    <footer style="position: absolute; bottom: 0; left: 0; right: 0; height: 66px; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 0 48px; box-sizing: border-box; z-index: 50; border-top: 1px solid #2E2814; background: rgba(10,10,10,0.92); backdrop-filter: blur(12px);">
       <div aria-hidden="true" style="position: absolute; left: 0; top: -1px; height: 2px; width: {{ autoPct }}%; background: linear-gradient(90deg, #C9A84C, #F0D98E); box-shadow: 0 0 12px rgba(232,201,122,0.7); transition: {{ autoTrans }};"></div>
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div style="display: flex; gap: 10px; align-items: center;">
@@ -5312,6 +5311,28 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    // Scale the whole stage so every slide fits small or zoomed windows.
+    this._fit = () => {
+      const stage = document.getElementById('stage');
+      const el = stage && stage.parentElement;
+      if (!el) return;
+      const W = window.innerWidth, H = window.innerHeight;
+      const s = Math.min(1, W / 1360, H / 800);
+      stage.style.width = '100%';
+      stage.style.height = '100%';
+      el.style.position = 'relative';
+      el.style.overflow = 'hidden';
+      el.style.transformOrigin = '0 0';
+      el.style.transform = s < 1 ? 'scale(' + s + ')' : '';
+      el.style.width = (W / s) + 'px';
+      el.style.height = (H / s) + 'px';
+      document.body.style.overflow = 'hidden';
+    };
+    if (typeof window !== 'undefined') {
+      this._fit();
+      window.addEventListener('resize', this._fit);
+      requestAnimationFrame(this._fit);
+    }
     this._keydown = (e) => {
       if (e.target && ['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
       if (e.key === 'ArrowRight' || e.key === 'PageDown') {
@@ -5346,6 +5367,7 @@ class Component extends DCLogic {
     this.clear();
     if (typeof window !== 'undefined' && this._keydown) {
       window.removeEventListener('keydown', this._keydown);
+      if (this._fit) window.removeEventListener('resize', this._fit);
     }
   }
 
