@@ -848,6 +848,187 @@
   }
 }
 
+/* ------------------------------ animated illustrations library ------------------------------ */
+@keyframes illSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes illSpinRev {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes illOscillate {
+  0%, 100% { transform: rotate(-2.4deg); }
+  50% { transform: rotate(2.4deg); }
+}
+
+@keyframes illDishLeft {
+  0%, 100% { transform: translateY(5px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes illDishRight {
+  0%, 100% { transform: translateY(-5px); }
+  50% { transform: translateY(5px); }
+}
+
+@keyframes illTrace {
+  to { stroke-dashoffset: -320; }
+}
+
+@keyframes illSweep {
+  0%, 100% { transform: rotate(-18deg); }
+  50% { transform: rotate(18deg); }
+}
+
+@keyframes illScan {
+  0% { transform: translateY(180px); opacity: 0; }
+  20% { opacity: 0.9; }
+  80% { opacity: 0.9; }
+  100% { transform: translateY(-130px); opacity: 0; }
+}
+
+@keyframes illTwinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+@keyframes illWave {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-160px); }
+}
+
+@keyframes illSlide {
+  0%, 100% { transform: translateX(-60px); }
+  50% { transform: translateX(60px); }
+}
+
+@keyframes illPulseGlow {
+  0%, 100% { opacity: 0.22; transform: scale(0.96); }
+  50% { opacity: 0.52; transform: scale(1.06); }
+}
+
+.ill-spin-slow {
+  transform-box: view-box;
+  transform-origin: 250px 250px;
+  animation: illSpin 75s linear infinite;
+}
+
+.ill-spin-rev-slow {
+  transform-box: view-box;
+  transform-origin: 250px 250px;
+  animation: illSpinRev 95s linear infinite;
+}
+
+.ill-oscillate {
+  transform-box: view-box;
+  transform-origin: 250px 168px;
+  animation: illOscillate 7s ease-in-out infinite;
+}
+
+.ill-dish-l {
+  animation: illDishLeft 7s ease-in-out infinite;
+}
+
+.ill-dish-r {
+  animation: illDishRight 7s ease-in-out infinite;
+}
+
+.ill-sweep-arm {
+  transform-box: view-box;
+  transform-origin: 250px 140px;
+  animation: illSweep 6s ease-in-out infinite;
+}
+
+.ill-scan-bar {
+  animation: illScan 4.5s ease-in-out infinite;
+}
+
+.ill-twinkle-a {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: illTwinkle 3.2s ease-in-out infinite;
+}
+
+.ill-twinkle-b {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: illTwinkle 4.5s ease-in-out infinite 1.2s;
+}
+
+.ill-twinkle-c {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: illTwinkle 2.8s ease-in-out infinite 0.6s;
+}
+
+.ill-wave-flow {
+  animation: illWave 8s linear infinite;
+}
+
+.ill-caliper-slide {
+  animation: illSlide 6s ease-in-out infinite;
+}
+
+.ill-trace-flow {
+  stroke-dasharray: 60 200;
+  animation: illTrace 10s linear infinite;
+}
+
+/* ------------------------------ process & proof set (ProcessIllustrations.tsx) ------------------------------ */
+@keyframes illTravel {
+  0% { transform: translate(0, 0); opacity: 0; }
+  8% { opacity: 1; }
+  82% { transform: translate(var(--dx, 0px), var(--dy, 0px)); opacity: 1; }
+  100% { transform: translate(var(--dx, 0px), var(--dy, 0px)); opacity: 0; }
+}
+@keyframes illSeq {
+  0%, 100% { opacity: 0.25; }
+  6%, 16% { opacity: 1; }
+  28% { opacity: 0.25; }
+}
+@keyframes illDraw {
+  0% { stroke-dashoffset: var(--len); }
+  65%, 100% { stroke-dashoffset: 0; }
+}
+@keyframes illUnwind {
+  0%, 10% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: var(--len); }
+}
+@keyframes illRipple {
+  0% { transform: scale(0.3); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 0; }
+}
+@keyframes illBlinkSoft {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.9; }
+}
+@keyframes illFlow {
+  to { stroke-dashoffset: -32; }
+}
+@keyframes illGrowY {
+  0% { transform: scaleY(0); }
+  20%, 90% { transform: scaleY(1); }
+  100% { transform: scaleY(0); }
+}
+@keyframes illBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.ill-travel { animation: illTravel 6s ease-in-out infinite; }
+.ill-seq { animation: illSeq var(--dur, 6s) ease-in-out infinite; }
+.ill-draw { stroke-dasharray: var(--len); animation: illDraw var(--dur, 8s) ease-in-out infinite; }
+.ill-unwind { stroke-dasharray: var(--len); animation: illUnwind 10s linear infinite; }
+.ill-ripple { transform-box: view-box; transform-origin: 250px 250px; animation: illRipple 5s ease-out infinite; }
+.ill-blink { animation: illBlinkSoft 2.4s ease-in-out infinite; }
+.ill-flow { stroke-dasharray: 6 10; animation: illFlow 1.6s linear infinite; }
+.ill-grow-y { transform-box: fill-box; transform-origin: bottom; animation: illGrowY 7s ease-in-out infinite; }
+.ill-bob { animation: illBob 3.6s ease-in-out infinite; }
+.ill-spin-day { transform-box: view-box; transform-origin: 250px 250px; animation: illSpin 48s linear infinite; }
+
 /* ------------------------------ control gate (ControlGate.tsx) ------------------------------ */
 .cg-glow {
   transform-box: fill-box;
