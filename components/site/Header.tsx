@@ -38,6 +38,9 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // If on the interactive demo page, suppress the site header to give the demo 100% viewport
+  if (pathname === "/demo") return null;
+
   return (
     <>
     <header

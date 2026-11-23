@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { DemoExperience } from "@/components/demo/DemoExperience";
 
 /**
- * Investor demo (brief, B). Private: shared only after a demo request, never linked publicly.
- * Kept out of search engines regardless of SITE_INDEXABLE.
+ * Interactive Demo — Unified horizontal platform combining Simat Capital (Fund Strategy)
+ * and Shariah Ops (Automated Compliance & Ops Platform) with live 6-step engine.
+ * Private: shared after a demo request, kept out of search engines.
  */
 export const metadata: Metadata = {
-  title: "Investor demo",
-  description: "A confidential, illustrative walkthrough of how Simat Capital researches, screens, decides and records.",
+  title: "Interactive Demo — Simat Capital & Shariah Ops",
+  description: "A confidential, interactive walkthrough of the unified Simat Capital & Shariah Ops platform.",
   robots: { index: false, follow: false },
 };
 
