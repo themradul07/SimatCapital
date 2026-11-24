@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, type AnimationEvent, type ReactNode } from "react";
-import { BG, C, Eyebrow, FUNNEL_DOTS, GOLD, Label, SUB, TXT, dia, f, polar, v } from "./primitives";
+import { useState, type AnimationEvent } from "react";
+import { BG, C, CARD_SHADOW, Depth, EASE, Eyebrow, FUNNEL_DOTS, GOLD, Label, SUB, TXT, Ticker, dia, f, polar, v, type LiveProps } from "./primitives";
+import { AgentDebate, AgentReactLoop, AgentSwarm } from "./AgenticIllustrations";
 import { hex, rand, useSpawner, useStep, useTween } from "./useLive";
 
 /**
@@ -29,6 +30,9 @@ export const ENHANCED_IDS = new Set([
   "sector-cap-enhanced",
   "three-markets-enhanced",
   "high-water-mark-enhanced",
+  "agent-swarm",
+  "agent-react-loop",
+  "agent-debate",
 ]);
 
 interface Props {
@@ -40,49 +44,9 @@ interface Props {
   onSelectDetail?: (idx: number) => void;
 }
 
-interface P {
-  uid: string;
-  live: boolean;
-  isMotion: boolean;
-  pick: (i: number) => () => void;
-}
+type P = LiveProps;
 
-const fmt = (n: number) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-const CARD_SHADOW = "drop-shadow(0 4px 12px rgba(0,0,0,0.85))";
-const EASE = "cubic-bezier(0.65, 0, 0.35, 1)";
-
-/** Parallax layer: translates with the pointer by `d` units of depth. */
-function Depth({ d, lift, children }: { d: number; lift?: boolean; children: ReactNode }) {
-  return (
-    <g className="ill-depth" data-lift={lift ? "" : undefined} style={v({ "--d": d })}>
-      {children}
-    </g>
-  );
-}
-
-/** One-line live event feed. Re-keys on `animKey` so each new event fades in. */
-function Ticker({ y, text, live, animKey, size = 9 }: { y: number; text: string; live: boolean; animKey?: string | number; size?: number }) {
-  return (
-    <text
-      key={animKey ?? text}
-      x={C}
-      y={y}
-      textAnchor="middle"
-      fontSize={size}
-      letterSpacing="0.05em"
-      fill={TXT}
-      className={`font-mono ${live ? "ill-tick-in" : ""}`}
-    >
-      {live && (
-        <tspan fill={GOLD} className="ill-live-dot">
-          ●{" "}
-        </tspan>
-      )}
-      {live && <tspan fill={GOLD}>LIVE · </tspan>}
-      {text}
-    </text>
-  );
-}
+const fmt = (n: number) => Math.round(n).toString().replace(/B(?=(d{3})+(?!d))/g, ",");
 
 export default function EnhancedIllustration({ id, uid, live, isMotion, onSelectDetail }: Props) {
   const p: P = { uid, live, isMotion, pick: (i: number) => () => onSelectDetail?.(i) };
@@ -111,6 +75,12 @@ export default function EnhancedIllustration({ id, uid, live, isMotion, onSelect
       return <ThreeMarkets {...p} />;
     case "high-water-mark-enhanced":
       return <HighWaterMark {...p} />;
+    case "agent-swarm":
+      return <AgentSwarm {...p} />;
+    case "agent-react-loop":
+      return <AgentReactLoop {...p} />;
+    case "agent-debate":
+      return <AgentDebate {...p} />;
     default:
       return null;
   }
@@ -1723,37 +1693,48 @@ const HWM_YEARS = [
   { y: "Year 4", nav: 138, fee: 2.7, status: "Breakout (+30%)", newHigh: true },
   { y: "Year 5", nav: 152, fee: 2.84, status: "Compounded Alpha", newHigh: true },
 ];
+// Three illustrative holdings whose share values sum to NAV each year.
+const HWM_COMPANIES = [
+  { name: "NOVA PLC", mkt: "LSE", vals: [40, 52, 43, 47, 56, 61] },
+  { name: "ATLAS INC", mkt: "NYSE", vals: [35, 43, 38, 42, 49, 54] },
+  { name: "KAZE KK", mkt: "TSE", vals: [25, 30, 25, 28, 33, 37] },
+];
 
 function HighWaterMark({ live }: P) {
   const n = useStep(live, 1700);
   const k = live ? Math.min(n % 8, 5) : 5;
   const loop = Math.floor(n / 8);
   const [px, py, nav] = useTween([HWM_XS[k], HWM_YS[k], HWM_YEARS[k].nav], live, 1400);
-  const mgr = HWM_YEARS.slice(0, k + 1).reduce((a, y) => a + y.fee, 0);
-  const inv = HWM_YEARS[k].nav - 100 - mgr;
+  const shares = useTween(HWM_COMPANIES.map((c) => c.vals[k]), live, 1400);
   const yr = HWM_YEARS[k];
   const line = HWM_XS.map((x, i) => `${x},${HWM_YS[i]}`).join(" ");
   const seg = (on: boolean) => ({ opacity: on ? 1 : 0.12, transition: "opacity 0.8s" });
-  const totalBar = 150;
-  const invW = Math.max(0, (inv / 52) * totalBar);
-  const mgrW = Math.max(0, (mgr / 52) * totalBar);
+  const barMax = 90;
 
   return (
     <g>
       <Eyebrow y={54}>MUDARABAH ALIGNMENT · HIGH-WATER MARK &amp; 5% HURDLE</Eyebrow>
       <Ticker y={74} text={`${yr.y.toUpperCase()} · NAV ${yr.nav.toFixed(1)} · ${yr.status.toUpperCase()} · ${yr.fee > 0 ? `FEE ${yr.fee.toFixed(2)}` : "NO FEE"}`} live={live} animKey={`${loop}-${k}`} size={8.5} />
 
-      {/* Live alignment ledger */}
+      {/* Live holdings ledger — three company shares that make up NAV */}
       <Depth d={2}>
-        <Label x={70} y={102} anchor="start" size={8.5} color={GOLD} mono>
-          {`INVESTOR NET GAIN +${inv.toFixed(1)}`}
-        </Label>
-        <Label x={70} y={114} anchor="start" size={8.5} color={SUB} mono>
-          {`MANAGER SHARE ${mgr.toFixed(2)} PTS`}
-        </Label>
-        <rect x="70" y="120" width={totalBar} height="5" rx="2" fill={GOLD} fillOpacity="0.12" />
-        <rect x="70" y="120" width={f(invW)} height="5" rx="2" fill={GOLD} style={{ transition: "width 1.2s" }} />
-        <rect x={f(70 + invW)} y="120" width={f(mgrW)} height="5" rx="2" fill={TXT} fillOpacity="0.7" />
+        {HWM_COMPANIES.map((c, i) => {
+          const v = shares[i];
+          const chg = ((v - c.vals[0]) / c.vals[0]) * 100;
+          const rowY = 98 + i * 12;
+          return (
+            <g key={c.name}>
+              <Label x={70} y={rowY} anchor="start" size={8.5} color={i === 0 ? GOLD : i === 1 ? TXT : SUB} mono>
+                {`${c.name} · ${c.mkt}`}
+              </Label>
+              <rect x="160" y={rowY - 6} width={barMax} height="5" rx="2" fill={GOLD} fillOpacity="0.12" />
+              <rect x="160" y={rowY - 6} width={f((v / 65) * barMax)} height="5" rx="2" fill={GOLD} fillOpacity={1 - i * 0.28} />
+              <Label x={256} y={rowY} anchor="start" size={8.5} color={GOLD} mono>
+                {`${v.toFixed(1)} ${chg >= 0 ? "+" : ""}${chg.toFixed(0)}%`}
+              </Label>
+            </g>
+          );
+        })}
       </Depth>
 
       <Depth d={-0.4}>

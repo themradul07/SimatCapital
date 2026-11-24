@@ -119,6 +119,7 @@ export default function IllustrationsPage() {
           <div className="inline-flex flex-wrap items-center gap-1.5 rounded-full border border-[var(--line-soft)] bg-[var(--bg-raised)]/90 p-1.5 backdrop-blur-md">
             {[
               { id: "all", label: `All (${ILLUSTRATIONS.length})` },
+              { id: "agentic", label: "Agentic AI" },
               { id: "process", label: "Process & Proof" },
               { id: "geometric", label: "Geometric Shapes" },
               { id: "instruments", label: "Precision Instruments" },

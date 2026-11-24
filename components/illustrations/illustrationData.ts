@@ -1,4 +1,4 @@
-export type IllustrationCategory = "geometric" | "instruments" | "nature-architecture" | "process";
+export type IllustrationCategory = "geometric" | "instruments" | "nature-architecture" | "process" | "agentic";
 
 export interface IllustrationDefinition {
   id: string;
@@ -557,7 +557,7 @@ export const ILLUSTRATIONS: IllustrationDefinition[] = [
     badge: "Alpha Waterfall",
     animationType: "Live NAV Replay & Fee Ledger",
     animationDescription:
-      "NAV is replayed year by year with a live cursor; the high-water mark steps up on each new peak, alpha zones appear, and a running ledger splits investor gain from manager share.",
+      "NAV is replayed year by year with a live cursor; the high-water mark steps up on each new peak, alpha zones appear, and a live ledger tracks the three company shares (London, New York, Tokyo) that make up NAV.",
     subtitle: "Mudarabah profit share aligned to high-water mark and 5% preferred hurdle",
     description:
       "Illustrative 5-year mudarabah profit-share schedule demonstrating total alignment. Simat receives a 40% share exclusively on growth exceeding the investor's previous peak plus a 5% hurdle; loss and recovery years incur £0 fee.",
@@ -570,6 +570,79 @@ export const ILLUSTRATIONS: IllustrationDefinition[] = [
       { title: "Year 1 · Alpha Surplus", sub: "NAV reaches 125.0 (+25%); growth above hurdle shared 60% investor / 40% Simat." },
       { title: "Years 2 & 3 · Drawdown & Recovery", sub: "Drawdown to 106.0 and recovery to 117.0: £0 fee; investor keeps 100% of recovery." },
       { title: "Years 4 & 5 · Breakout & Compounding", sub: "NAV surpasses prior high-water mark; profit share re-engages above 5% hurdle." },
+    ],
+  },
+
+  // -------------------------------------------------------------
+  // AGENTIC AI — research agents that recommend, humans that decide
+  // -------------------------------------------------------------
+  {
+    id: "agent-swarm",
+    name: "Agentic Research Swarm · Orchestrator & Specialists",
+    category: "agentic",
+    categoryLabel: "Agentic AI",
+    badge: "Multi-Agent",
+    animationType: "Live Delegation, Tool Calls & Reasoning Trace",
+    animationDescription:
+      "An orchestrator agent plans a task, dispatches it to four specialist agents that call their tools in turn, gathers their results, reflects, and drafts a memo for CIO sign-off — narrated by a live typing reasoning trace.",
+    subtitle: "One orchestrator, four specialist agents, one human decision",
+    description:
+      "A swarm of AI agents researches each candidate in parallel: a Filing Reader pulls the latest filing, a Shariah Screener checks the ratios, a Valuation Analyst builds the bear case and a Risk Sentinel tests the portfolio impact. The orchestrator weighs their findings and hands a memo to the CIO. Illustrative.",
+    symbolism: [
+      "Central orchestrator: plans, delegates and reflects on the combined evidence",
+      "Hexagonal specialists: each agent owns one tool and one question",
+      "Reasoning trace: every tool call and observation is written down and auditable",
+    ],
+    details: [
+      { title: "Plan & Delegate", sub: "The orchestrator splits one question into four focused sub-tasks." },
+      { title: "Tool Calls", sub: "Agents query filings, screens, valuation models and risk engines." },
+      { title: "Human Sign-off", sub: "The swarm drafts a memo; only the CIO can approve a trade." },
+    ],
+  },
+  {
+    id: "agent-react-loop",
+    name: "Autonomous Compliance Agent · Think → Act → Observe",
+    category: "agentic",
+    categoryLabel: "Agentic AI",
+    badge: "Agent Loop",
+    animationType: "Live Reasoning Loop & Self-Written Plan",
+    animationDescription:
+      "A compliance agent writes its own six-step plan, then works through it in a think → act → observe → reflect loop: the orbiting marker lights each phase, plan items tick off and every step types into the agent trace.",
+    subtitle: "An agent that detects a breach, investigates it and escalates it",
+    description:
+      "When a new filing lands, the compliance agent re-reads it, extracts the ratios, re-screens the four gates, measures exit impact and drafts a staged exit plan, then stops and escalates to the CIO. It never trades on its own. Illustrative.",
+    symbolism: [
+      "Four-phase loop: think, act, observe, reflect, repeated for every plan step",
+      "Self-written checklist: the agent decomposes the job before it starts",
+      "Guardrail: the final step is always a human, never an autonomous trade",
+    ],
+    details: [
+      { title: "Detect & Extract", sub: "New 10-Q fetched, balance sheet parsed, debt/assets computed." },
+      { title: "Re-screen & Measure", sub: "Gate 02 breach confirmed; exit impact sized against daily volume." },
+      { title: "Plan & Escalate", sub: "Staged exit drafted inside the 90-day window and sent to the CIO." },
+    ],
+  },
+  {
+    id: "agent-debate",
+    name: "Multi-Agent Investment Debate · Bull, Bear & Judge",
+    category: "agentic",
+    categoryLabel: "Agentic AI",
+    badge: "Agent Debate",
+    animationType: "Live Agent Debate & Conviction Meter",
+    animationDescription:
+      "A bull agent and a bear agent trade arguments over three rounds; each argument flies to a judge agent and moves the live conviction meter, ending in a sized verdict that waits for the CIO's signature.",
+    subtitle: "Agents argue both sides so the decision does not have to guess",
+    description:
+      "Every idea is stress-tested by two adversarial agents: one builds the strongest case for, the other the strongest case against. A judge agent scores the evidence and proposes a position size, and the CIO makes the final call. Illustrative.",
+    symbolism: [
+      "Bull and bear agents: the written bear case, automated and adversarial",
+      "Conviction meter: evidence moves the needle, not enthusiasm",
+      "CIO signature: the verdict is a recommendation until a human signs",
+    ],
+    details: [
+      { title: "Case For", sub: "Moat, balance sheet strength and base-case fair value." },
+      { title: "Case Against", sub: "Cyclicality, valuation premium and the bear-case price." },
+      { title: "Verdict", sub: "Judge proposes BUY at half weight; CIO signature required." },
     ],
   },
 ];

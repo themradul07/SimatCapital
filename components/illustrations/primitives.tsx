@@ -89,7 +89,51 @@ export function Label({
   );
 }
 
-export const Eyebrow = ({ y, children }: { y: number; children: ReactNode }) => (
+export const CARD_SHADOW = "drop-shadow(0 4px 12px rgba(0,0,0,0.85))";
+export const EASE = "cubic-bezier(0.65, 0, 0.35, 1)";
+
+/** Props shared by every live (enhanced / agentic) illustration. */
+export interface LiveProps {
+  uid: string;
+  live: boolean;
+  isMotion: boolean;
+  pick: (i: number) => () => void;
+}
+
+/** Parallax layer: translates with the pointer by `d` units of depth. */
+export function Depth({ d, lift, children }: { d: number; lift?: boolean; children: ReactNode }) {
+  return (
+    <g className="ill-depth" data-lift={lift ? "" : undefined} style={v({ "--d": d })}>
+      {children}
+    </g>
+  );
+}
+
+/** One-line live event feed. Re-keys on `animKey` so each new event fades in. */
+export function Ticker({ y, text, live, animKey, size = 9 }: { y: number; text: string; live: boolean; animKey?: string | number; size?: number }) {
+  return (
+    <text
+      key={animKey ?? text}
+      x={C}
+      y={y}
+      textAnchor="middle"
+      fontSize={size}
+      letterSpacing="0.05em"
+      fill={TXT}
+      className={`font-mono ${live ? "ill-tick-in" : ""}`}
+    >
+      {live && (
+        <tspan fill={GOLD} className="ill-live-dot">
+          ●{" "}
+        </tspan>
+      )}
+      {live && <tspan fill={GOLD}>LIVE · </tspan>}
+      {text}
+    </text>
+  );
+}
+
+export const Eyebrow =({ y, children }: { y: number; children: ReactNode }) => (
   <Label x={C} y={y} size={10} color={GOLD} mono spacing="0.2em" opacity={0.85}>
     {children}
   </Label>

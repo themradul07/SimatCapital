@@ -1225,6 +1225,15 @@
 .ill-spin-local { transform-box: fill-box; transform-origin: center; animation: illSpin 9s linear infinite; }
 .ill-spin-local-rev { transform-box: fill-box; transform-origin: center; animation: illSpinRev 9s linear infinite; }
 
+/* Agentic set: typed reasoning lines, blinking caret, one-shot agent packets */
+@keyframes illType {
+  from { transform: translateX(0); }
+  to { transform: translateX(var(--w)); }
+}
+.ill-type { animation: illType var(--dur, 1s) linear both; } /* steps(n) is set inline per line */
+.ill-caret { animation: illBlinkSoft 0.9s steps(2) infinite; }
+.ill-send { animation: illIngest 0.9s cubic-bezier(0.5, 0, 0.3, 1) both; }
+
 /* ------------------------------ control gate (ControlGate.tsx) ------------------------------ */
 .cg-glow {
   transform-box: fill-box;
