@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
+import { BG, C, Eyebrow, FUNNEL_DOTS, GOLD, Label, SUB, TXT, dia, f, polar, v } from "./primitives";
 
 /**
  * Process & Proof illustrations — fifteen diagrams of how Simat Capital actually works.
@@ -14,11 +14,6 @@ import type { CSSProperties, ReactNode } from "react";
  * Rendered inside IllustrationItem's 500×500 SVG. Gold line work only, no stock icons.
  */
 
-const C = 250;
-const GOLD = "var(--gold-accent)";
-const TXT = "var(--text-primary)";
-const SUB = "var(--text-secondary)";
-const BG = "var(--bg-base)";
 
 /**
  * Where the Simat mark sits for each process illustration.
@@ -40,85 +35,22 @@ export const PROCESS_MARK: Record<string, [number, number] | null> = {
   "sector-cap": null,
   "three-markets": [0, 0],
   "high-water-mark": null,
+  // Enhanced duplicates (rendered by EnhancedIllustrations.tsx; centres host live readouts)
+  "ratio-drift-enhanced": null,
+  "four-gates-enhanced": null,
+  "eleven-checks-enhanced": null,
+  "opportunity-funnel-enhanced": null,
+  "purification-flow-enhanced": null,
+  "grace-clock-enhanced": null,
+  "hash-chain-enhanced": null,
+  "drawdown-bands-enhanced": null,
+  "sector-cap-enhanced": null,
+  "three-markets-enhanced": null,
+  "high-water-mark-enhanced": null,
 };
 
 export const PROCESS_IDS = Object.keys(PROCESS_MARK);
 
-/** Deterministic scatter of "companies in view" for the funnel's outer band. */
-const FUNNEL_DOTS: [number, number][] = (() => {
-  const out: [number, number][] = [];
-  let seed = 7;
-  const rnd = () => {
-    seed = (seed * 9301 + 49297) % 233280;
-    return seed / 233280;
-  };
-  for (let k = 0; k < 46; k++) {
-    const a = (rnd() * 360 * Math.PI) / 180;
-    const r = 172 + rnd() * 36;
-    const x = C + r * Math.cos(a);
-    const y = C + r * Math.sin(a);
-    if (y > 95) out.push([x, y]);
-  }
-  return out;
-})();
-
-type Vars = CSSProperties & Record<`--${string}`, string>;
-const v = (o: Record<string, string>) => o as Vars;
-
-const dia = (x: number, y: number, r: number) => `M ${x} ${y - r} L ${x + r} ${y} L ${x} ${y + r} L ${x - r} ${y} Z`;
-const polar = (r: number, deg: number, cx = C, cy = C): [number, number] => {
-  const a = (deg * Math.PI) / 180;
-  return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
-};
-const f = (n: number) => Math.round(n * 10) / 10;
-
-function Label({
-  x,
-  y,
-  children,
-  anchor = "middle",
-  size = 12,
-  color = TXT,
-  mono = false,
-  serif = false,
-  weight,
-  spacing,
-  opacity,
-}: {
-  x: number;
-  y: number;
-  children: ReactNode;
-  anchor?: "start" | "middle" | "end";
-  size?: number;
-  color?: string;
-  mono?: boolean;
-  serif?: boolean;
-  weight?: number;
-  spacing?: string;
-  opacity?: number;
-}) {
-  return (
-    <text
-      x={f(x)}
-      y={f(y)}
-      textAnchor={anchor}
-      fill={color}
-      fontSize={size}
-      fontWeight={weight}
-      letterSpacing={spacing}
-      opacity={opacity}
-      className={mono ? "font-mono" : serif ? "serif" : undefined}
-    >
-      {children}
-    </text>
-  );
-}
-
-const Eyebrow = ({ y, children }: { y: number; children: ReactNode }) => (
-  <Label x={C} y={y} size={10} color={GOLD} mono spacing="0.2em" opacity={0.85}>
-    {children}
-  </Label>
-);
 
 interface Props {
   id: string;

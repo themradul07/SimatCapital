@@ -1,9 +1,19 @@
 "use client";
 
-import { useId } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type PointerEvent } from "react";
 import ProcessIllustration, { PROCESS_MARK } from "./ProcessIllustrations";
+import EnhancedIllustration, { ENHANCED_IDS } from "./EnhancedIllustrations";
 
 const C = 250;
+
+const REDUCED_QUERY = "(prefers-reduced-motion: reduce)";
+const subscribeReduced = (cb: () => void) => {
+  const mq = window.matchMedia(REDUCED_QUERY);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+const getReduced = () => window.matchMedia(REDUCED_QUERY).matches;
+const getReducedServer = () => false;
 
 interface IllustrationItemProps {
   id: string;
@@ -25,12 +35,44 @@ export default function IllustrationItem({
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
   const isProcess = id in PROCESS_MARK;
   const processMark = isProcess ? PROCESS_MARK[id] : undefined;
+  const isEnhanced = ENHANCED_IDS.has(id);
+
+  // Live simulations only run while visible, with motion on and no reduced-motion preference.
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [inView, setInView] = useState(false);
+  const reduced = useSyncExternalStore(subscribeReduced, getReduced, getReducedServer);
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!isEnhanced || !el) return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: "80px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [isEnhanced]);
+  const live = isEnhanced && isMotion && inView && !reduced;
+
+  // Pointer-driven 3D tilt: CSS vars feed the SVG rotation and every <Depth> parallax layer.
+  const onPointerMove = (e: PointerEvent<SVGSVGElement>) => {
+    if (reduced) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const px = ((e.clientX - r.left) / r.width - 0.5) * 2;
+    const py = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    e.currentTarget.style.setProperty("--px", px.toFixed(3));
+    e.currentTarget.style.setProperty("--py", py.toFixed(3));
+  };
+  const onPointerLeave = (e: PointerEvent<SVGSVGElement>) => {
+    e.currentTarget.style.setProperty("--px", "0");
+    e.currentTarget.style.setProperty("--py", "0");
+  };
+  const tilt = isEnhanced ? ` ill-3d${id === "three-markets-enhanced" ? " ill-3d-strong" : ""}` : "";
 
   return (
     <svg
+      ref={svgRef}
       viewBox="0 0 500 500"
-      className={`w-full h-auto overflow-visible select-none ${className}`}
+      className={`w-full h-auto overflow-visible select-none${tilt} ${className}`}
       aria-hidden="true"
+      onPointerMove={isEnhanced ? onPointerMove : undefined}
+      onPointerLeave={isEnhanced ? onPointerLeave : undefined}
     >
       <defs>
         {/* Soft radial golden warmth */}
@@ -627,11 +669,24 @@ export default function IllustrationItem({
           <circle cx={C} cy="230" r="42" fill="var(--bg-base)" stroke="var(--gold-accent)" strokeWidth="1.4" />
         </g>
       )}
+      {/* ========================================================================= */}
+      {/* ENHANCED DUPLICATES — live simulations (see EnhancedIllustrations.tsx)    */}
+      {/* ========================================================================= */}
+      {isEnhanced && (
+        <EnhancedIllustration
+          id={id}
+          uid={uid}
+          live={live}
+          isMotion={isMotion}
+          activeDetail={activeDetail}
+          onSelectDetail={onSelectDetail}
+        />
+      )}
 
       {/* ========================================================================= */}
       {/* 16–30. PROCESS & PROOF SET (see ProcessIllustrations.tsx)                 */}
       {/* ========================================================================= */}
-      {isProcess && (
+      {isProcess && !isEnhanced && (
         <ProcessIllustration
           id={id}
           uid={uid}
@@ -662,10 +717,12 @@ export default function IllustrationItem({
                 ? "translate(0px, -45px)"
                 : id === "london-portico"
                 ? "translate(0px, -20px)"
+                : id === "london-portico-enhanced"
+                ? "translate(0px, -24px)"
                 : undefined,
           }}
         >
-          <g className="hm-mark">
+          <g className={isEnhanced ? "hm-mark ill-depth" : "hm-mark"} style={isEnhanced ? { ["--d" as string]: 1.8 } : undefined}>
             <image
               href="/simat-mark.png"
               x={C - 34}

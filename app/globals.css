@@ -1029,6 +1029,202 @@
 .ill-bob { animation: illBob 3.6s ease-in-out infinite; }
 .ill-spin-day { transform-box: view-box; transform-origin: 250px 250px; animation: illSpin 48s linear infinite; }
 
+/* ------------------------------ Enhanced Masterwork Animation & Interactive Suite ------------------------------ */
+@keyframes illRadarSweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes illBeaconPulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.96); }
+  50% { opacity: 0.95; transform: scale(1.08); filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.7)); }
+}
+@keyframes illLaserPulse {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -40; }
+}
+@keyframes illShimmerAlpha {
+  0%, 100% { opacity: 0.30; }
+  50% { opacity: 0.65; }
+}
+
+.ill-radar-sweep {
+  transform-box: view-box;
+  transform-origin: 250px 250px;
+  animation: illRadarSweep 8s linear infinite;
+}
+.ill-beacon {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: illBeaconPulse 2.8s ease-in-out infinite;
+}
+.ill-laser {
+  stroke-dasharray: 6 12;
+  animation: illLaserPulse 1.2s linear infinite;
+}
+.ill-shimmer-alpha {
+  animation: illShimmerAlpha 3.5s ease-in-out infinite;
+}
+
+/* Rich SVG interactive hover states */
+.ill-hover-group {
+  cursor: pointer;
+}
+.ill-hover-group .ill-card {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(4px);
+}
+.ill-hover-group:hover .ill-card {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.ill-hover-group:hover .ill-target {
+  stroke: var(--gold-accent) !important;
+  stroke-opacity: 1 !important;
+  stroke-width: 2px !important;
+  filter: drop-shadow(0 0 7px rgba(201, 168, 76, 0.65));
+}
+.ill-hover-group:hover .ill-target-fill {
+  fill: var(--gold-accent) !important;
+  fill-opacity: 0.85 !important;
+  filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.7));
+}
+
+/* ------------------------------ Enhanced live suite: 3D tilt, depth parallax, live events ------------------------------ */
+/* IllustrationItem writes --px / --py (-1…1) from the pointer; the SVG tilts and each .ill-depth layer parallaxes by --d. */
+.ill-3d {
+  --px: 0;
+  --py: 0;
+  transform: perspective(1100px) rotateX(calc(var(--py) * -9deg)) rotateY(calc(var(--px) * 11deg));
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.ill-3d-strong:hover {
+  transform: perspective(900px) rotateX(calc(16deg + var(--py) * -10deg)) rotateY(calc(var(--px) * 15deg)) scale(0.97);
+}
+.ill-depth {
+  transform: translate(calc(var(--px, 0) * var(--d, 1) * 3.5px), calc(var(--py, 0) * var(--d, 1) * 3.5px));
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ill-3d-strong:hover .ill-depth {
+  transform: translate(calc(var(--px, 0) * var(--d, 1) * 5px), calc((var(--py, 0) * 5px - 2.5px) * var(--d, 1)));
+}
+.ill-3d:hover .ill-depth[data-lift] {
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.45));
+}
+.ill-lift {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ill-lift:hover {
+  transform: translateY(-6px);
+}
+
+@keyframes illTickIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes illDotBlink {
+  0%, 100% { fill-opacity: 0.25; }
+  50% { fill-opacity: 1; }
+}
+@keyframes illPing {
+  0% { opacity: 0.9; transform: scale(0.6); }
+  100% { opacity: 0; transform: scale(2.1); }
+}
+@keyframes illBurst {
+  0% { opacity: 0; transform: scale(0.6); }
+  1% { opacity: 0.95; transform: scale(0.6); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+@keyframes illFlash {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes illEnergy {
+  0% { stroke-dashoffset: 100; opacity: 1; }
+  70% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes illStamp {
+  0% { opacity: 0; transform: scale(1.8); }
+  60% { opacity: 1; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes illGatePass {
+  0% { transform: translate(0, 0); opacity: 0; }
+  6% { opacity: 1; }
+  90% { transform: translate(var(--gx), 0); opacity: 1; }
+  100% { transform: translate(var(--gx), 0); opacity: 0; }
+}
+@keyframes illGateReject {
+  0% { transform: translate(0, 0); opacity: 0; }
+  6% { opacity: 1; }
+  68% { transform: translate(var(--gx), 0); opacity: 1; }
+  74% { transform: translate(calc(var(--gx) - 6px), 0); }
+  100% { transform: translate(calc(var(--gx) - 18px), var(--gy)); opacity: 0; }
+}
+@keyframes illOrbitIn {
+  0% { transform: translate(var(--sx), var(--sy)); opacity: 0; }
+  10% { opacity: 1; }
+  80% { transform: translate(var(--ex), var(--ey)); opacity: 1; }
+  100% { transform: translate(var(--ex), var(--ey)); opacity: 0; }
+}
+@keyframes illOrderFill {
+  0% { transform: translate(var(--x0), 0); opacity: 0; }
+  10% { transform: translate(var(--x0), 0); opacity: 1; }
+  42% { transform: translate(var(--x1), 0); }
+  62% { transform: translate(var(--x1), 64px); opacity: 1; }
+  80%, 100% { transform: translate(var(--x1), 64px); opacity: 0; }
+}
+@keyframes illOrderBlocked {
+  0% { transform: translate(var(--x0), 0); opacity: 0; }
+  10% { transform: translate(var(--x0), 0); opacity: 1; }
+  38% { transform: translate(var(--x1), 0); }
+  46% { transform: translate(var(--x1), 30px); }
+  54% { transform: translate(var(--x1), 12px); }
+  60% { transform: translate(var(--x1), 26px); opacity: 1; }
+  100% { transform: translate(calc(var(--x1) + 30px), -24px); opacity: 0; }
+}
+@keyframes illOrderTrim {
+  0%, 30% { transform: translate(var(--x1), 0); opacity: 0; }
+  40% { opacity: 1; }
+  80% { transform: translate(var(--x1), -70px); opacity: 1; }
+  100% { transform: translate(var(--x1), -70px); opacity: 0; }
+}
+@keyframes illIngest {
+  0% { transform: translate(0, 0); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+}
+@keyframes illBlip {
+  0% { opacity: 1; transform: scale(1.9); }
+  12% { opacity: 0.3; transform: scale(1); }
+  100% { opacity: 0.3; transform: scale(1); }
+}
+
+.ill-tick-in { transform-box: fill-box; animation: illTickIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.ill-live-dot { animation: illDotBlink 1.4s ease-in-out infinite; }
+.ill-ping { transform-box: fill-box; transform-origin: center; animation: illPing 1.8s ease-out infinite; }
+.ill-burst { transform-box: fill-box; transform-origin: center; animation: illBurst 1.1s ease-out both; }
+.ill-flash { animation: illFlash 0.9s ease-out both; }
+.ill-flash-late { animation: illFlash 0.9s ease-out 1.35s both; }
+.ill-fade-late { animation: illTickIn 0.5s ease-out 1.6s both; }
+.ill-energy { stroke-dasharray: 100; animation: illEnergy 1.6s ease-out both; }
+.ill-stamp { transform-box: fill-box; transform-origin: center; animation: illStamp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.ill-gate-pass { animation: illGatePass var(--dur, 6s) linear both; }
+.ill-gate-reject { animation: illGateReject var(--dur, 3s) ease-in both; }
+.ill-orbit-in { animation: illOrbitIn var(--dur, 3s) cubic-bezier(0.5, 0, 0.3, 1) both; }
+.ill-order-fill { animation: illOrderFill 3.2s cubic-bezier(0.45, 0, 0.25, 1) both; }
+.ill-order-blocked { animation: illOrderBlocked 3.2s cubic-bezier(0.45, 0, 0.25, 1) both; }
+.ill-order-trim { animation: illOrderTrim 3.2s ease-in-out both; }
+.ill-ingest { animation: illIngest 1.65s ease-in infinite both; }
+.ill-blip { transform-box: fill-box; transform-origin: center; animation: illBlip 8s linear infinite both; }
+.ill-spin-local { transform-box: fill-box; transform-origin: center; animation: illSpin 9s linear infinite; }
+.ill-spin-local-rev { transform-box: fill-box; transform-origin: center; animation: illSpinRev 9s linear infinite; }
+
 /* ------------------------------ control gate (ControlGate.tsx) ------------------------------ */
 .cg-glow {
   transform-box: fill-box;
