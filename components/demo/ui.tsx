@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 
 /** Small shared building blocks for the investor demo slides. */
 
@@ -14,19 +14,22 @@ export function Label({ children, className = "" }: { children: ReactNode; class
   return <span className={`d-label ${className}`}>{children}</span>;
 }
 
+export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+  className?: string;
+  accent?: boolean;
+  style?: CSSProperties;
+}
+
 export function Card({
   children,
   className = "",
   accent = false,
   style,
-}: {
-  children: ReactNode;
-  className?: string;
-  accent?: boolean;
-  style?: CSSProperties;
-}) {
+  ...rest
+}: CardProps) {
   return (
-    <div className={`d-card ${accent ? "d-card-accent" : ""} ${className}`} style={style}>
+    <div className={`d-card ${accent ? "d-card-accent" : ""} ${className}`} style={style} {...rest}>
       {children}
     </div>
   );

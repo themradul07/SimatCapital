@@ -41,6 +41,7 @@ export default function InvestorDemo() {
   const [slide, setSlide] = useState(0);
   const [process, setProcess] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [headerRevealed, setHeaderRevealed] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const touch = useRef<{ x: number; y: number } | null>(null);
@@ -57,12 +58,44 @@ export default function InvestorDemo() {
     return () => window.removeEventListener("hashchange", sync);
   }, []);
 
-  const go = useCallback((n: number) => {
-    const next = Math.max(0, Math.min(COUNT - 1, n));
-    setProcess(false);
-    setSlide(next);
-    history.replaceState(null, "", `#${next + 1}`);
+  const enterFullscreenIfAllowed = useCallback(() => {
+    if (typeof document !== "undefined" && !document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
   }, []);
+
+  const go = useCallback(
+    (n: number) => {
+      const next = Math.max(0, Math.min(COUNT - 1, n));
+      setProcess(false);
+      setSlide(next);
+      setHeaderRevealed(false);
+      history.replaceState(null, "", `#${next + 1}`);
+      // Automatically enter full screen when moving from the cover into the presentation slides
+      if (next >= 1) {
+        enterFullscreenIfAllowed();
+      }
+    },
+    [enterFullscreenIfAllowed]
+  );
+
+  // If user opens the demo directly at slide 1 or beyond via URL hash (#2, etc.),
+  // automatically trigger full screen on their first user interaction.
+  useEffect(() => {
+    const onFirstAction = () => {
+      if (slide >= 1 && !document.fullscreenElement) {
+        enterFullscreenIfAllowed();
+      }
+    };
+    window.addEventListener("click", onFirstAction, { once: true });
+    window.addEventListener("keydown", onFirstAction, { once: true });
+    window.addEventListener("touchstart", onFirstAction, { once: true });
+    return () => {
+      window.removeEventListener("click", onFirstAction);
+      window.removeEventListener("keydown", onFirstAction);
+      window.removeEventListener("touchstart", onFirstAction);
+    };
+  }, [slide, enterFullscreenIfAllowed]);
 
   const openProcess = useCallback(() => {
     setProcess(true);
@@ -138,28 +171,35 @@ export default function InvestorDemo() {
     <div className="d-shell">
       <div className="d-glow" aria-hidden />
 
-      {/* Top bar */}
-      <header className="d-top">
-        <div className="flex min-w-0 items-center gap-3">
-          <Mark size={28} />
-          <span className="serif truncate text-[20px] font-semibold leading-none" style={{ color: "var(--text-primary)" }}>
-            Simat Capital
-          </span>
-          <span className="d-badge hidden sm:inline-flex">Investor overview · Confidential</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="hidden text-[13px] md:inline secondary">{process ? "The process in action" : TITLES[slide]}</span>
-          <span className="serif text-[18px] tabular-nums" style={{ color: "var(--gold-accent)" }} aria-live="polite">
-            {String(slide + 1).padStart(2, "0")}
-            <span className="secondary"> / {COUNT}</span>
-          </span>
-          <button type="button" onClick={toggleFullscreen} className="d-icon-btn hidden sm:inline-flex" aria-label={fullscreen ? "Exit full screen" : "Full screen"}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-              {fullscreen ? <path d="M9 3v4a2 2 0 0 1-2 2H3m18 0h-4a2 2 0 0 1-2-2V3m0 18v-4a2 2 0 0 1 2-2h4M3 15h4a2 2 0 0 1 2 2v4" /> : <path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5" />}
-            </svg>
-          </button>
-        </div>
-      </header>
+      {/* Top bar (Hidden by default; reveals when hovering upper area) */}
+      <div className={`d-top-wrapper ${headerRevealed ? "is-revealed" : ""}`}>
+        <div
+          className="d-top-trigger"
+          aria-label="Reveal header"
+          onClick={() => setHeaderRevealed((r) => !r)}
+        />
+        <header className="d-top">
+          <div className="flex min-w-0 items-center gap-3">
+            <Mark size={28} />
+            <span className="serif truncate text-[20px] font-semibold leading-none" style={{ color: "var(--text-primary)" }}>
+              Simat Capital
+            </span>
+            <span className="d-badge hidden sm:inline-flex">Investor overview · Confidential</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="hidden text-[13px] md:inline secondary">{process ? "The process in action" : TITLES[slide]}</span>
+            <span className="serif text-[18px] tabular-nums" style={{ color: "var(--gold-accent)" }} aria-live="polite">
+              {String(slide + 1).padStart(2, "0")}
+              <span className="secondary"> / {COUNT}</span>
+            </span>
+            <button type="button" onClick={toggleFullscreen} className="d-icon-btn hidden sm:inline-flex" aria-label={fullscreen ? "Exit full screen" : "Full screen"}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                {fullscreen ? <path d="M9 3v4a2 2 0 0 1-2 2H3m18 0h-4a2 2 0 0 1-2-2V3m0 18v-4a2 2 0 0 1 2-2h4M3 15h4a2 2 0 0 1 2 2v4" /> : <path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5" />}
+              </svg>
+            </button>
+          </div>
+        </header>
+      </div>
 
       {/* Slide */}
       <main

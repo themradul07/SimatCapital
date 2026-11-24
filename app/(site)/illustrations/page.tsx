@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ILLUSTRATIONS,
+  ENHANCED_ILLUSTRATIONS,
+  BASELINE_ILLUSTRATIONS,
   type IllustrationCategory,
   type IllustrationDefinition,
 } from "@/components/illustrations/illustrationData";
@@ -13,7 +15,6 @@ export default function IllustrationsPage() {
   const [selectedCategory, setSelectedCategory] = useState<IllustrationCategory | "all">("all");
   const [isMotion, setIsMotion] = useState(true);
   const [activeHeroId, setActiveHeroId] = useState<string>("diamond-seal");
-  const [inspectItem, setInspectItem] = useState<IllustrationDefinition | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Sync with localStorage on load & across tabs/events
@@ -67,10 +68,11 @@ export default function IllustrationsPage() {
     handleSetHero("diamond-seal");
   };
 
-  const filteredIllustrations =
+  // Filtered dynamic showcase (the 15 enhanced masterwork and agentic illustrations)
+  const filteredEnhanced =
     selectedCategory === "all"
-      ? ILLUSTRATIONS
-      : ILLUSTRATIONS.filter((item) => item.category === selectedCategory);
+      ? ENHANCED_ILLUSTRATIONS
+      : ENHANCED_ILLUSTRATIONS.filter((item) => item.category === selectedCategory);
 
   return (
     <div className="min-h-screen pt-[110px] pb-24 text-[var(--text-primary)]">
@@ -107,10 +109,10 @@ export default function IllustrationsPage() {
       <section className="wrap mb-14 text-center max-w-4xl mx-auto">
         <p className="eyebrow mb-3">Simat Capital · Design System</p>
         <h1 className="h1 text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight">
-          {ILLUSTRATIONS.length} Animated <span className="em-gold">Illustrations</span>
+          Animated <span className="em-gold">Illustrations</span>
         </h1>
         <p className="lead mt-6 text-[var(--text-secondary)] max-w-2xl mx-auto">
-          Fifteen symbolic marks, plus fifteen Process &amp; Proof diagrams that show how Simat Capital actually works: the four Shariah screens, the eleven pre-trade checks, the 90-day grace period, purification per tax lot and the tamper-evident record. Real labels, real thresholds, real sequence.
+          Interactive masterwork editions featuring real-time telemetry, 3D parallax, and multi-agent reasoning traces. Click any animation to open a completely enlarged inspection view in a new tab.
         </p>
 
         {/* Global Controls & Filters Bar */}
@@ -118,16 +120,14 @@ export default function IllustrationsPage() {
           {/* Category Tabs */}
           <div className="inline-flex flex-wrap items-center gap-1.5 rounded-full border border-[var(--line-soft)] bg-[var(--bg-raised)]/90 p-1.5 backdrop-blur-md">
             {[
-              { id: "all", label: `All (${ILLUSTRATIONS.length})` },
+              { id: "all", label: `All Masterworks (${ENHANCED_ILLUSTRATIONS.length})` },
               { id: "agentic", label: "Agentic AI" },
               { id: "process", label: "Process & Proof" },
-              { id: "geometric", label: "Geometric Shapes" },
-              { id: "instruments", label: "Precision Instruments" },
               { id: "nature-architecture", label: "Cosmos & Heritage" },
             ].map((t) =>
               t.id === "all"
                 ? t
-                : { ...t, label: `${t.label} (${ILLUSTRATIONS.filter((i) => i.category === t.id).length})` },
+                : { ...t, label: `${t.label} (${ENHANCED_ILLUSTRATIONS.filter((i) => i.category === t.id).length})` },
             ).map((tab) => {
               const isSelected = selectedCategory === tab.id;
               return (
@@ -163,10 +163,10 @@ export default function IllustrationsPage() {
         </div>
       </section>
 
-      {/* Showcase Grid */}
+      {/* Main Dynamic Showcase Grid */}
       <section className="wrap">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {filteredIllustrations.map((ill) => {
+          {filteredEnhanced.map((ill) => {
             const isCurrentHero =
               activeHeroId === ill.id ||
               (ill.id === "diamond-seal" && (activeHeroId === "diamond-seal" || activeHeroId === "default"));
@@ -197,19 +197,30 @@ export default function IllustrationsPage() {
                   )}
                 </div>
 
-                {/* Illustration SVG Stage */}
-                <div
-                  className="relative mx-auto my-3 w-full max-w-[280px] aspect-square flex items-center justify-center cursor-pointer transition-transform duration-500 group-hover:scale-[1.03]"
-                  onClick={() => setInspectItem(ill)}
-                  title="Click to view full architectural details"
+                {/* Illustration SVG Stage - Click opens enlarged view in a new tab */}
+                <Link
+                  href={`/illustrations/${ill.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative mx-auto my-3 w-full max-w-[280px] aspect-square flex items-center justify-center cursor-pointer transition-transform duration-500 group-hover:scale-[1.03] block"
+                  title="Open completely enlarged in a new tab"
                 >
                   <IllustrationItem id={ill.id} isMotion={isMotion} />
-                </div>
+                  <span className="absolute bottom-2 right-2 rounded-md bg-black/75 border border-[var(--line-soft)] px-2 py-0.5 text-[10px] font-mono text-[var(--gold-accent)] opacity-0 group-hover:opacity-100 transition-opacity">
+                    Enlarge ↗
+                  </span>
+                </Link>
 
                 {/* Card Content & Meaning */}
                 <div className="mt-4">
                   <h3 className="serif text-[22px] font-medium text-[var(--text-primary)] group-hover:text-[var(--gold-accent)] transition-colors">
-                    {ill.name}
+                    <Link
+                      href={`/illustrations/${ill.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {ill.name}
+                    </Link>
                   </h3>
                   <p className="text-[12px] font-mono text-[var(--gold-accent)] opacity-85 mt-0.5">
                     {ill.subtitle}
@@ -220,10 +231,10 @@ export default function IllustrationsPage() {
 
                   {/* Bullet points summary */}
                   <ul className="mt-3.5 space-y-1 border-t border-[var(--line-soft)]/60 pt-3 text-[12px] text-[var(--text-secondary)]">
-                    {ill.symbolism.map((item, idx) => (
+                    {ill.symbolism.slice(0, 3).map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <span className="text-[var(--gold-accent)] mt-0.5">◆</span>
-                        <span>{item}</span>
+                        <span className="line-clamp-1">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -253,14 +264,118 @@ export default function IllustrationsPage() {
                     </button>
                   )}
 
+                  {/* Inspect Button - Opens Enlarged in New Tab */}
+                  <Link
+                    href={`/illustrations/${ill.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl border border-[var(--line-soft)] px-3.5 py-2 text-[12.5px] font-mono text-[var(--gold-accent)] hover:text-white hover:border-[var(--gold-accent)] hover:bg-[rgba(214,180,106,0.08)] transition-all flex items-center gap-1"
+                    title="Open completely enlarged in a new tab"
+                  >
+                    <span>Inspect</span>
+                    <span className="text-[10px]">↗</span>
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* STATIC BASELINE REFERENCE EDITIONS (Placed at the Very Bottom)            */}
+      {/* ========================================================================= */}
+      <section className="wrap mt-24 pt-16 border-t border-[var(--line-soft)]/60">
+        <div className="mb-10 text-center max-w-2xl mx-auto">
+          <span className="rounded-full border border-[var(--line-soft)] bg-[var(--bg-raised)] px-3 py-1 text-[11px] font-mono text-[var(--text-secondary)] uppercase tracking-wider">
+            Static Baseline Reference Suite · {BASELINE_ILLUSTRATIONS.length} Editions
+          </span>
+          <h2 className="serif text-3xl sm:text-4xl font-medium mt-3 text-[var(--text-primary)]">
+            Original Static Schematics
+          </h2>
+          <p className="text-[13.5px] text-[var(--text-secondary)] mt-2 leading-relaxed">
+            The original 12 baseline architectural diagrams and regulatory schematics before dynamic telemetry and enhanced motion orchestration. Maintained as institutional reference standards.
+          </p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 opacity-90 hover:opacity-100 transition-opacity">
+          {BASELINE_ILLUSTRATIONS.map((ill) => {
+            const isCurrentHero = activeHeroId === ill.id;
+            return (
+              <div
+                key={ill.id}
+                className="group relative flex flex-col justify-between rounded-2xl border border-[var(--line-soft)]/60 bg-[var(--bg-raised)]/40 p-6 transition-all duration-300 hover:border-[var(--line)] hover:bg-[var(--bg-raised)]/70"
+              >
+                {/* Card Top */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="rounded-full border border-[var(--line-soft)] bg-neutral-900 px-2.5 py-0.5 text-[10.5px] font-mono text-[var(--text-secondary)] uppercase tracking-wider">
+                    {ill.badge} · Baseline
+                  </span>
+                  {isCurrentHero && (
+                    <span className="flex items-center gap-1.5 text-[11px] font-mono text-[var(--gold-accent)] font-semibold">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--gold-accent)]" />
+                      Active Hero
+                    </span>
+                  )}
+                </div>
+
+                {/* Illustration SVG Stage */}
+                <Link
+                  href={`/illustrations/${ill.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative mx-auto my-3 w-full max-w-[240px] aspect-square flex items-center justify-center cursor-pointer transition-transform duration-300 group-hover:scale-[1.02] block"
+                  title="Open enlarged view in new tab"
+                >
+                  <IllustrationItem id={ill.id} isMotion={false} />
+                  <span className="absolute bottom-1 right-1 rounded bg-black/75 border border-[var(--line-soft)] px-1.5 py-0.5 text-[9px] font-mono text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-opacity">
+                    Enlarge ↗
+                  </span>
+                </Link>
+
+                {/* Card Content */}
+                <div className="mt-3">
+                  <h3 className="serif text-[20px] font-medium text-[var(--text-primary)] group-hover:text-[var(--gold-accent)] transition-colors">
+                    <Link
+                      href={`/illustrations/${ill.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {ill.name}
+                    </Link>
+                  </h3>
+                  <p className="text-[12px] font-mono text-[var(--text-secondary)] mt-0.5">
+                    {ill.subtitle}
+                  </p>
+                  <p className="text-[13px] text-[var(--text-secondary)] mt-2 line-clamp-2 leading-relaxed">
+                    {ill.description}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="mt-5 pt-3 border-t border-[var(--line-soft)]/50 flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => setInspectItem(ill)}
-                    className="rounded-xl border border-[var(--line-soft)] px-3 py-2 text-[12.5px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--line)] transition-colors"
-                    title="View large architectural blueprint"
+                    onClick={() => handleSetHero(ill.id)}
+                    className="flex-1 rounded-lg py-1.5 px-3 text-[12px] font-medium border border-[var(--line-soft)] text-[var(--text-primary)] hover:border-[var(--gold-accent)] hover:bg-[rgba(214,180,106,0.08)] transition-all cursor-pointer"
                   >
-                    Inspect
+                    {copiedId === ill.id ? (
+                      <span className="text-[var(--gold-accent)] font-semibold">✓ Applied</span>
+                    ) : (
+                      <span>Apply to Hero</span>
+                    )}
                   </button>
+
+                  <Link
+                    href={`/illustrations/${ill.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-lg border border-[var(--line-soft)] px-3 py-1.5 text-[12px] font-mono text-[var(--text-secondary)] hover:text-white hover:border-[var(--gold-accent)] transition-all flex items-center gap-1"
+                    title="Open completely enlarged in a new tab"
+                  >
+                    <span>Inspect</span>
+                    <span className="text-[9px]">↗</span>
+                  </Link>
                 </div>
               </div>
             );
@@ -301,88 +416,6 @@ export default function IllustrationsPage() {
           </button>
         )}
       </div>
-
-      {/* ========================================================================= */}
-      {/* DETAILED INSPECTION MODAL                                                 */}
-      {/* ========================================================================= */}
-      {inspectItem && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md transition-opacity"
-          onClick={() => setInspectItem(null)}
-        >
-          <div
-            className="relative w-full max-w-3xl rounded-3xl border border-[var(--line)] bg-[var(--bg-base)] p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Close Button */}
-            <button
-              type="button"
-              onClick={() => setInspectItem(null)}
-              className="absolute top-5 right-5 h-8 w-8 rounded-full border border-[var(--line-soft)] flex items-center justify-center text-[var(--text-secondary)] hover:text-white hover:border-[var(--gold-accent)] transition-colors"
-            >
-              ✕
-            </button>
-
-            <div className="grid gap-8 md:grid-cols-2 items-center">
-              {/* Left Column: Big Stage SVG */}
-              <div className="relative mx-auto w-full max-w-[340px] aspect-square flex items-center justify-center p-4 rounded-2xl border border-[var(--line-soft)] bg-[var(--bg-raised)]">
-                <IllustrationItem id={inspectItem.id} isMotion={isMotion} />
-              </div>
-
-              {/* Right Column: Narrative & Technical Breakdown */}
-              <div>
-                <span className="rounded-full border border-[var(--line-soft)] bg-[rgba(214,180,106,0.06)] px-3 py-1 text-[11px] font-mono text-[var(--gold-accent)] uppercase tracking-wider">
-                  {inspectItem.categoryLabel} · {inspectItem.badge}
-                </span>
-
-                <h2 className="serif text-3xl font-medium mt-3 text-[var(--text-primary)]">
-                  {inspectItem.name}
-                </h2>
-                <p className="text-[13px] font-mono text-[var(--gold-accent)] mt-1">
-                  {inspectItem.subtitle}
-                </p>
-
-                <p className="text-[14px] text-[var(--text-secondary)] mt-4 leading-relaxed">
-                  {inspectItem.description}
-                </p>
-
-                {/* Detailed Node Breakdowns */}
-                <div className="mt-6 space-y-3 border-t border-[var(--line-soft)] pt-4">
-                  <h4 className="text-[11px] uppercase tracking-wider text-[var(--gold-accent)] font-mono">
-                    Institutional Architecture:
-                  </h4>
-                  {inspectItem.details.map((d, i) => (
-                    <div key={i} className="text-[13px]">
-                      <span className="font-semibold text-[var(--text-primary)] block">
-                        {d.title}
-                      </span>
-                      <span className="text-[var(--text-secondary)] text-[12.5px] mt-0.5 block">
-                        {d.sub}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Modal Action */}
-                <div className="mt-8 flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleSetHero(inspectItem.id);
-                    }}
-                    className="btn btn-gold flex-1 text-center"
-                  >
-                    {activeHeroId === inspectItem.id ? "✓ Currently Active on Hero" : "Apply as Homepage Hero"}
-                  </button>
-                  <Link href="/" className="btn btn-outline">
-                    Go to Homepage →
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

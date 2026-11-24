@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Card, Kicker, Label, Note, Pill, Title } from "./ui";
@@ -13,29 +14,65 @@ const PLAN = [
 ];
 
 export function MarketsFall() {
+  const [activePlan, setActivePlan] = useState<number | null>(0);
+  const [interrupted, setInterrupted] = useState(false);
+
+  // Auto-play: cycle through the 3 plan points every 3.0s until interrupted
+  useEffect(() => {
+    if (interrupted) return;
+    const interval = setInterval(() => {
+      setActivePlan((p) => ((p ?? 0) + 1) % PLAN.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [interrupted]);
+
+  const handleInterrupt = () => {
+    setInterrupted(true);
+  };
+
   return (
-    <div className="d-stack">
-      <Kicker>When markets fall</Kicker>
+    <div className="d-stack" onPointerDown={handleInterrupt}>
+      <div className="flex items-center justify-between">
+        <Kicker>When markets fall</Kicker>
+        <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--text-secondary)]/50">
+          {interrupted ? "Paused" : "Auto-playing in sequence"}
+        </span>
+      </div>
       <Title>Every fund falls sometimes. Our response is decided in advance.</Title>
       <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr]">
-        <Card accent className="flex flex-col gap-6">
+        <Card accent className="flex flex-col gap-6" onMouseEnter={handleInterrupt}>
           <div className="flex items-center justify-between gap-4">
             <Label className="!text-[var(--gold-accent)]">Our plan, decided in advance</Label>
             <Pill tone="gold">In the mandate</Pill>
           </div>
-          {PLAN.map(([t, d], i) => (
-            <div key={t} className="d-rise flex gap-5" style={{ ["--i" as string]: i }}>
-              <span className="serif text-[34px] leading-none" style={{ color: "var(--gold-accent)" }}>
-                {i + 1}
-              </span>
-              <div>
-                <p className="text-[17px] font-semibold" style={{ color: "var(--text-primary)" }}>
-                  {t}
-                </p>
-                <p className="mt-1 text-[14.5px] leading-relaxed secondary">{d}</p>
+          {PLAN.map(([t, d], i) => {
+            const on = activePlan === i;
+            return (
+              <div
+                key={t}
+                onClick={() => {
+                  handleInterrupt();
+                  setActivePlan(i);
+                }}
+                className={`d-rise flex gap-5 p-3.5 rounded-xl border transition-all duration-300 cursor-pointer ${
+                  on
+                    ? "border-[var(--gold-accent)] bg-[rgba(214,180,106,0.08)] shadow-[0_0_16px_rgba(214,180,106,0.15)]"
+                    : "border-transparent hover:border-[var(--line-soft)]"
+                }`}
+                style={{ ["--i" as string]: i }}
+              >
+                <span className="serif text-[34px] leading-none" style={{ color: "var(--gold-accent)" }}>
+                  {i + 1}
+                </span>
+                <div>
+                  <p className="text-[17px] font-semibold" style={{ color: "var(--text-primary)" }}>
+                    {t}
+                  </p>
+                  <p className="mt-1 text-[14.5px] leading-relaxed secondary">{d}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </Card>
         <div className="flex flex-col gap-4">
           <Card className="d-card-dashed flex flex-col gap-3">
@@ -61,12 +98,43 @@ export function MarketsFall() {
 /* ───────────────────────── 7 · What investors would receive ───────────────────────── */
 
 export function Receive() {
+  const [activeItem, setActiveItem] = useState<number | null>(0);
+  const [interrupted, setInterrupted] = useState(false);
+
+  // Auto-play: cycle through the 4 deliverables every 3.0s until interrupted
+  useEffect(() => {
+    if (interrupted) return;
+    const interval = setInterval(() => {
+      setActiveItem((a) => ((a ?? 0) + 1) % 4);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [interrupted]);
+
+  const handleInterrupt = () => {
+    setInterrupted(true);
+  };
+
   return (
-    <div className="d-stack">
-      <Kicker>What investors would receive</Kicker>
+    <div className="d-stack" onPointerDown={handleInterrupt}>
+      <div className="flex items-center justify-between">
+        <Kicker>What investors would receive</Kicker>
+        <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--text-secondary)]/50">
+          {interrupted ? "Paused" : "Auto-playing in sequence"}
+        </span>
+      </div>
       <Title>Full visibility of every decision that affects your capital.</Title>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="d-paper d-rise flex flex-col gap-3" style={{ ["--i" as string]: 0 }}>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" onMouseEnter={handleInterrupt}>
+        {/* Item 0: Quarterly report */}
+        <div
+          onClick={() => {
+            handleInterrupt();
+            setActiveItem(0);
+          }}
+          className={`d-paper d-rise flex flex-col gap-3 rounded-2xl p-6 transition-all duration-300 cursor-pointer ${
+            activeItem === 0 ? "ring-2 ring-[var(--gold-accent)] shadow-[0_0_24px_rgba(214,180,106,0.3)]" : ""
+          }`}
+          style={{ ["--i" as string]: 0 }}
+        >
           <div className="flex items-center justify-between">
             <span className="text-[11.5px] font-bold uppercase tracking-[0.14em]" style={{ color: "#7a5c17" }}>
               Quarterly report
@@ -91,8 +159,19 @@ export function Receive() {
             With the reasoning behind every change.
           </span>
         </div>
+
+        {/* Item 1 & 2: Shariah alert & Purification */}
         <div className="flex flex-col gap-4">
-          <Card className="d-rise flex flex-col gap-2" style={{ ["--i" as string]: 1 }}>
+          <Card
+            onClick={() => {
+              handleInterrupt();
+              setActiveItem(1);
+            }}
+            className={`d-rise flex flex-col gap-2 transition-all duration-300 cursor-pointer ${
+              activeItem === 1 ? "border-[var(--status-breach)] shadow-[0_0_20px_rgba(255,90,90,0.2)]" : ""
+            }`}
+            style={{ ["--i" as string]: 1 }}
+          >
             <div className="flex justify-between">
               <Label className="!text-[var(--status-breach)]">Shariah alert</Label>
               <Label>As it happens</Label>
@@ -104,7 +183,16 @@ export function Receive() {
               If a filing or corporate action puts a holding under review, you are told, and new purchases pause while it is reviewed.
             </span>
           </Card>
-          <Card className="d-rise flex flex-col gap-2" style={{ ["--i" as string]: 2 }}>
+          <Card
+            onClick={() => {
+              handleInterrupt();
+              setActiveItem(2);
+            }}
+            className={`d-rise flex flex-col gap-2 transition-all duration-300 cursor-pointer ${
+              activeItem === 2 ? "border-[var(--status-pass)] shadow-[0_0_20px_rgba(60,203,143,0.2)]" : ""
+            }`}
+            style={{ ["--i" as string]: 2 }}
+          >
             <div className="flex justify-between">
               <Label className="!text-[var(--status-pass)]">Purification statement</Label>
               <Label>Per holding</Label>
@@ -115,7 +203,18 @@ export function Receive() {
             <span className="text-[14px] leading-relaxed secondary">The amount to give to charity for each holding, with the income ratios used to calculate it.</span>
           </Card>
         </div>
-        <Card className="d-rise flex flex-col gap-4 md:col-span-2 lg:col-span-1" style={{ ["--i" as string]: 3 }}>
+
+        {/* Item 3: Decision log */}
+        <Card
+          onClick={() => {
+            handleInterrupt();
+            setActiveItem(3);
+          }}
+          className={`d-rise flex flex-col gap-4 md:col-span-2 lg:col-span-1 transition-all duration-300 cursor-pointer ${
+            activeItem === 3 ? "border-[var(--status-info)] shadow-[0_0_20px_rgba(90,160,255,0.2)]" : ""
+          }`}
+          style={{ ["--i" as string]: 3 }}
+        >
           <div className="flex justify-between">
             <Label className="!text-[var(--status-info)]">Decision log</Label>
             <Label>Every trade</Label>
@@ -213,9 +312,30 @@ const RISKS = [
 ];
 
 export function Governance() {
+  const [activeRisk, setActiveRisk] = useState<number | null>(0);
+  const [interrupted, setInterrupted] = useState(false);
+
+  // Auto-play: cycle through the 6 risk controls every 2.8s until interrupted
+  useEffect(() => {
+    if (interrupted) return;
+    const interval = setInterval(() => {
+      setActiveRisk((r) => ((r ?? 0) + 1) % RISKS.length);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [interrupted]);
+
+  const handleInterrupt = () => {
+    setInterrupted(true);
+  };
+
   return (
-    <div className="d-stack">
-      <Kicker>Governance and risks</Kicker>
+    <div className="d-stack" onPointerDown={handleInterrupt}>
+      <div className="flex items-center justify-between">
+        <Kicker>Governance and risks</Kicker>
+        <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--text-secondary)]/50">
+          {interrupted ? "Paused" : "Auto-playing in sequence"}
+        </span>
+      </div>
       <Title>Governance and risks, stated plainly.</Title>
       <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
         <Card className="flex flex-col gap-4">
@@ -245,23 +365,38 @@ export function Governance() {
             ))}
           </div>
         </Card>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {RISKS.map(([t, r, m], i) => (
-            <Card key={t} className="d-rise flex flex-col gap-1.5 !p-4" style={{ ["--i" as string]: i }}>
-              <p className="flex items-center gap-2 text-[15px] font-semibold" style={{ color: "var(--text-primary)" }}>
-                <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--status-breach)" }} aria-hidden />
-                {t}
-              </p>
-              <p className="text-[13px] secondary">{r}</p>
-              <hr className="d-hr my-1" />
-              <p className="text-[13.5px] leading-snug" style={{ color: "var(--text-primary)" }}>
-                <span className="mr-1 text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: "var(--gold-accent)" }}>
-                  Control
-                </span>
-                {m}
-              </p>
-            </Card>
-          ))}
+        <div className="grid gap-3 sm:grid-cols-2" onMouseEnter={handleInterrupt}>
+          {RISKS.map(([t, r, m], i) => {
+            const on = activeRisk === i;
+            return (
+              <Card
+                key={t}
+                onClick={() => {
+                  handleInterrupt();
+                  setActiveRisk(i);
+                }}
+                className={`d-rise flex flex-col gap-1.5 !p-4 transition-all duration-300 cursor-pointer ${
+                  on
+                    ? "border-[var(--gold-accent)] bg-[rgba(214,180,106,0.08)] shadow-[0_0_16px_rgba(214,180,106,0.15)]"
+                    : "hover:border-[var(--line-soft)]"
+                }`}
+                style={{ ["--i" as string]: i }}
+              >
+                <p className="flex items-center gap-2 text-[15px] font-semibold" style={{ color: "var(--text-primary)" }}>
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--status-breach)" }} aria-hidden />
+                  {t}
+                </p>
+                <p className="text-[13px] secondary">{r}</p>
+                <hr className="d-hr my-1" />
+                <p className="text-[13.5px] leading-snug" style={{ color: "var(--text-primary)" }}>
+                  <span className="mr-1 text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: "var(--gold-accent)" }}>
+                    Control
+                  </span>
+                  {m}
+                </p>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </div>

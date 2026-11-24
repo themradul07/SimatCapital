@@ -1345,24 +1345,60 @@ const HOLDINGS = [
   { t: "CASH", s: "CASH" },
 ];
 const W0 = [10, 8, 7, 5, 9, 7, 6, 8, 6, 7, 6, 7, 14];
-const W1 = [10, 8, 7, 5, 13, 7, 6, 8, 6, 7, 6, 7, 10];
-const W2 = [7, 8, 7, 5, 13, 7, 6, 8, 6, 7, 6, 7, 13];
-const W3 = [7, 8, 9.5, 5, 13, 7, 6, 8, 6, 7, 6, 7, 10.5];
-const SECTOR_PHASES = [
-  { kind: "blocked", tile: 2, amt: 3, w: W0, msg: "NEW BUY · FORGE +3.0% · INDUSTRIALS → 33.0%", res: "✕ BLOCKED PRE-TRADE · 33.0% > 30.0% SECTOR CAP" },
-  { kind: "fill", tile: 4, amt: 4, w: W1, msg: "NEW BUY · NOVA +4.0% · TECHNOLOGY", res: "✓ FILLED · FUNDED FROM CASH BALLAST" },
-  { kind: "trim", tile: 0, amt: 3, w: W2, msg: "REBALANCE · TRIM ALTA −3.0% · FREE HEADROOM", res: "✓ INDUSTRIALS 27.0% · HEADROOM 3.0%" },
-  { kind: "fill", tile: 2, amt: 2.5, w: W3, msg: "NEW BUY · FORGE +2.5% · INDUSTRIALS → 29.5%", res: "✓ FILLED · INSIDE THE 30% CAP" },
-  { kind: "reset", tile: -1, amt: 0, w: W0, msg: "QUARTERLY REBALANCE · RESIZING TO TARGET WEIGHTS", res: "✓ PORTFOLIO RESIZED · ALL LIMITS GREEN" },
-] as const;
+const W1 = [10, 8, 7, 5, 12, 7, 6, 10, 6, 7, 6, 7, 9];
+const W2 = [7, 8, 7, 5, 12, 7, 6, 10, 6, 9, 6, 7, 10];
+const W3 = [7, 8, 9.5, 5, 12, 7, 6, 10, 6, 9, 6, 8.5, 6];
+type SectorOrder = { kind: "blocked" | "fill" | "trim"; tile: number; amt: number };
+// Each phase is a batch of concurrent orders: some fill, some bounce off the cap.
+const SECTOR_PHASES: { orders: SectorOrder[]; w: number[]; msg: string; res: string }[] = [
+  {
+    orders: [
+      { kind: "blocked", tile: 2, amt: 3 },
+      { kind: "fill", tile: 4, amt: 3 },
+      { kind: "fill", tile: 7, amt: 2 },
+    ],
+    w: W1,
+    msg: "3 ORDERS · FORGE +3.0% · NOVA +3.0% · VITA +2.0%",
+    res: "✕ FORGE BLOCKED · IND 33.0% > 30% · ✓ NOVA, VITA FILLED",
+  },
+  {
+    orders: [
+      { kind: "trim", tile: 0, amt: 3 },
+      { kind: "fill", tile: 9, amt: 2 },
+      { kind: "blocked", tile: 3, amt: 4 },
+    ],
+    w: W2,
+    msg: "TRIM ALTA −3.0% · ORBI +2.0% · RAIL +4.0%",
+    res: "✓ ALTA TRIMMED · ORBI FILLED · ✕ RAIL BLOCKED (31.0%)",
+  },
+  {
+    orders: [
+      { kind: "fill", tile: 2, amt: 2.5 },
+      { kind: "blocked", tile: 1, amt: 1 },
+      { kind: "fill", tile: 11, amt: 1.5 },
+    ],
+    w: W3,
+    msg: "3 ORDERS · FORGE +2.5% · KITE +1.0% · TERRA +1.5%",
+    res: "✓ FORGE → IND 29.5% · ✕ KITE BLOCKED (30.5%) · ✓ TERRA",
+  },
+  {
+    orders: [],
+    w: W0,
+    msg: "QUARTERLY REBALANCE · RESIZING TO TARGET WEIGHTS",
+    res: "✓ PORTFOLIO RESIZED · ALL LIMITS GREEN",
+  },
+];
+const ORDER_STAGGER = 0.28; // seconds between concurrent orders in a batch
+const ORDER_LANES = [96, 122]; // y of the two incoming-order lanes
 const SECTORS = ["IND", "TECH", "HLTH", "CONS", "MAT", "CASH"];
 
 function SectorCap({ live, pick }: P) {
   const X = (p: number) => 50 + p * 4;
-  const n = useStep(live, 3600);
+  const n = useStep(live, 2400);
   const phase = live ? n % SECTOR_PHASES.length : 0;
   const ph = SECTOR_PHASES[phase];
-  const w = useTween([...ph.w], live, 900, 1700);
+  const prevW = SECTOR_PHASES[(phase + SECTOR_PHASES.length - 1) % SECTOR_PHASES.length].w;
+  const w = useTween(ph.w, live, 750, 950);
 
   const xs: number[] = [];
   let cum = 0;
@@ -1375,9 +1411,12 @@ function SectorCap({ live, pick }: P) {
   const cash = w[12];
   const top5 = [...w.slice(0, 12)].sort((a, b) => b - a).slice(0, 5).reduce((a, b) => a + b, 0);
 
-  // Incoming order geometry (lane above the strip, drops into place)
-  const blockW = Math.max(10, ph.amt * 4);
-  const targetX = ph.kind === "blocked" ? X(30) - blockW - 2 : ph.tile >= 0 ? X(xs[ph.tile]) : 0;
+  // Incoming orders: targets use the pre-batch layout so they don't drift while the book resizes
+  const prevXs: number[] = [];
+  prevW.reduce((acc, wt) => (prevXs.push(acc), acc + wt), 0);
+  const blockedIdx = ph.orders.findIndex((o) => o.kind === "blocked");
+  const blockedDelay = blockedIdx >= 0 ? blockedIdx * ORDER_STAGGER + 0.75 : 0;
+  const touchedTiles = new Set(ph.orders.filter((o) => o.kind !== "blocked").map((o) => o.tile));
   const gauges = [
     { t: "Largest sector (Industrials)", val: ind, cap: 30, scale: 40, floor: false, status: ind >= 29.95 ? "AT HARD CAP (30.0%)" : `HEADROOM +${(30 - ind).toFixed(1)}%` },
     { t: "Largest five holdings", val: top5, cap: 50, scale: 60, floor: false, status: `COMPLIANT · HEADROOM +${(50 - top5).toFixed(1)}%` },
@@ -1390,28 +1429,39 @@ function SectorCap({ live, pick }: P) {
       <Eyebrow y={56}>PORTFOLIO RISK CONSOLE · HARD SECTOR BARRIER</Eyebrow>
       <Ticker y={76} text={live ? ph.msg : "INDUSTRIALS AT 30.0% · NEXT ORDER WILL BE CHECKED"} live={live} animKey={n} />
 
-      {/* Incoming order */}
+      {/* Incoming orders — 2–3 in flight at once, staggered across two lanes */}
       <Depth d={2.6}>
-        {live && ph.kind !== "reset" && ph.kind !== "trim" && (
-          <g
-            key={n}
-            className={ph.kind === "blocked" ? "ill-order-blocked" : "ill-order-fill"}
-            style={v({ "--x0": "462px", "--x1": `${f(targetX)}px` })}
-          >
-            <rect x="0" y="102" width={blockW} height="16" fill={GOLD} fillOpacity="0.55" stroke={TXT} strokeWidth="1.2" strokeDasharray={ph.kind === "blocked" ? "2 2" : undefined} />
-            <Label x={blockW / 2} y={97} size={7.5} mono weight={700}>
-              {`+${ph.amt}% ${HOLDINGS[ph.tile].t}`}
-            </Label>
-          </g>
-        )}
-        {live && ph.kind === "trim" && (
-          <g key={n} className="ill-order-trim" style={v({ "--x1": `${f(X(xs[0]) + 4)}px` })}>
-            <rect x="0" y="166" width="12" height="56" fill={GOLD} fillOpacity="0.5" stroke={TXT} strokeDasharray="2 2" />
-            <Label x={6} y={160} size={7.5} mono weight={700}>
-              −3% ALTA
-            </Label>
-          </g>
-        )}
+        {live &&
+          ph.orders.map((o, i) => {
+            const delay = `${(i * ORDER_STAGGER).toFixed(2)}s`;
+            if (o.kind === "trim") {
+              return (
+                <g key={`${n}-${i}`} className="ill-order-trim" style={v({ "--x1": `${f(X(prevXs[o.tile]) + 4)}px`, animationDelay: delay })}>
+                  <rect x="0" y="166" width="12" height="56" fill={GOLD} fillOpacity="0.5" stroke={TXT} strokeDasharray="2 2" />
+                  <Label x={6} y={160} size={7.5} mono weight={700}>
+                    {`−${o.amt}% ${HOLDINGS[o.tile].t}`}
+                  </Label>
+                </g>
+              );
+            }
+            const laneY = ORDER_LANES[i % ORDER_LANES.length];
+            const bw = Math.max(10, o.amt * 4);
+            const blocked = o.kind === "blocked";
+            const tx = blocked ? X(30) - bw - 2 : X(prevXs[o.tile]);
+            const dy = blocked ? 148 - (laneY + 14) : 166 - laneY;
+            return (
+              <g
+                key={`${n}-${i}`}
+                className={blocked ? "ill-order-blocked" : "ill-order-fill"}
+                style={v({ "--x0": "462px", "--x1": `${f(tx)}px`, "--dy": `${dy}px`, animationDelay: delay })}
+              >
+                <rect x="0" y={laneY} width={bw} height="14" fill={GOLD} fillOpacity="0.55" stroke={TXT} strokeWidth="1.2" strokeDasharray={blocked ? "2 2" : undefined} />
+                <Label x={bw / 2} y={laneY - 4} size={7.5} mono weight={700}>
+                  {`+${o.amt}% ${HOLDINGS[o.tile].t}`}
+                </Label>
+              </g>
+            );
+          })}
         {!live && (
           <g>
             <rect x={X(30) - 14} y="128" width="12" height="16" fill={GOLD} fillOpacity="0.55" stroke={TXT} strokeDasharray="2 2" className="ill-blink" />
@@ -1427,10 +1477,10 @@ function SectorCap({ live, pick }: P) {
         <path d={`M ${X(0)} 158 L ${X(0)} 150 L ${f(X(ind))} 150`} fill="none" stroke={GOLD} strokeWidth="1.8" />
         <path d={`M ${f(X(ind))} 150 L ${X(30)} 150`} fill="none" stroke={GOLD} strokeOpacity="0.6" strokeWidth="1.2" strokeDasharray="2 3" />
         <line x1={X(30)} x2={X(30)} y1="140" y2="164" stroke={TXT} strokeWidth="2.2" />
-        {live && ph.kind === "blocked" && (
+        {live && blockedIdx >= 0 && (
           <g key={n}>
-            <line x1={X(0)} x2={X(30)} y1="150" y2="150" stroke={TXT} strokeWidth="3.5" className="ill-flash-late" />
-            <circle cx={X(30)} cy="150" r="12" fill="none" stroke={TXT} strokeWidth="1.6" className="ill-burst" style={{ animationDelay: "1.4s" }} />
+            <line x1={X(0)} x2={X(30)} y1="150" y2="150" stroke={TXT} strokeWidth="3.5" className="ill-flash-late" style={{ animationDelay: `${blockedDelay.toFixed(2)}s` }} />
+            <circle cx={X(30)} cy="150" r="12" fill="none" stroke={TXT} strokeWidth="1.6" className="ill-burst" style={{ animationDelay: `${(blockedDelay + 0.05).toFixed(2)}s` }} />
           </g>
         )}
         <Label x={X(30) + 5} y={146} anchor="start" size={8.5} color={GOLD} mono weight={700}>
@@ -1449,7 +1499,7 @@ function SectorCap({ live, pick }: P) {
           const wd = Math.max(0, w[i] * 4 - 2);
           const isCash = hd.s === "CASH";
           const isInd = hd.s === "IND";
-          const touched = live && i === ph.tile && ph.kind !== "blocked";
+          const touched = live && touchedTiles.has(i);
           return (
             <g key={hd.t} className="ill-hover-group cursor-pointer">
               <rect
@@ -1490,7 +1540,7 @@ function SectorCap({ live, pick }: P) {
         <Label x={C} y={240} size={8} color={SUB} mono spacing="0.04em">
           {SECTORS.map((s) => `${s} ${sector(s).toFixed(1)}`).join(" · ")}
         </Label>
-        <g key={n} className={live ? "ill-fade-late" : undefined}>
+        <g key={n} className={live ? "ill-fade-late" : undefined} style={live ? { animationDelay: "1.15s" } : undefined}>
           <Label x={C} y={258} size={9.5} color={GOLD} mono weight={700}>
             {live ? ph.res : "✕ +3.0% PROPOSED ORDER BLOCKED · 33.0% > 30.0%"}
           </Label>

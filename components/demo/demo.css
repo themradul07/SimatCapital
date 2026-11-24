@@ -4,7 +4,7 @@
   position: fixed;
   inset: 0;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   grid-template-columns: minmax(0, 1fr);
   background: var(--bg-base);
   color: var(--text-primary);
@@ -20,19 +20,72 @@
     radial-gradient(50% 40% at 0% 100%, rgba(214, 180, 106, 0.04), transparent 70%);
 }
 
-/* ── bars ── */
+/* ── bars: floating auto-hide header (reveals when hovering upper area) ── */
+.d-top-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* Invisible upper hover catchment zone (top 52px of screen) */
+.d-top-trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Subtle top edge guide line when header is hidden */
+.d-top-trigger::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 2px;
+  background: var(--gold-accent);
+  opacity: 0.28;
+  border-radius: 0 0 2px 2px;
+  transition: opacity 250ms ease;
+}
+
+.d-top-wrapper:hover .d-top-trigger::after,
+.d-top-wrapper.is-revealed .d-top-trigger::after {
+  opacity: 0;
+}
+
 .d-top {
   position: relative;
-  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   height: 64px;
-  padding: 0 16px;
+  padding: 0 20px;
   border-bottom: 1px solid var(--hairline);
-  background: rgba(10, 9, 7, 0.85);
-  backdrop-filter: blur(10px);
+  background: rgba(10, 9, 7, 0.94);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), opacity 240ms ease;
+}
+
+/* Reveal when hovering upper area, focused, or active */
+.d-top-wrapper:hover .d-top,
+.d-top-wrapper:focus-within .d-top,
+.d-top-wrapper.is-revealed .d-top {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .d-badge {
@@ -499,12 +552,13 @@
 
 .cv-fig {
   position: relative;
-  margin: 0 auto;
+  margin: auto;
   width: 100%;
-  max-width: 540px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .cv-glow {
@@ -629,19 +683,21 @@
 }
 
 .cv-hint {
-  grid-column: 1 / -1;
   text-align: center;
   font-size: 11px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-secondary);
   opacity: 0.8;
+  margin-top: 14px;
 }
 
 @media (min-width: 640px) {
   .cv-fig {
     display: block;
     aspect-ratio: 1;
+    width: min(85vw, 520px);
+    max-width: 520px;
   }
 
   .cv-glow {
@@ -688,7 +744,8 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: calc(100% + 6px);
+    top: calc(100% + 14px);
+    margin-top: 0;
   }
 }
 

@@ -13,9 +13,25 @@ const BELIEFS = [
 ];
 
 export function Beliefs() {
-  const [open, setOpen] = useState<number | null>(null);
+  const [open, setOpen] = useState<number | null>(0);
+  const [interrupted, setInterrupted] = useState(false);
+
+  // Auto-play: sequentially expand each principle every 3.2s until interrupted
+  useEffect(() => {
+    if (interrupted) return;
+    const interval = setInterval(() => {
+      setOpen((prev) => ((prev ?? 0) + 1) % BELIEFS.length);
+    }, 3200);
+    return () => clearInterval(interval);
+  }, [interrupted]);
+
+  const handleCardClick = (i: number) => {
+    setInterrupted(true);
+    setOpen((prev) => (prev === i ? null : i));
+  };
+
   return (
-    <div className="d-stack">
+    <div className="d-stack" onPointerDown={() => setInterrupted(true)}>
       <div className="flex flex-col gap-2 border-b pb-5 sm:flex-row sm:items-baseline sm:justify-between" style={{ borderColor: "var(--hairline)" }}>
         <p className="d-label !text-[var(--gold-accent)]">Simat Capital – Investor overview. Confidential.</p>
         <p className="text-[14px] italic secondary">Both strategies currently run on the founder&apos;s own capital.</p>
@@ -29,8 +45,14 @@ export function Beliefs() {
               key={x.t}
               type="button"
               aria-expanded={on}
-              onClick={() => setOpen(on ? null : i)}
-              className={`d-card d-card-btn d-rise flex min-h-[250px] flex-col gap-3 text-left ${on ? "d-card-accent" : ""}`}
+              onClick={() => handleCardClick(i)}
+              onMouseEnter={() => {
+                setInterrupted(true);
+                setOpen(i);
+              }}
+              className={`d-card d-card-btn d-rise flex min-h-[250px] flex-col gap-3 text-left transition-all duration-300 ${
+                on ? "d-card-accent shadow-[0_0_20px_rgba(214,180,106,0.18)]" : ""
+              }`}
               style={{ ["--i" as string]: i }}
             >
               <span className="serif text-[34px] leading-none" style={{ color: "var(--gold-accent)" }}>
@@ -51,6 +73,9 @@ export function Beliefs() {
           );
         })}
       </div>
+      <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--text-secondary)]/50 text-right">
+        {interrupted ? "Paused on selection" : "Auto-playing principles in sequence · hover or click to pause"}
+      </p>
     </div>
   );
 }
@@ -110,21 +135,47 @@ const PROBLEMS = [
 
 export function Problem() {
   const [sel, setSel] = useState(0);
+  const [interrupted, setInterrupted] = useState(false);
+
+  // Auto-play: cycle through problems every 3.8s until interrupted
+  useEffect(() => {
+    if (interrupted) return;
+    const interval = setInterval(() => {
+      setSel((s) => (s + 1) % PROBLEMS.length);
+    }, 3800);
+    return () => clearInterval(interval);
+  }, [interrupted]);
+
+  const handleSelect = (i: number) => {
+    setInterrupted(true);
+    setSel(i);
+  };
+
   const p = PROBLEMS[sel];
   return (
-    <div className="d-stack">
-      <Kicker>The problem</Kicker>
+    <div className="d-stack" onPointerDown={() => setInterrupted(true)}>
+      <div className="flex items-center justify-between">
+        <Kicker>The problem</Kicker>
+        <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--text-secondary)]/50">
+          {interrupted ? "Paused on selection" : "Auto-playing in sequence · click tab to pause"}
+        </span>
+      </div>
       <Title>Shariah investors face problems that screening alone doesn&apos;t solve.</Title>
       <div className="grid gap-5 lg:grid-cols-[minmax(0,360px)_1fr]">
-        <div role="tablist" aria-label="Problems" className="flex flex-col gap-2">
+        <div
+          role="tablist"
+          aria-label="Problems"
+          className="flex flex-col gap-2"
+          onMouseEnter={() => setInterrupted(true)}
+        >
           {PROBLEMS.map((q, i) => (
             <button
               key={q.title}
               role="tab"
               aria-selected={sel === i}
               type="button"
-              onClick={() => setSel(i)}
-              className={`d-row-btn ${sel === i ? "is-on" : ""}`}
+              onClick={() => handleSelect(i)}
+              className={`d-row-btn transition-all duration-300 ${sel === i ? "is-on" : ""}`}
             >
               <span className="serif w-6 text-[20px]" style={{ color: sel === i ? "var(--gold-accent)" : "var(--text-secondary)" }}>
                 {i + 1}
@@ -166,6 +217,22 @@ export function Problem() {
 
 export function WhyHard() {
   const [fell, setFell] = useState(false);
+  const [interrupted, setInterrupted] = useState(false);
+
+  // Auto-play: show initial state for 2.5s, then automatically execute the share price -10% fall
+  useEffect(() => {
+    if (interrupted) return;
+    const timer = setTimeout(() => {
+      setFell(true);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [interrupted]);
+
+  const handleToggleFell = () => {
+    setInterrupted(true);
+    setFell((f) => !f);
+  };
+
   const debt = 3.2;
   const mv = fell ? 9.9 : 11.0;
   const mvRatio = (debt / mv) * 100;
@@ -176,16 +243,24 @@ export function WhyHard() {
     { name: "FTSE Shariah", rule: "Debt ÷ total assets", v: 32.0, lim: 33.33 },
   ];
   const scale = 45;
+
   return (
-    <div className="d-stack">
+    <div className="d-stack" onPointerDown={() => setInterrupted(true)}>
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="d-stack-sm">
           <Kicker>Why Shariah is hard</Kicker>
           <Title>One company. Four rulebooks. Two answers.</Title>
         </div>
-        <button type="button" onClick={() => setFell((f) => !f)} className={`btn ${fell ? "btn-gold" : "btn-outline"} self-start md:self-auto`} aria-pressed={fell}>
-          {fell ? "Undo the fall" : "Share price −10%"}
-        </button>
+        <div className="flex items-center gap-3 self-start md:self-auto">
+          <button
+            type="button"
+            onClick={handleToggleFell}
+            className={`btn ${fell ? "btn-gold" : "btn-outline"} transition-all`}
+            aria-pressed={fell}
+          >
+            {fell ? "Undo the fall" : "Share price −10%"}
+          </button>
+        </div>
       </div>
       <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
         <Card className="flex flex-col gap-3 text-[15px]">
@@ -285,11 +360,16 @@ export function Process() {
     return () => clearInterval(t);
   }, [playing]);
 
+  const handleStepSelect = (idx: number) => {
+    setPlaying(false);
+    setStep(idx);
+  };
+
   const cur = STEPS[step];
   const last = STEPS.length - 1;
 
   return (
-    <div className="d-stack">
+    <div className="d-stack" onPointerDown={() => setPlaying(false)}>
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="d-stack-sm">
           <Kicker>Our process</Kicker>
@@ -298,82 +378,76 @@ export function Process() {
           </p>
           <Title>Six checks. One decision. Every idea.</Title>
         </div>
-        <button type="button" onClick={() => setPlaying((p) => !p)} className="btn btn-outline self-start !min-h-[40px] md:self-auto">
-          {playing ? "Pause" : "Play"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setPlaying((p) => !p)}
+            className="btn btn-outline self-start text-[13px] !py-1.5 !px-3 md:self-auto"
+          >
+            {playing ? "⏸ Pause auto-play" : "▶ Resume auto-play"}
+          </button>
+        </div>
       </div>
-
-      <ol className="d-steps" aria-label="Process steps">
-        {STEPS.map((s, i) => {
-          const state = i === step ? "is-on" : i < step ? "is-done" : "";
-          return (
-            <li key={s.name} className="contents">
-              <button
-                type="button"
-                aria-current={i === step ? "step" : undefined}
-                onClick={() => {
-                  setStep(i);
-                  setPlaying(false);
-                }}
-                className={`d-step ${state} ${i === last ? "d-step-cio" : ""}`}
-              >
-                <span className="d-step-n">{i === last ? "CIO" : `0${i + 1}`}</span>
-                <span className="d-step-name">{s.name}</span>
-              </button>
-            </li>
-          );
-        })}
+      <ol className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7" aria-label="Process steps">
+        {STEPS.map((s, i) => (
+          <li key={s.name}>
+            <button
+              type="button"
+              onClick={() => handleStepSelect(i)}
+              aria-current={step === i ? "step" : undefined}
+              className={`d-step w-full ${step === i ? "is-on" : step > i ? "is-done" : ""}`}
+            >
+              <span className="d-step-n">0{i + 1}</span>
+              <span className="d-step-name">{s.name}</span>
+            </button>
+          </li>
+        ))}
       </ol>
-      <div className="relative h-[2px] w-full" style={{ background: "var(--hairline)" }} aria-hidden>
-        <div className="absolute inset-y-0 left-0 transition-[width] duration-700" style={{ width: `${((step + 1) / STEPS.length) * 100}%`, background: "var(--gold-accent)" }} />
-      </div>
-      <p className="d-label text-center">Learning loop · every outcome is reviewed against its thesis and fed back in</p>
-
-      <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <Card key={step} accent className="d-fade">
-          <div className="flex items-baseline gap-3">
-            <Label className="!text-[var(--gold-accent)]">{step === last ? "Final step · a person decides" : `Step ${step + 1} of 6 · ${cur.kind}`}</Label>
+      <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
+        <Card accent className="d-fade flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <Label className="!text-[var(--gold-accent)]">
+              Step {step + 1} of {STEPS.length} · {cur.kind}
+            </Label>
+            {step === last ? <Pill tone="pass">Final authority</Pill> : <Pill tone="info">System check</Pill>}
           </div>
-          <p className="serif mt-2 text-[28px] leading-tight" style={{ color: "var(--text-primary)" }}>
+          <span className="serif text-[32px] leading-tight" style={{ color: "var(--text-primary)" }}>
             {cur.name}
-          </p>
-          <div className="mt-4 grid gap-5 sm:grid-cols-3">
-            <Detail k="What it does" v={cur.does} />
-            <Detail k="What it checks" v={cur.checks} />
-            <Detail k="Its safeguard" v={cur.guard} />
+          </span>
+          <p className="text-[16px] leading-relaxed secondary">{cur.does}</p>
+          <hr className="d-hr" />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <Label>What is checked</Label>
+              <p className="mt-1 text-[14.5px] leading-relaxed" style={{ color: "var(--text-primary)" }}>
+                {cur.checks}
+              </p>
+            </div>
+            <div>
+              <Label>Guardrail</Label>
+              <p className="mt-1 text-[14.5px] leading-relaxed" style={{ color: "var(--text-primary)" }}>
+                {cur.guard}
+              </p>
+            </div>
           </div>
         </Card>
-        <Card className="flex flex-col gap-2.5">
-          <Label>Activity log · Illustrative</Label>
-          {[0, 1, 2, 3].map((k) => {
-            const idx = step - k;
-            if (idx < 0) return null;
-            const mins = 9 * 60 + 12 + idx * 4;
-            return (
-              <div key={idx} className="flex items-center gap-3 text-[13px]" style={{ opacity: 1 - k * 0.22 }}>
-                <span className="dia !h-[6px] !w-[6px]" aria-hidden />
-                <span className="tabular-nums secondary">
-                  {String(Math.floor(mins / 60)).padStart(2, "0")}:{String(mins % 60).padStart(2, "0")}
-                </span>
-                <span className="truncate" style={{ color: "var(--text-primary)" }}>
-                  {LOG[idx]}
-                </span>
+        <Card className="flex flex-col gap-3 font-mono text-[12.5px]">
+          <Label>Decision audit trail · Live log</Label>
+          <div className="flex flex-col gap-2">
+            {LOG.map((l, i) => (
+              <div
+                key={l}
+                className="flex items-center gap-2 transition-opacity duration-300"
+                style={{ opacity: i <= step ? 1 : 0.35, color: i === step ? "var(--gold-accent)" : "var(--text-secondary)" }}
+              >
+                <span>{i <= step ? "✓" : "○"}</span>
+                <span className="truncate">{l}</span>
               </div>
-            );
-          })}
+            ))}
+          </div>
+          <span className="mt-auto text-[11px] secondary">Immutable record sealed upon CIO sign-off.</span>
         </Card>
       </div>
-    </div>
-  );
-}
-
-function Detail({ k, v }: { k: string; v: string }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label>{k}</Label>
-      <span className="text-[14.5px] leading-relaxed" style={{ color: "var(--text-primary)" }}>
-        {v}
-      </span>
     </div>
   );
 }
@@ -381,26 +455,61 @@ function Detail({ k, v }: { k: string; v: string }) {
 /* ───────────────────────── 5 · Shariah in action ───────────────────────── */
 
 const EVENTS = [
-  ["Spin-off completes", "Honeywell completes the separation of its aerospace business in June 2026."],
-  ["Re-screened", "Debt rises to about 52% of market value, above the Shariah threshold."],
-  ["Flagged, not sold", "New purchases pause. A review opens with the evidence and compliant alternatives."],
-  ["The CIO decides", "Exit, unless the next quarterly filing brings debt back within limits."],
-  ["Recorded", "The decision and its reasons are kept in the decision log."],
+  ["Spun off its advanced materials division", "Honeywell completed the spin-off, altering its asset and debt mix."],
+  ["Debt ratio crossed 52% of market value", "Exceeded the 33% threshold under AAOIFI and the house rules."],
+  ["Flagged the same day", "System alerts the CIO; new purchases paused across all portfolios."],
+  ["Orderly exit window opened", "Holding scheduled for staged liquidation within 90 days."],
 ];
 
 export function ShariahInAction() {
   const [stage, setStage] = useState(0);
+  const [interrupted, setInterrupted] = useState(false);
+
+  // Auto-play: advance through Honeywell events every 2.8s until interrupted
+  useEffect(() => {
+    if (interrupted) return;
+    const interval = setInterval(() => {
+      setStage((s) => {
+        if (s < EVENTS.length - 1) return s + 1;
+        return s;
+      });
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [interrupted]);
+
+  const handleAction = () => {
+    setInterrupted(true);
+    setStage((s) => (s >= EVENTS.length - 1 ? 0 : s + 1));
+  };
+
   const flagged = stage >= 1;
   const decided = stage >= 3;
   const done = stage >= EVENTS.length - 1;
+
   return (
-    <div className="grid items-center gap-8 lg:grid-cols-[1fr_400px] lg:gap-12">
+    <div
+      className="grid items-center gap-8 lg:grid-cols-[1fr_400px] lg:gap-12"
+      onPointerDown={() => setInterrupted(true)}
+    >
       <div className="d-stack">
-        <Kicker>Shariah in action · A real case from 2026</Kicker>
+        <div className="flex items-center justify-between">
+          <Kicker>Shariah in action · A real case from 2026</Kicker>
+          <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--text-secondary)]/50">
+            {interrupted ? "Paused" : "Auto-playing case in sequence"}
+          </span>
+        </div>
         <Title>A spin-off pushed Honeywell over the line. Our process flagged it the same day.</Title>
-        <ol className="flex flex-col gap-3">
+        <ol className="flex flex-col gap-3" onMouseEnter={() => setInterrupted(true)}>
           {EVENTS.map(([t, d], i) => (
-            <li key={t} className="flex items-start gap-4 transition-opacity duration-500" style={{ opacity: i <= stage ? 1 : 0.3 }}>
+            <li
+              key={t}
+              onClick={() => {
+                setInterrupted(true);
+                setStage(i);
+              }}
+              className="flex items-start gap-4 transition-opacity duration-500 cursor-pointer"
+              style={{ opacity: i <= stage ? 1 : 0.3 }}
+            >
               <span
                 className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[13px] font-semibold transition-colors duration-500"
                 style={{
@@ -420,9 +529,11 @@ export function ShariahInAction() {
             </li>
           ))}
         </ol>
-        <button type="button" onClick={() => setStage((s) => (done ? 0 : s + 1))} className="btn btn-gold self-start">
-          {done ? "Replay" : "Next event"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={handleAction} className="btn btn-gold self-start">
+            {done ? "Replay case study" : "Next event"}
+          </button>
+        </div>
       </div>
       <Card className={`flex flex-col gap-3 transition-colors duration-500 ${flagged ? "d-card-breach" : ""}`}>
         <div className="flex justify-between">

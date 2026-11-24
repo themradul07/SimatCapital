@@ -1176,16 +1176,16 @@
   0% { transform: translate(var(--x0), 0); opacity: 0; }
   10% { transform: translate(var(--x0), 0); opacity: 1; }
   42% { transform: translate(var(--x1), 0); }
-  62% { transform: translate(var(--x1), 64px); opacity: 1; }
-  80%, 100% { transform: translate(var(--x1), 64px); opacity: 0; }
+  62% { transform: translate(var(--x1), var(--dy, 64px)); opacity: 1; }
+  80%, 100% { transform: translate(var(--x1), var(--dy, 64px)); opacity: 0; }
 }
 @keyframes illOrderBlocked {
   0% { transform: translate(var(--x0), 0); opacity: 0; }
   10% { transform: translate(var(--x0), 0); opacity: 1; }
   38% { transform: translate(var(--x1), 0); }
-  46% { transform: translate(var(--x1), 30px); }
-  54% { transform: translate(var(--x1), 12px); }
-  60% { transform: translate(var(--x1), 26px); opacity: 1; }
+  46% { transform: translate(var(--x1), var(--dy, 30px)); }
+  54% { transform: translate(var(--x1), calc(var(--dy, 30px) - 18px)); }
+  60% { transform: translate(var(--x1), calc(var(--dy, 30px) - 4px)); opacity: 1; }
   100% { transform: translate(calc(var(--x1) + 30px), -24px); opacity: 0; }
 }
 @keyframes illOrderTrim {
@@ -1217,9 +1217,9 @@
 .ill-gate-pass { animation: illGatePass var(--dur, 6s) linear both; }
 .ill-gate-reject { animation: illGateReject var(--dur, 3s) ease-in both; }
 .ill-orbit-in { animation: illOrbitIn var(--dur, 3s) cubic-bezier(0.5, 0, 0.3, 1) both; }
-.ill-order-fill { animation: illOrderFill 3.2s cubic-bezier(0.45, 0, 0.25, 1) both; }
-.ill-order-blocked { animation: illOrderBlocked 3.2s cubic-bezier(0.45, 0, 0.25, 1) both; }
-.ill-order-trim { animation: illOrderTrim 3.2s ease-in-out both; }
+.ill-order-fill { animation: illOrderFill 1.8s cubic-bezier(0.45, 0, 0.25, 1) both; }
+.ill-order-blocked { animation: illOrderBlocked 1.8s cubic-bezier(0.45, 0, 0.25, 1) both; }
+.ill-order-trim { animation: illOrderTrim 1.6s ease-in-out both; }
 .ill-ingest { animation: illIngest 1.65s ease-in infinite both; }
 .ill-blip { transform-box: fill-box; transform-origin: center; animation: illBlip 8s linear infinite both; }
 .ill-spin-local { transform-box: fill-box; transform-origin: center; animation: illSpin 9s linear infinite; }
