@@ -2,12 +2,12 @@
 
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import { submitForm, type FormKind, type FormState } from "@/app/contact/actions";
+import { submitForm, type FormKind, type FormState } from "@/app/(site)/contact/actions";
 
 const CARDS: { kind: FormKind; title: string; line: string }[] = [
   { kind: "waitlist", title: "Join the waitlist", line: "Register non-binding interest and hear from Eesaa personally." },
   { kind: "enquiry", title: "Make an enquiry", line: "Ask a question about Simat Capital." },
-  { kind: "demo", title: "Request a demo", line: "A personal walkthrough of the platform with the founder." },
+  { kind: "demo", title: "Request a demo", line: "The confidential investor overview, with a walkthrough from the founder on request." },
 ];
 
 const SUCCESS: Record<FormKind, string> = {

@@ -6,7 +6,7 @@ import type { CSSProperties, ReactNode } from "react";
  * Process & Proof illustrations — fifteen diagrams of how Simat Capital actually works.
  *
  * Unlike the metaphor set (sextant, portico, tree…), every drawing here carries real labels,
- * thresholds and sequences taken from the developer brief and the investor / Shariah Ops demos:
+ * thresholds and sequences taken from the developer brief and the investor demo:
  * the four Shariah screens, the eleven pre-trade checks, the 90-day grace period, purification
  * per tax lot, the tamper-evident record and so on. Figures marked illustrative in the demos are
  * labelled illustrative here too.
@@ -413,7 +413,7 @@ export default function ProcessIllustration({ id, uid, isMotion, activeDetail, o
     }
 
     // ---------------------------------------------------------------------------------------
-    // 6. PURIFICATION FLOW — per tax lot (Shariah Ops module 1)
+    // 6. PURIFICATION FLOW — per tax lot
     // ---------------------------------------------------------------------------------------
     case "purification-flow":
       return (
@@ -474,7 +474,7 @@ export default function ProcessIllustration({ id, uid, isMotion, activeDetail, o
       );
 
     // ---------------------------------------------------------------------------------------
-    // 7. GRACE CLOCK — 90-day breach manager (Shariah Ops module 2)
+    // 7. GRACE CLOCK — 90-day breach manager
     // ---------------------------------------------------------------------------------------
     case "grace-clock": {
       const R = 150;
@@ -712,7 +712,7 @@ export default function ProcessIllustration({ id, uid, isMotion, activeDetail, o
       ];
       return (
         <g>
-          <Eyebrow y={58}>INVESTMENT COMMITTEE · FIXED ORDER</Eyebrow>
+          <Eyebrow y={58}>CHALLENGE STAGE · DISSENT RECORDED</Eyebrow>
           <circle cx={cx} cy={360} r="44" fill={BG} stroke={GOLD} strokeWidth="1.5" />
           {voices.map((vc, i) => {
             const th = 180 - i * 45;

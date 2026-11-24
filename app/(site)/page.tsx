@@ -7,13 +7,14 @@ import {
   ChapterMethod,
   ChapterDiscipline,
   ChapterStrategies,
+  ChapterReceive,
   ChapterFounder,
   Closing,
 } from "@/components/home/Sections";
 
 /**
- * Home (brief, Section 7): seven chapters told as one story, plus hero and closing.
- * A gold thread runs down the left margin from Chapter I to Chapter VII.
+ * Home (brief, Section 7): chapters told as one story, plus hero and closing.
+ * A gold thread runs down the left margin.
  */
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
         <ChapterMethod />
         <ChapterDiscipline />
         <ChapterStrategies />
+        <ChapterReceive />
         <ChapterFounder />
       </StoryThread>
       <Closing />

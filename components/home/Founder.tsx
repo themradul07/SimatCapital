@@ -35,17 +35,18 @@ export default function Founder({ condensed = false }: { condensed?: boolean }) 
         <p className="mt-1 text-[16px]" style={{ color: "var(--gold-accent)" }}>
           Founder and Chief Investment Officer
         </p>
-        {/* Credentials [Recommended] */}
-        <div className="mt-5 space-y-1 text-[15px] secondary">
-          <p>BSc Finance and Investment, De Montfort University</p>
-          <p>Investment consulting, Aon</p>
-          <p>CFA Level I candidate</p>
-        </div>
-        {!condensed && (
-          <p className="body mt-5">
-            Eesaa founded Simat Capital in 2021 to answer the question that opens this page. He runs both strategies on his own capital today.
-          </p>
-        )}
+
+        <p className="body mt-5 text-[15.5px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+          I have managed my own capital since 2021, through rising rates, the 2022 sell-off and the AI boom. I invest like an owner, not a trader: protect capital first, then let a small number of exceptional, genuinely Shariah-compliant companies compound. Every position is valued before it is bought, sized so no single mistake defines the outcome, and comes with a plan written before markets turn. Built for families who measure wealth in generations, not quarters.
+        </p>
+
+        <p
+          className="serif mt-7 border-l-2 py-1 pl-5 text-[21px] leading-snug md:text-[23px]"
+          style={{ borderColor: "var(--gold-accent)", color: "var(--text-primary)" }}
+        >
+          Both strategies run on the founder&apos;s own capital, through the same process described here.
+        </p>
+
         {FLAGS.founderLinkedIn && (
           <a
             href={FLAGS.founderLinkedIn}

@@ -78,7 +78,7 @@ export function DemoExperience() {
       <iframe
         src="/interactive-demo/index.html"
         className="block w-full min-h-0 flex-1 border-0 bg-[#0A0A0A]"
-        title="Simat Capital & Shariah Ops Unified Horizontal Platform"
+        title="Simat Capital — Confidential Investor Overview"
         allow="fullscreen; autoplay"
       />
     </div>

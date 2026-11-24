@@ -11,7 +11,7 @@ import { useInView } from "../useInView";
 const NODES = [
   { title: "Signals", sub: "Filings, results, prices and events across the UK, US and Japan", detail: "Monitored continuously; any change triggers a review" },
   { title: "Research engine", sub: "Specialised models for valuation, risk, Shariah and catalysts", detail: "Output: a documented thesis with a fair-value range" },
-  { title: "Investment committee", sub: "Bull and bear cases argued in full", detail: "Dissent is recorded, not discarded" },
+  { title: "Challenge stage", sub: "A full bear case is written and tested for every idea", detail: "Dissent is recorded, not discarded" },
   { title: "Systematic controls", sub: "Position, sector, liquidity, cash and Shariah checks", detail: "Any failed or uncertain check stops the trade" },
   { title: "CIO decision", sub: "Approve or reject, with reasons recorded", detail: "Approval is bound to one exact order and expires if unused" },
   { title: "Execution and record", sub: "Single authorised order route, reconciled with the broker", detail: "Every figure traceable to stored data" },

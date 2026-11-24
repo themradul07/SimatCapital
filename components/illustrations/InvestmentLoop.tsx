@@ -15,7 +15,7 @@ const STEPS = [
   "Fair-value range revised",
   "Risk and Shariah tested",
   "Bear case written",
-  "Committee debates; dissent recorded",
+  "Challenge stage: full bear case written; dissent recorded",
   "Sized, costed proposal",
   "CIO approves or rejects",
   "Outcome tracked against the thesis",

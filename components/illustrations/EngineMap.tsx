@@ -28,7 +28,7 @@ const GROUPS = [
   {
     name: "Decision and reporting",
     tiles: [
-      ["Investment committee", "Argues both sides, records dissent"],
+      ["Challenge stage", "Full bear case written & tested; dissent recorded"],
       ["Portfolio construction", "Sizes and costs each proposal"],
       ["Performance and attribution", "Measures outcomes against forecasts"],
       ["Reporting", "Daily, quarterly and annual records"],

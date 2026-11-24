@@ -608,7 +608,7 @@
   .audience-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 20px 24px;
     border: 1px solid var(--hairline);
     background: var(--bg-raised);

@@ -13,6 +13,7 @@ const COLUMNS = [
       "Systematic pre-trade controls with verified CIO approval",
       "Shariah screening on a recognised methodology, stored with every decision",
       "Both strategies running on the founder's own capital, reconciled and recorded",
+      "Broker and custody with Interactive Brokers",
     ],
   },
   {
@@ -21,8 +22,9 @@ const COLUMNS = [
     items: [
       // [Confirm] hidden until Eesaa confirms
       ...(FLAGS.showCompanyIncorporation ? ["Company incorporation"] : []),
-      "Independent security review",
+      "Shariah governance, being formalised",
       "Legal and regulatory structure for external capital",
+      "Independent administrator and auditor, before any outside capital",
     ],
   },
   {

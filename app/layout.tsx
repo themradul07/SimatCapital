@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/site/Header";
-import Footer from "@/components/site/Footer";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -37,19 +35,15 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Root layout: fonts and document shell only.
+ * The website chrome (header, footer) lives in app/(site)/layout.tsx, so the
+ * standalone investor demo at /demo renders full screen with none of it.
+ */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-GB" className={`${cormorant.variable} ${inter.variable}`}>
-      <body className="flex min-h-screen flex-col">
-        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-[var(--bg-base)] focus:p-3">
-          Skip to content
-        </a>
-        <Header />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
-      </body>
+      <body className="flex min-h-screen flex-col">{children}</body>
     </html>
   );
 }

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 const CHAPTERS = [
   { id: "status", label: "Where we stand today" },
   { id: "process", label: "From idea to decision" },
-  { id: "engine", label: "Our research engine" },
+  { id: "engine", label: "How ideas are researched" },
   { id: "shariah", label: "Shariah at every stage" },
   { id: "governance", label: "Controls and oversight" },
   { id: "measurement", label: "Strategies and metrics" },
@@ -55,12 +55,12 @@ function Lines({ items }: { items: string[] }) {
 }
 
 const CONTROLS = [
-  ["Pre-trade checks", "Eleven checks run before any order reaches approval."],
-  ["Single order route", "One authorised service sends orders; research models cannot."],
-  ["Bound approval", "Each approval covers one exact order; any change cancels it."],
-  ["Approval window", "Unused approvals expire."],
-  ["Reconciliation", "Accounts reconciled with the broker every day."],
-  ["Audit trail", "Every proposal, rejection and approval stored with its reasoning."],
+  ["Pre-trade checks", "Shariah status, limits, liquidity and trading cost are checked before any order reaches the CIO."],
+  ["CIO approval", "The CIO approves every trade. Any change to an order needs a fresh approval."],
+  ["No automatic selling", "A breach opens a review with the evidence. Nothing is sold automatically."],
+  ["Custody", "Assets are held with Interactive Brokers, and accounts are reconciled with the broker every day."],
+  ["Limits", "Limits never loosen after a good quarter; any change is proposed, reviewed and recorded."],
+  ["Decision log", "Every proposal, rejection and approval is stored with its reasoning."],
 ];
 
 const FIVE_QUESTIONS = [
@@ -76,12 +76,11 @@ const SHARIAH_POINTS = [
   "Re-screened on every new filing and each quarter",
   "Purification calculated per holding, held in a ledger, reported quarterly",
   "Uncertain cases excluded until resolved, with the decision recorded",
-  "Adaptable to a client's own Shariah standard where required",
 ];
 
 const GOVERNANCE = [
   "The founder sets the mandate and makes every final decision",
-  "Strong results never loosen risk limits automatically; changes are proposed, reviewed and recorded",
+  "Shariah governance is being formalised; until then, screening results are treated as provisional",
   "No trade quota; cash is held when ideas are scarce",
 ];
 
@@ -115,7 +114,8 @@ const FAQS: { q: string; a: ReactNode }[] = [
     a: "Every company passes four screens under a recognised methodology before it can be proposed, and is re-screened on every new filing.",
   },
   { q: "How is purification handled?", a: "Calculated for every holding, recorded in a ledger and reported quarterly." },
-  { q: "What role does technology play?", a: "It researches, tests and records. It cannot place an order or make a decision." },
+  { q: "Who decides?", a: "The founder and CIO makes every investment decision. Research tools gather evidence and record reasoning; they cannot place an order." },
+  { q: "Where are assets held?", a: "With Interactive Brokers. Accounts are reconciled with the broker every day." },
   {
     q: "How is my information protected?",
     a: (
@@ -145,7 +145,7 @@ export default function Institutions() {
               What an allocator would ask, answered plainly.
             </p>
             <div className="fade-in mt-28" style={{ ["--d" as string]: "300ms" }}>
-              <Link href="/contact#demo" className="btn btn-gold">
+              <Link href="/demo" className="btn btn-gold">
                 Request a demo
               </Link>
             </div>
@@ -192,8 +192,8 @@ export default function Institutions() {
             <Ch
               id="engine"
               n={3}
-              title="Specialised research models. One discipline each."
-              summary="Each model covers one discipline, works from stored data and records its reasoning. None can place an order."
+              title="Research that serves one decision-maker."
+              summary="Our research engine supports the CIO: it gathers evidence, tests each case and records its reasoning. It cannot place an order or make a decision."
             >
               <EngineMap />
               <div className="mt-14">

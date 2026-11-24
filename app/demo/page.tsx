@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-import { DemoExperience } from "@/components/demo/DemoExperience";
+import InvestorDemo from "@/components/demo/InvestorDemo";
 
 /**
- * Interactive Demo — Unified horizontal platform combining Simat Capital (Fund Strategy)
- * and Shariah Ops (Automated Compliance & Ops Platform) with live 6-step engine.
- * Private: shared after a demo request, kept out of search engines.
+ * Simat Capital investor overview. Standalone and confidential: shared from the
+ * website's "Request a demo" button or sent after an enquiry. Kept out of search engines.
  */
 export const metadata: Metadata = {
-  title: "Interactive Demo — Simat Capital & Shariah Ops",
-  description: "A confidential, interactive walkthrough of the unified Simat Capital & Shariah Ops platform.",
-  robots: { index: false, follow: false },
+  title: { absolute: "Investor overview · Simat Capital" },
+  description: "A confidential overview of Simat Capital's beliefs, process, risk controls and governance.",
+  robots: { index: false, follow: false, nocache: true },
 };
 
 export default function DemoPage() {
-  return <DemoExperience />;
+  return <InvestorDemo />;
 }

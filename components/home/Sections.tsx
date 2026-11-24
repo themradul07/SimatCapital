@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Chapter from "./Chapter";
 import Reveal from "../Reveal";
-import HeroMark from "../illustrations/HeroMark";
+import DynamicHeroIllustration from "../illustrations/DynamicHeroIllustration";
 import ThreeBranch from "../illustrations/ThreeBranch";
 import OpportunityCircles from "../illustrations/OpportunityCircles";
 import DecisionEngine from "../illustrations/DecisionEngine";
@@ -15,7 +15,7 @@ export function Hero() {
       <div className="wrap grid items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
         <div>
           <h1 className="h1 fade-in" style={{ ["--d" as string]: "100ms" }}>
-            Shariah-compliant alpha. <span className="em-gold">Institutional discipline.</span>
+            Shariah-compliant global equity. <span className="em-gold">Institutional discipline.</span>
           </h1>
           <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "200ms" }}>
             Proprietary research, systematic controls and human judgement applied to Shariah global equity.
@@ -24,26 +24,26 @@ export function Hero() {
             <Link href="/contact#waitlist" className="btn btn-gold">
               Join the waitlist
             </Link>
-            <Link href="/contact#demo" className="text-link">
+            <Link href="/demo" className="text-link">
               Request a demo
             </Link>
           </div>
 
           {/* Two Audience Routing Cards with refined hover effects */}
           <div className="fade-in mt-10 grid gap-4 sm:grid-cols-2" style={{ ["--d" as string]: "360ms" }}>
-            <Link href="/private-investors" className="audience-card">
-              <div className="flex items-center justify-between">
-                <span className="serif text-[20px] font-medium" style={{ color: "var(--text-primary)" }}>For Individuals</span>
-                <span className="text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>Explore</span>
-              </div>
-              <p className="text-[14px] secondary mt-2">Plain words, about two minutes.</p>
-            </Link>
             <Link href="/institutions" className="audience-card">
               <div className="flex items-center justify-between">
                 <span className="serif text-[20px] font-medium" style={{ color: "var(--text-primary)" }}>For Family Offices and Institutions</span>
                 <span className="text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>Review</span>
               </div>
               <p className="text-[14px] secondary mt-2">Process, controls and governance in full.</p>
+            </Link>
+            <Link href="/private-investors" className="audience-card">
+              <div className="flex items-center justify-between">
+                <span className="serif text-[20px] font-medium" style={{ color: "var(--text-primary)" }}>For Individuals</span>
+                <span className="text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>Explore</span>
+              </div>
+              <p className="text-[14px] secondary mt-2">Plain words, about two minutes.</p>
             </Link>
           </div>
 
@@ -52,7 +52,7 @@ export function Hero() {
           </p>
         </div>
         <div className="px-10 sm:px-24 lg:px-16">
-          <HeroMark />
+          <DynamicHeroIllustration />
         </div>
       </div>
     </section>
@@ -109,7 +109,7 @@ export function ChapterEdge() {
         reverse
         text={
           <>
-            <h2 className="h2">Alpha where others are not looking.</h2>
+            <h2 className="h2">Where we look for opportunity.</h2>
             <p className="body mt-6">
               We focus on companies the market under-studies, where original research and strict Shariah discipline matter most.
             </p>
@@ -195,6 +195,59 @@ export function ChapterStrategies() {
   );
 }
 
+export function ChapterReceive({ thread = true }: { thread?: boolean }) {
+  return (
+    <Chapter id="receive" thread={thread} eyebrow="What investors would receive">
+      <Reveal className="mt-6 max-w-[760px]">
+        <h2 className="h2">
+          Full visibility of every decision that affects your capital.
+        </h2>
+        <p className="body mt-6">
+          Reporting designed for family offices and allocators: holdings, Shariah status, purification and the written reasoning behind every decision.
+        </p>
+      </Reveal>
+      <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="panel p-6">
+          <span className="dia" aria-hidden />
+          <h3 className="serif mt-4 text-[20px]" style={{ color: "var(--text-primary)" }}>
+            Quarterly report
+          </h3>
+          <p className="mt-2 text-[14px] secondary">
+            Holdings and weights in full, with the written reasoning behind every change.
+          </p>
+        </div>
+        <div className="panel p-6">
+          <span className="dia" aria-hidden />
+          <h3 className="serif mt-4 text-[20px]" style={{ color: "var(--text-primary)" }}>
+            Shariah alerts
+          </h3>
+          <p className="mt-2 text-[14px] secondary">
+            Notice when a filing or corporate action puts a holding under review. New purchases pause while it is reviewed.
+          </p>
+        </div>
+        <div className="panel p-6">
+          <span className="dia" aria-hidden />
+          <h3 className="serif mt-4 text-[20px]" style={{ color: "var(--text-primary)" }}>
+            Purification statement
+          </h3>
+          <p className="mt-2 text-[14px] secondary">
+            The amount to give to charity for each holding, with the income ratios used to calculate it.
+          </p>
+        </div>
+        <div className="panel p-6">
+          <span className="dia" aria-hidden />
+          <h3 className="serif mt-4 text-[20px]" style={{ color: "var(--text-primary)" }}>
+            Decision log
+          </h3>
+          <p className="mt-2 text-[14px] secondary">
+            Every trade and every rejected idea, recorded with its evidence and the CIO&apos;s decision.
+          </p>
+        </div>
+      </div>
+    </Chapter>
+  );
+}
+
 export function ChapterFounder() {
   return (
     <Chapter id="founder" eyebrow="The founder">
@@ -219,7 +272,7 @@ export function Closing() {
             <Link href="/contact#enquiry" className="text-link">
               Make an enquiry
             </Link>
-            <Link href="/contact#demo" className="text-link">
+            <Link href="/demo" className="text-link">
               Request a demo
             </Link>
           </div>
