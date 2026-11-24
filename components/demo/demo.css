@@ -494,3 +494,283 @@
     animation: none !important;
   }
 }
+
+/* ───────────── Cover: the mark in four pieces ───────────── */
+
+.cv-fig {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 540px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.cv-glow {
+  position: absolute;
+  left: 50%;
+  top: 130px;
+  width: 340px;
+  height: 340px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(214, 180, 106, 0.22), rgba(214, 180, 106, 0.05) 50%, transparent 70%);
+  animation: cvBreathe 6s ease-in-out infinite;
+}
+
+.cv-mark {
+  grid-column: 1 / -1;
+  justify-self: center;
+  position: relative;
+  width: 220px;
+  aspect-ratio: 1;
+  margin: 20px 0 24px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.cv-mark:focus-visible {
+  outline: 2px solid var(--gold-accent);
+  outline-offset: 12px;
+}
+
+.cv-piece {
+  position: absolute;
+  inset: 0;
+  background: url("/simat-mark.png") center / contain no-repeat;
+  transition:
+    transform 1100ms var(--ease) calc(var(--i) * 70ms),
+    opacity 900ms var(--ease) calc(var(--i) * 70ms),
+    filter 300ms var(--ease),
+    scale 300ms var(--ease);
+  will-change: transform;
+}
+
+.cv-scattered .cv-piece {
+  opacity: 0;
+  transform: translate(calc(var(--dx) * 70%), calc(var(--dy) * 70%)) rotate(calc(var(--dx) * var(--dy) * 28deg)) scale(0.7);
+}
+
+.cv-whole .cv-piece {
+  opacity: 1;
+  transform: none;
+}
+
+.cv-split .cv-piece {
+  opacity: 1;
+  transform: translate(calc(var(--dx) * 14%), calc(var(--dy) * 14%));
+  animation: cvFloat 5s ease-in-out calc(1.2s + var(--i) * 0.6s) infinite;
+}
+
+.cv-piece.is-on {
+  filter: brightness(1.2) saturate(1.1);
+  scale: 1.05;
+}
+
+.cv-piece.is-dim {
+  opacity: 0.35;
+}
+
+.cv-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  padding: 12px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  background: rgba(21, 18, 14, 0.6);
+  opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 600ms var(--ease) calc(500ms + var(--i) * 90ms),
+    translate 600ms var(--ease) calc(500ms + var(--i) * 90ms),
+    border-color 300ms var(--ease),
+    background-color 300ms var(--ease);
+  pointer-events: none;
+}
+
+.cv-split .cv-label {
+  opacity: 1;
+  translate: 0 0;
+  pointer-events: auto;
+}
+
+.cv-label.is-on {
+  border-color: var(--gold-accent);
+  background: rgba(214, 180, 106, 0.08);
+}
+
+.cv-label:focus-visible {
+  outline: 2px solid var(--gold-accent);
+  outline-offset: 2px;
+}
+
+.cv-num {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--gold-accent);
+}
+
+.cv-name {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.cv-text {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.cv-hint {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+@media (min-width: 640px) {
+  .cv-fig {
+    display: block;
+    aspect-ratio: 1;
+  }
+
+  .cv-glow {
+    top: 50%;
+    width: 70%;
+    height: 70%;
+  }
+
+  .cv-mark {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 46%;
+    margin: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  .cv-label {
+    position: absolute;
+    width: 36%;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .cv-label-0 { left: 0; top: 0; }
+  .cv-label-1 { right: 0; top: 0; text-align: right; align-items: flex-end; }
+  .cv-label-2 { right: 0; bottom: 0; text-align: right; align-items: flex-end; }
+  .cv-label-3 { left: 0; bottom: 0; }
+
+  /* the description opens on hover / focus to keep the corners quiet */
+  .cv-text {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 400ms var(--ease), opacity 300ms var(--ease);
+  }
+
+  .cv-label.is-on .cv-text {
+    max-height: 80px;
+    opacity: 1;
+  }
+
+  .cv-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+  }
+}
+
+.cv-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: var(--line-soft);
+}
+
+.cv-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px;
+  background: var(--bg-raised);
+}
+
+.cv-fact dd {
+  margin: 0;
+}
+
+@media (min-width: 1024px) {
+  .cv-facts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.cv-agenda {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cv-agenda button {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 14px;
+  color: var(--text-primary);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  transition: border-color 300ms var(--ease), background-color 300ms var(--ease);
+}
+
+.cv-agenda button:hover,
+.cv-agenda button:focus-visible {
+  border-color: var(--gold-accent);
+  background: rgba(214, 180, 106, 0.06);
+}
+
+.cv-agenda-n {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 17px;
+  color: var(--gold-accent);
+}
+
+@keyframes cvFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -5px; }
+}
+
+@keyframes cvBreathe {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-piece,
+  .cv-label,
+  .cv-glow {
+    animation: none !important;
+    transition: none !important;
+  }
+}

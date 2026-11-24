@@ -4,15 +4,17 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { Mark } from "@/components/site/Logo";
 import { Beliefs, Problem, WhyHard, Process, ShariahInAction } from "./slidesA";
 import { MarketsFall, Receive, Founder, Governance, Closing } from "./slidesB";
+import Cover from "./Cover";
 import ProcessWalkthrough from "./ProcessWalkthrough";
 import ImportantInfo from "./ImportantInfo";
 import "./demo.css";
 
 /**
- * Simat Capital investor overview: ten slides, full screen, no website chrome.
- * Navigation: arrow keys, swipe, the footer controls, or #1–#10 in the URL.
+ * Simat Capital investor overview: a cover plus ten slides, full screen, no website chrome.
+ * Navigation: arrow keys, swipe, the footer controls, or #1–#11 in the URL.
  */
 const TITLES = [
+  "Welcome",
   "Our beliefs",
   "The problem",
   "Why Shariah is hard",
@@ -117,6 +119,7 @@ export default function InvestorDemo() {
   };
 
   const slides: ReactNode[] = [
+    <Cover key="0" onStart={() => go(1)} onJump={go} chapters={TITLES.slice(1)} />,
     <Beliefs key="1" />,
     <Problem key="2" />,
     <WhyHard key="3" />,
