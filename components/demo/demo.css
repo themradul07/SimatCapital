@@ -593,7 +593,7 @@
 .cv-piece {
   position: absolute;
   inset: 0;
-  background: url("/simat-mark.png") center / contain no-repeat;
+  background: url("/goooood.svg") center / contain no-repeat;
   transition:
     transform 1100ms var(--ease) calc(var(--i) * 70ms),
     opacity 900ms var(--ease) calc(var(--i) * 70ms),

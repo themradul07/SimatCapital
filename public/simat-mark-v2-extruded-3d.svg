@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 360" fill="none" role="img" aria-label="Simat Capital mark - Curved 3D Metallic Gold">
+  <defs>
+    <!-- High-contrast polished 24k gold base gradient -->
+    <linearGradient id="v2-gold-base" gradientUnits="userSpaceOnUse" x1="55" y1="305" x2="305" y2="55">
+      <stop offset="0%" stop-color="#8C6214" />
+      <stop offset="22%" stop-color="#D4A63B" />
+      <stop offset="45%" stop-color="#FCE48D" />
+      <stop offset="60%" stop-color="#FFF4C2" />
+      <stop offset="78%" stop-color="#C89930" />
+      <stop offset="100%" stop-color="#F7DC7C" />
+    </linearGradient>
+
+    <!-- Inner ridge / spine highlight gradient -->
+    <linearGradient id="v2-ridge-grad" gradientUnits="userSpaceOnUse" x1="70" y1="70" x2="290" y2="290">
+      <stop offset="0%" stop-color="#FFFDF2" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#FFE898" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#B88725" stop-opacity="0.6" />
+    </linearGradient>
+
+    <!-- Soft grounded drop shadow -->
+    <filter id="v2-cast-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#000000" flood-opacity="0.85" result="ambient" />
+      <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-color="#0A0600" flood-opacity="0.75" result="contact" />
+      <feMerge>
+        <feMergeNode in="ambient" />
+        <feMergeNode in="contact" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Smooth 3D domed/chiseled metallic lighting filter -->
+    <filter id="v2-sculpted-gold" x="-15%" y="-15%" width="130%" height="130%">
+      <!-- Smooth heightmap peaking along the center spine of each bar -->
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5.0" result="dome" />
+
+      <!-- Warm diffuse directional shading -->
+      <feDiffuseLighting in="dome" surfaceScale="5.5" diffuseConstant="1.15" lighting-color="#FFE9A3" result="diffuse">
+        <feDistantLight azimuth="225" elevation="42" />
+      </feDiffuseLighting>
+      <feComposite in="diffuse" in2="SourceAlpha" operator="in" result="diffuseClip" />
+
+      <!-- Crisp mirror-gold specular crest along the curved ridge -->
+      <feSpecularLighting in="dome" surfaceScale="6.8" specularConstant="1.4" specularExponent="28" lighting-color="#FFFDF0" result="spec">
+        <feDistantLight azimuth="225" elevation="52" />
+      </feSpecularLighting>
+      <feComposite in="spec" in2="SourceAlpha" operator="in" result="specClip" />
+
+      <!-- Blend base gold with diffuse shading, then add specular hotspot -->
+      <feBlend in="SourceGraphic" in2="diffuseClip" mode="hard-light" result="shaded" />
+      <feComposite in="shaded" in2="specClip" operator="arithmetic" k1="0" k2="1" k3="0.82" k4="0" result="metallic" />
+
+      <!-- Deepen outer curved rim for crisp 3D separation -->
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="rimBlur" />
+      <feComposite in="SourceAlpha" in2="rimBlur" operator="out" result="rimMask" />
+      <feFlood flood-color="#3A2404" flood-opacity="0.72" result="darkBronze" />
+      <feComposite in="darkBronze" in2="rimMask" operator="in" result="rimShade" />
+
+      <feMerge>
+        <feMergeNode in="metallic" />
+        <feMergeNode in="rimShade" />
+      </feMerge>
+    </filter>
+
+    <!-- Curved-corner 3D mark path with smooth Bezier fillets at every bend and tip -->
+    <path
+      id="v2-mark"
+      d="M 72 79 Q 72 72 79 72 H 213 Q 216 72 216 75 V 93 Q 216 96 213 96 H 99 Q 96 96 96 99 V 213 Q 96 216 99 216 H 210 Q 216 216 216 210 V 198 Q 216 192 210 192 H 123 Q 120 192 120 189 V 126 Q 120 120 126 120 H 237 Q 240 120 240 123 V 141 Q 240 144 237 144 H 147 Q 144 144 144 147 V 165 Q 144 168 147 168 H 234 Q 240 168 240 174 V 234 Q 240 240 234 240 H 99 Q 96 240 96 243 V 261 Q 96 264 99 264 H 261 Q 264 264 264 261 V 99 Q 264 96 261 96 H 243 Q 240 96 240 93 V 75 Q 240 72 243 72 H 281 Q 288 72 288 79 V 281 Q 288 288 281 288 H 79 Q 72 288 72 281 Z"
+    />
+
+    <clipPath id="v2-inside">
+      <use href="#v2-mark" />
+    </clipPath>
+  </defs>
+
+  <!-- 3D Extruded Dark Bronze Body & Grounded Shadow -->
+  <g filter="url(#v2-cast-shadow)">
+    <g transform="translate(0, 9) rotate(45 180 180)"><use href="#v2-mark" fill="#1F1403" stroke="#1F1403" stroke-width="3" stroke-linejoin="round" /></g>
+    <g transform="translate(0, 7.2) rotate(45 180 180)"><use href="#v2-mark" fill="#332106" stroke="#332106" stroke-width="3" stroke-linejoin="round" /></g>
+    <g transform="translate(0, 5.4) rotate(45 180 180)"><use href="#v2-mark" fill="#4B310A" stroke="#4B310A" stroke-width="3" stroke-linejoin="round" /></g>
+    <g transform="translate(0, 3.6) rotate(45 180 180)"><use href="#v2-mark" fill="#674610" stroke="#674610" stroke-width="3" stroke-linejoin="round" /></g>
+    <g transform="translate(0, 1.8) rotate(45 180 180)"><use href="#v2-mark" fill="#885F19" stroke="#885F19" stroke-width="3" stroke-linejoin="round" /></g>
+  </g>
+
+  <!-- Sculpted Polished Metallic Gold Top Face -->
+  <g transform="rotate(45 180 180)" filter="url(#v2-sculpted-gold)">
+    <use href="#v2-mark" fill="url(#v2-gold-base)" stroke="url(#v2-gold-base)" stroke-width="3" stroke-linejoin="round" />
+
+    <!-- Layered curved bevel slopes clipped cleanly inside the mark -->
+    <g clip-path="url(#v2-inside)">
+      <use href="#v2-mark" fill="none" stroke="#4A3006" stroke-width="11" stroke-linejoin="round" stroke-opacity="0.55" />
+      <use href="#v2-mark" fill="none" stroke="#E8BF52" stroke-width="5.5" stroke-linejoin="round" stroke-opacity="0.62" />
+      <use href="#v2-mark" fill="none" stroke="url(#v2-ridge-grad)" stroke-width="2" stroke-linejoin="round" />
+    </g>
+  </g>
+</svg>

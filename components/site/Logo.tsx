@@ -1,12 +1,12 @@
 import Image from "next/image";
 
 /**
- * Simat Capital official mark (simat-mark.png).
+ * Simat Capital official mark (goooood.svg).
  */
 export function Mark({ size = 32, className = "" }: { size?: number; className?: string; solid?: boolean }) {
   return (
     <Image
-      src="/simat-mark.png"
+      src="/goooood.svg"
       alt="Simat Capital logo"
       width={size}
       height={size}

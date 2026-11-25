@@ -1,0 +1,241 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 -30 540 560" width="540" height="560" role="img" aria-label="Simat mark, realistic 3D gold">
+  <defs>
+    <!-- High-contrast 24k gold facet gradients (richer warm gold saturation) -->
+    <linearGradient id="g1" gradientUnits="userSpaceOnUse" x1="60" y1="0" x2="420" y2="490">
+      <stop offset="0" stop-color="#ffe999" />
+      <stop offset=".16" stop-color="#f7cf5e" />
+      <stop offset=".32" stop-color="#dda62e" />
+      <stop offset=".45" stop-color="#ffe180" />
+      <stop offset=".58" stop-color="#ffea9e" />
+      <stop offset=".72" stop-color="#ebb942" />
+      <stop offset=".86" stop-color="#c68a1c" />
+      <stop offset="1" stop-color="#f5cf64" />
+    </linearGradient>
+    <linearGradient id="g2" gradientUnits="userSpaceOnUse" x1="420" y1="0" x2="60" y2="490">
+      <stop offset="0" stop-color="#f2c956" />
+      <stop offset=".2" stop-color="#c4891e" />
+      <stop offset=".36" stop-color="#f7d56e" />
+      <stop offset=".52" stop-color="#d89f2c" />
+      <stop offset=".68" stop-color="#aa7214" />
+      <stop offset=".84" stop-color="#e8b846" />
+      <stop offset="1" stop-color="#c78e20" />
+    </linearGradient>
+    <linearGradient id="g3" gradientUnits="userSpaceOnUse" x1="0" y1="60" x2="480" y2="430">
+      <stop offset="0" stop-color="#c48b20" />
+      <stop offset=".22" stop-color="#87570b" />
+      <stop offset=".4" stop-color="#d49f34" />
+      <stop offset=".56" stop-color="#a16c12" />
+      <stop offset=".74" stop-color="#6c4506" />
+      <stop offset=".88" stop-color="#bc8522" />
+      <stop offset="1" stop-color="#8c5c0e" />
+    </linearGradient>
+    <linearGradient id="g4" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="480" y2="490">
+      <stop offset="0" stop-color="#9c6910" />
+      <stop offset=".2" stop-color="#5c3904" />
+      <stop offset=".38" stop-color="#a87416" />
+      <stop offset=".54" stop-color="#6e4606" />
+      <stop offset=".72" stop-color="#422802" />
+      <stop offset=".86" stop-color="#8f6010" />
+      <stop offset="1" stop-color="#5e3b05" />
+    </linearGradient>
+
+    <!-- Extruded 3D side walls -->
+    <linearGradient id="wl" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="490">
+      <stop offset="0" stop-color="#c48c24" />
+      <stop offset=".5" stop-color="#9e6a14" />
+      <stop offset="1" stop-color="#7c500a" />
+    </linearGradient>
+    <linearGradient id="wr" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="490">
+      <stop offset="0" stop-color="#543506" />
+      <stop offset=".6" stop-color="#382202" />
+      <stop offset="1" stop-color="#241501" />
+    </linearGradient>
+
+    <!-- Ridge highlight -->
+    <linearGradient id="ridge" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="480" y2="490">
+      <stop offset="0" stop-color="#fff0b0" stop-opacity=".95" />
+      <stop offset=".45" stop-color="#ffe078" stop-opacity=".75" />
+      <stop offset="1" stop-color="#e8b842" stop-opacity=".45" />
+    </linearGradient>
+
+    <!-- Realistic dual-stage ambient + contact shadow -->
+    <filter id="shadow" x="-35%" y="-35%" width="170%" height="180%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="ambient" />
+      <feOffset dx="0" dy="22" in="ambient" result="ambientOff" />
+      <feComponentTransfer in="ambientOff" result="ambientAlpha">
+        <feFuncA type="linear" slope=".88" />
+      </feComponentTransfer>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5.5" result="contact" />
+      <feOffset dx="0" dy="9" in="contact" result="contactOff" />
+      <feComponentTransfer in="contactOff" result="contactAlpha">
+        <feFuncA type="linear" slope=".95" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="ambientAlpha" />
+        <feMergeNode in="contactAlpha" />
+      </feMerge>
+    </filter>
+
+    <!-- Realistic 3D lighting + brushed gold grain + 1-2% organic cast-metal unevenness -->
+    <filter id="realistic-gold" x="-10%" y="-10%" width="120%" height="120%">
+      <!-- 1. Subtle 1-2% organic surface/edge unevenness (cast gold feel) -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.022 0.026" numOctaves="2" seed="7" result="warpNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="warpNoise" scale="2.2" xChannelSelector="R" yChannelSelector="G" result="unevenBody" />
+
+      <!-- 2. Fine metallic micro-grain texture -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.45 0.08" numOctaves="3" seed="19" result="metalGrain" />
+      <feColorMatrix
+        type="matrix"
+        in="metalGrain"
+        values="0 0 0 0 0.92
+                0 0 0 0 0.78
+                0 0 0 0 0.38
+                0 0 0 0.14 0"
+        result="goldGrain"
+      />
+      <feComposite in="goldGrain" in2="unevenBody" operator="in" result="grainClip" />
+      <feBlend in="unevenBody" in2="grainClip" mode="overlay" result="textured" />
+
+      <!-- 3. 3D Specular lighting wrap for realistic warm gold gleam -->
+      <feGaussianBlur in="unevenBody" stdDeviation="2.8" result="heightMap" />
+      <feSpecularLighting in="heightMap" surfaceScale="4.5" specularConstant="1.0" specularExponent="28" lighting-color="#FFE380" result="spec">
+        <feDistantLight azimuth="225" elevation="50" />
+      </feSpecularLighting>
+      <feComposite in="spec" in2="unevenBody" operator="in" result="specClip" />
+      <feComposite in="textured" in2="specClip" operator="arithmetic" k1="0" k2="1" k3="0.45" k4="0" result="litGold" />
+
+      <!-- 4. Deeper 3D edge & channel shadow for contrast -->
+      <feGaussianBlur in="unevenBody" stdDeviation="2.2" result="rimBlur" />
+      <feOffset dx="-1.5" dy="-2" in="rimBlur" result="rimOff" />
+      <feComposite in="unevenBody" in2="rimOff" operator="out" result="rimMask" />
+      <feFlood flood-color="#241400" flood-opacity="0.78" result="bronzeRim" />
+      <feComposite in="bronzeRim" in2="rimMask" operator="in" result="rimShade" />
+
+      <feMerge result="mergedGold">
+        <feMergeNode in="litGold" />
+        <feMergeNode in="rimShade" />
+      </feMerge>
+
+      <!-- 5. Reduce gold intensity by ~4% -->
+      <feColorMatrix type="saturate" values="1.10" in="mergedGold" />
+    </filter>
+
+    <!-- Soft bloom for the ridge light glints -->
+    <filter id="glint-blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.2" />
+    </filter>
+
+    <!-- Radial specular hotspots -->
+    <radialGradient id="hotspot" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF2B2" stop-opacity="0.7" />
+      <stop offset="40%" stop-color="#FFD452" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#FFD452" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Grounded Shadow -->
+  <g filter="url(#shadow)" fill="#000">
+    <polygon points="358.79,154.43 240,35.64 240,10.18 384.25,154.43" />
+    <polygon points="358.79,154.43 240,35.64 240,61.09 358.79,179.89" />
+    <polygon points="240,35.64 44.84,230.8 19.38,230.8 240,10.18" />
+    <polygon points="240,35.64 44.84,230.8 70.29,230.8 240,61.09" />
+    <polygon points="44.84,230.8 240,425.96 240,451.42 19.38,230.8" />
+    <polygon points="44.84,230.8 240,425.96 240,400.51 70.29,230.8" />
+    <polygon points="240,425.96 435.16,230.8 460.62,230.8 240,451.42" />
+    <polygon points="240,425.96 435.16,230.8 409.71,230.8 240,400.51" />
+    <polygon points="435.16,230.8 409.71,205.34 409.71,179.89 460.62,230.8" />
+    <polygon points="435.16,230.8 409.71,205.34 384.25,205.34 409.71,230.8" />
+    <polygon points="358.79,154.43 384.25,154.43 358.79,179.89" />
+    <polygon points="409.71,205.34 409.71,179.89 384.25,205.34" />
+    <polygon points="99.99,175.65 255.56,331.21 255.56,356.67 99.99,201.1" />
+    <polygon points="99.99,175.65 255.56,331.21 255.56,305.75 125.45,175.65" />
+    <polygon points="255.56,331.21 300.81,285.95 326.27,285.95 255.56,356.67" />
+    <polygon points="255.56,331.21 300.81,285.95 275.36,285.95 255.56,305.75" />
+    <polygon points="300.81,285.95 183.43,168.57 208.89,168.57 326.27,285.95" />
+    <polygon points="300.81,285.95 183.43,168.57 157.98,168.57 275.36,285.95" />
+    <polygon points="183.43,168.57 228.69,123.32 228.69,148.78 208.89,168.57" />
+    <polygon points="183.43,168.57 228.69,123.32 228.69,97.86 157.98,168.57" />
+    <polygon points="228.69,123.32 346.07,240.7 346.07,266.16 228.69,148.78" />
+    <polygon points="228.69,123.32 346.07,240.7 371.52,240.7 228.69,97.86" />
+    <polygon points="346.07,240.7 346.07,266.16 371.52,240.7" />
+  </g>
+
+  <!-- Realistic 3D Gold Body (with 1-2% organic unevenness, grain, and specular lighting) -->
+  <g filter="url(#realistic-gold)">
+    <!-- Extruded Side Walls -->
+    <g stroke-linejoin="round" stroke-width="0.7">
+      <polygon fill="url(#wl)" stroke="url(#wl)" points="358.79,171.09 240,52.29 240,61.09 358.79,179.89" />
+      <polygon fill="url(#wr)" stroke="url(#wr)" points="240,52.29 70.29,222 70.29,230.8 240,61.09" />
+      <polygon fill="url(#wl)" stroke="url(#wl)" points="19.38,222 240,442.62 240,451.42 19.38,230.8" />
+      <polygon fill="url(#wr)" stroke="url(#wr)" points="240,442.62 460.62,222 460.62,230.8 240,451.42" />
+      <polygon fill="url(#wl)" stroke="url(#wl)" points="409.71,222 384.25,196.54 384.25,205.34 409.71,230.8" />
+      <polygon fill="url(#wr)" stroke="url(#wr)" points="384.25,145.63 358.79,171.09 358.79,179.89 384.25,154.43" />
+      <polygon fill="url(#wl)" stroke="url(#wl)" points="99.99,192.3 255.56,347.87 255.56,356.67 99.99,201.1" />
+      <polygon fill="url(#wr)" stroke="url(#wr)" points="255.56,347.87 326.27,277.15 326.27,285.95 255.56,356.67" />
+      <polygon fill="url(#wl)" stroke="url(#wl)" points="275.36,277.15 157.98,159.77 157.98,168.57 275.36,285.95" />
+      <polygon fill="url(#wr)" stroke="url(#wr)" points="208.89,159.77 228.69,139.98 228.69,148.78 208.89,168.57" />
+      <polygon fill="url(#wl)" stroke="url(#wl)" points="228.69,139.98 346.07,257.36 346.07,266.16 228.69,148.78" />
+      <polygon fill="url(#wr)" stroke="url(#wr)" points="346.07,257.36 371.52,231.9 371.52,240.7 346.07,266.16" />
+    </g>
+
+    <!-- Faceted Chiseled Top Bevels -->
+    <g stroke-linejoin="round" stroke-width="0.6">
+      <polygon fill="url(#g2)" stroke="url(#g2)" points="358.79,145.63 240,26.84 240,1.38 384.25,145.63" />
+      <polygon fill="url(#g3)" stroke="url(#g3)" points="358.79,145.63 240,26.84 240,52.29 358.79,171.09" />
+      <polygon fill="url(#g1)" stroke="url(#g1)" points="240,26.84 44.84,222 19.38,222 240,1.38" />
+      <polygon fill="url(#g4)" stroke="url(#g4)" points="240,26.84 44.84,222 70.29,222 240,52.29" />
+      <polygon fill="url(#g3)" stroke="url(#g3)" points="44.84,222 240,417.16 240,442.62 19.38,222" />
+      <polygon fill="url(#g2)" stroke="url(#g2)" points="44.84,222 240,417.16 240,391.71 70.29,222" />
+      <polygon fill="url(#g4)" stroke="url(#g4)" points="240,417.16 435.16,222 460.62,222 240,442.62" />
+      <polygon fill="url(#g1)" stroke="url(#g1)" points="240,417.16 435.16,222 409.71,222 240,391.71" />
+      <polygon fill="url(#g2)" stroke="url(#g2)" points="435.16,222 409.71,196.54 409.71,171.09 460.62,222" />
+      <polygon fill="url(#g3)" stroke="url(#g3)" points="435.16,222 409.71,196.54 384.25,196.54 409.71,222" />
+      <polygon fill="url(#g4)" stroke="url(#g4)" points="358.79,145.63 384.25,145.63 358.79,171.09" />
+      <polygon fill="url(#g1)" stroke="url(#g1)" points="409.71,196.54 409.71,171.09 384.25,196.54" />
+      <polygon fill="url(#g3)" stroke="url(#g3)" points="99.99,166.85 255.56,322.41 255.56,347.87 99.99,192.3" />
+      <polygon fill="url(#g2)" stroke="url(#g2)" points="99.99,166.85 255.56,322.41 255.56,296.95 125.45,166.85" />
+      <polygon fill="url(#g4)" stroke="url(#g4)" points="255.56,322.41 300.81,277.15 326.27,277.15 255.56,347.87" />
+      <polygon fill="url(#g1)" stroke="url(#g1)" points="255.56,322.41 300.81,277.15 275.36,277.15 255.56,296.95" />
+      <polygon fill="url(#g2)" stroke="url(#g2)" points="300.81,277.15 183.43,159.77 208.89,159.77 326.27,277.15" />
+      <polygon fill="url(#g3)" stroke="url(#g3)" points="300.81,277.15 183.43,159.77 157.98,159.77 275.36,277.15" />
+      <polygon fill="url(#g4)" stroke="url(#g4)" points="183.43,159.77 228.69,114.52 228.69,139.98 208.89,159.77" />
+      <polygon fill="url(#g1)" stroke="url(#g1)" points="183.43,159.77 228.69,114.52 228.69,89.06 157.98,159.77" />
+      <polygon fill="url(#g3)" stroke="url(#g3)" points="228.69,114.52 346.07,231.9 346.07,257.36 228.69,139.98" />
+      <polygon fill="url(#g2)" stroke="url(#g2)" points="228.69,114.52 346.07,231.9 371.52,231.9 228.69,89.06" />
+      <polygon fill="url(#g4)" stroke="url(#g4)" points="346.07,231.9 346.07,257.36 371.52,231.9" />
+    </g>
+
+    <!-- Lower Wall Rim Highlights -->
+    <g stroke="#ffe9a6" stroke-opacity=".55" stroke-width="0.9" stroke-linecap="round">
+      <line x1="358.79" y1="171.09" x2="240" y2="52.29" />
+      <line x1="240" y1="52.29" x2="70.29" y2="222" />
+      <line x1="19.38" y1="222" x2="240" y2="442.62" />
+      <line x1="240" y1="442.62" x2="460.62" y2="222" />
+      <line x1="409.71" y1="222" x2="384.25" y2="196.54" />
+      <line x1="384.25" y1="145.63" x2="358.79" y2="171.09" />
+      <line x1="99.99" y1="192.3" x2="255.56" y2="347.87" />
+      <line x1="255.56" y1="347.87" x2="326.27" y2="277.15" />
+      <line x1="275.36" y1="277.15" x2="157.98" y2="159.77" />
+      <line x1="208.89" y1="159.77" x2="228.69" y2="139.98" />
+      <line x1="228.69" y1="139.98" x2="346.07" y2="257.36" />
+      <line x1="346.07" y1="257.36" x2="371.52" y2="231.9" />
+    </g>
+
+    <!-- Soft Bloomed Ridge Glint -->
+    <g fill="none" stroke="#fff7d6" stroke-opacity=".42" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" filter="url(#glint-blur)">
+      <polyline points="358.79,145.63 240,26.84 44.84,222 240,417.16 435.16,222 409.71,196.54" />
+      <polyline points="99.99,166.85 255.56,322.41 300.81,277.15 183.43,159.77 228.69,114.52 346.07,231.9" />
+    </g>
+
+    <!-- Crisp Center Ridge Spine -->
+    <g fill="none" stroke="url(#ridge)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+      <polyline points="358.79,145.63 240,26.84 44.84,222 240,417.16 435.16,222 409.71,196.54" />
+      <polyline points="99.99,166.85 255.56,322.41 300.81,277.15 183.43,159.77 228.69,114.52 346.07,231.9" />
+    </g>
+
+    <!-- Subtle Specular Light Blooms on Upper-Left Catchlights -->
+    <circle cx="240" cy="27" r="24" fill="url(#hotspot)" opacity="0.65" />
+    <circle cx="46" cy="222" r="20" fill="url(#hotspot)" opacity="0.45" />
+    <circle cx="229" cy="115" r="18" fill="url(#hotspot)" opacity="0.55" />
+  </g>
+</svg>

@@ -125,7 +125,7 @@ export default function Cover({
                 className="absolute inset-0 transition-all duration-700 ease-out will-change-transform"
                 style={{
                   clipPath: clip,
-                  backgroundImage: "url('/simat-mark.png')",
+                  backgroundImage: "url('/goooood.svg')",
                   backgroundPosition: "center",
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",

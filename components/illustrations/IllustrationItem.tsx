@@ -724,7 +724,7 @@ export default function IllustrationItem({
         >
           <g className={isEnhanced ? "hm-mark ill-depth" : "hm-mark"} style={isEnhanced ? { ["--d" as string]: 1.8 } : undefined}>
             <image
-              href="/simat-mark.png"
+              href="/goooood.svg"
               x={C - 34}
               y={C - 34}
               width={68}

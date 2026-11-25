@@ -408,7 +408,7 @@ export function Governance() {
 export function Closing({ onProcess, onInfo }: { onProcess: () => void; onInfo: () => void }) {
   return (
     <div className="mx-auto flex max-w-[760px] flex-col items-center gap-7 text-center">
-      <Image src="/simat-mark.png" alt="" width={64} height={64} className="d-rise" />
+      <Image src="/goooood.svg" alt="" width={64} height={64} className="d-rise" />
       <Title className="!text-center">
         Shariah-compliant global equity. <span className="em-gold">Institutional discipline.</span>
       </Title>

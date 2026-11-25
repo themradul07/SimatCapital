@@ -316,7 +316,7 @@ export default function HeroMark() {
         <g style={{ ...parallax(12), opacity: on ? 1 : 0, transition: "opacity 600ms var(--ease) 300ms, transform 600ms var(--ease)" }}>
           <g className="mark-pulse">
             <g className="hm-mark">
-              <image href="/simat-mark.png" x={C - 50} y={C - 50} width={100} height={100} preserveAspectRatio="xMidYMid meet" />
+              <image href="/goooood.svg" x={C - 50} y={C - 50} width={100} height={100} preserveAspectRatio="xMidYMid meet" />
             </g>
           </g>
         </g>
