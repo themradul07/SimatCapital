@@ -22,7 +22,7 @@ const OUTER = RADII[0];
 const PERIMETER = OUTER * Math.SQRT2 * 4;
 const SEG = 90; // comet tail length
 const PERIOD = 11000; // ms per full loop
-const DEPTH = [3, 6, 9]; // parallax px per ring
+const DEPTH = [8, 15, 22]; // parallax px per ring
 const pct = (v: number) => `${(v / 500) * 100}%`;
 
 const POINTS = [
@@ -59,6 +59,8 @@ export default function HeroMark() {
   const [reduced, setReduced] = useState(false);
   const [inView, setInView] = useState(true);
   const [active, setActive] = useState<number | null>(null);
+  const [pointed, setPointed] = useState<number | null>(null);
+  const [tracking, setTracking] = useState(false);
   const [visited, setVisited] = useState(0); // bumps on each arrival, retriggers the ripple
 
   useEffect(() => {
@@ -139,17 +141,70 @@ export default function HeroMark() {
     }
   };
 
-  const onMove = (e: PointerEvent<HTMLElement>) => {
-    if (reduced || e.pointerType === "touch") return;
-    const el = figRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--mx", (((e.clientX - r.left) / r.width) * 2 - 1).toFixed(3));
-    el.style.setProperty("--my", (((e.clientY - r.top) / r.height) * 2 - 1).toFixed(3));
+  // Global website-wide cursor proximity & parallax tracking:
+  // Reacts wherever the cursor is on the page, not only inside the figure box.
+  useEffect(() => {
+    if (reduced || !inView) return;
+    const onGlobalMove = (e: globalThis.PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      const el = figRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const spanX = Math.max(r.width * 0.55, window.innerWidth * 0.26);
+      const spanY = Math.max(r.height * 0.55, window.innerHeight * 0.26);
+      const nx = Math.max(-2.0, Math.min(2.0, (e.clientX - cx) / spanX));
+      const ny = Math.max(-2.0, Math.min(2.0, (e.clientY - cy) / spanY));
+      el.style.setProperty("--mx", nx.toFixed(3));
+      el.style.setProperty("--my", ny.toFixed(3));
+      setTracking(true);
+
+      // Determine which cardinal direction the cursor is in (even when on the title)
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        setPointed(dx > 0 ? 1 : 3); // Right (Screened) or Left (Recorded)
+      } else {
+        setPointed(dy > 0 ? 2 : 0); // Bottom (Approved) or Top (Researched)
+      }
+
+      // Wide proximity detection for the 4 cardinal diamond nodes (260px radius)
+      const outerScale = r.width / 500;
+      let nearest: number | null = null;
+      let bestDist = 260;
+      POINTS.forEach(([px, py], idx) => {
+        const vx = r.left + px * outerScale;
+        const vy = r.top + py * outerScale;
+        const d = Math.hypot(e.clientX - vx, e.clientY - vy);
+        if (d < bestDist) {
+          bestDist = d;
+          nearest = idx;
+        }
+      });
+      if (nearest !== hoverRef.current) {
+        focusStep(nearest);
+      }
+    };
+    const onDocLeave = () => {
+      figRef.current?.style.setProperty("--mx", "0");
+      figRef.current?.style.setProperty("--my", "0");
+      setTracking(false);
+      setPointed(null);
+      focusStep(null);
+    };
+    window.addEventListener("pointermove", onGlobalMove, { passive: true });
+    document.addEventListener("mouseleave", onDocLeave);
+    return () => {
+      window.removeEventListener("pointermove", onGlobalMove);
+      document.removeEventListener("mouseleave", onDocLeave);
+    };
+  }, [reduced, inView, live]);
+
+  const onMove = (_e: PointerEvent<HTMLElement>) => {
+    // Handled globally by window pointermove listener
   };
   const onLeave = () => {
-    figRef.current?.style.setProperty("--mx", "0");
-    figRef.current?.style.setProperty("--my", "0");
     focusStep(null);
   };
 
@@ -161,10 +216,10 @@ export default function HeroMark() {
       ref={figRef}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
-      className={`hm relative mx-auto w-full max-w-[480px] ${on ? "on" : ""} ${live ? "is-live" : ""}`}
+      className={`hm relative mx-auto w-full max-w-[480px] ${on ? "on" : ""} ${live ? "is-live" : ""} ${tracking ? "is-tracking" : ""}`}
       aria-label="The Simat Capital mark at the centre of three diamonds: researched, screened, approved, recorded."
     >
-      <div className="relative">
+      <div className="hm-stage relative">
       <svg viewBox="0 0 500 500" className="w-full overflow-visible" aria-hidden>
         <defs>
           <radialGradient id={`${uid}-glow`}>
@@ -196,7 +251,7 @@ export default function HeroMark() {
         </g>
 
         {/* breathing glow behind the mark */}
-        <g style={parallax(12)} className="hm-par">
+        <g style={parallax(26)} className="hm-par">
           <circle cx={C} cy={C} r="110" fill={`url(#${uid}-glow)`} className="hm-glow" />
         </g>
 
@@ -234,7 +289,7 @@ export default function HeroMark() {
                   d={d}
                   stroke="var(--gold-accent)"
                   strokeWidth="1.2"
-                  className={`hm-spoke ${active === i ? "is-active" : ""}`}
+                  className={`hm-spoke ${active === i ? "is-active" : pointed === i ? "is-pointed" : ""}`}
                   style={{ ["--len" as string]: spokeLen }}
                 />
               </g>
@@ -313,7 +368,7 @@ export default function HeroMark() {
         </g>
 
         {/* the mark */}
-        <g style={{ ...parallax(12), opacity: on ? 1 : 0, transition: "opacity 600ms var(--ease) 300ms, transform 600ms var(--ease)" }}>
+        <g style={{ ...parallax(26), opacity: on ? 1 : 0, transition: "opacity 600ms var(--ease) 300ms, transform 600ms var(--ease)" }}>
           <g className="mark-pulse">
             <g className="hm-mark">
               <image href="/goooood.svg" x={C - 50} y={C - 50} width={100} height={100} preserveAspectRatio="xMidYMid meet" />

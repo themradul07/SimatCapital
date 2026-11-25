@@ -50,19 +50,37 @@ export default function IllustrationItem({
   }, [isEnhanced]);
   const live = isEnhanced && isMotion && inView && !reduced;
 
-  // Pointer-driven 3D tilt: CSS vars feed the SVG rotation and every <Depth> parallax layer.
-  const onPointerMove = (e: PointerEvent<SVGSVGElement>) => {
-    if (reduced) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    const px = ((e.clientX - r.left) / r.width - 0.5) * 2;
-    const py = ((e.clientY - r.top) / r.height - 0.5) * 2;
-    e.currentTarget.style.setProperty("--px", px.toFixed(3));
-    e.currentTarget.style.setProperty("--py", py.toFixed(3));
-  };
-  const onPointerLeave = (e: PointerEvent<SVGSVGElement>) => {
-    e.currentTarget.style.setProperty("--px", "0");
-    e.currentTarget.style.setProperty("--py", "0");
-  };
+  // Global website-wide pointer-driven 3D tilt: CSS vars feed the SVG rotation and every <Depth> parallax layer.
+  useEffect(() => {
+    if (!isEnhanced || reduced || !inView) return;
+    const onGlobalMove = (e: globalThis.PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      const el = svgRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const spanX = Math.max(r.width * 0.65, window.innerWidth * 0.32);
+      const spanY = Math.max(r.height * 0.65, window.innerHeight * 0.32);
+      const px = Math.max(-1.85, Math.min(1.85, (e.clientX - cx) / spanX));
+      const py = Math.max(-1.85, Math.min(1.85, (e.clientY - cy) / spanY));
+      el.style.setProperty("--px", px.toFixed(3));
+      el.style.setProperty("--py", py.toFixed(3));
+    };
+    const onDocLeave = () => {
+      svgRef.current?.style.setProperty("--px", "0");
+      svgRef.current?.style.setProperty("--py", "0");
+    };
+    window.addEventListener("pointermove", onGlobalMove, { passive: true });
+    document.addEventListener("mouseleave", onDocLeave);
+    return () => {
+      window.removeEventListener("pointermove", onGlobalMove);
+      document.removeEventListener("mouseleave", onDocLeave);
+    };
+  }, [isEnhanced, reduced, inView]);
+
+  const onPointerMove = (_e: PointerEvent<SVGSVGElement>) => {};
+  const onPointerLeave = (_e: PointerEvent<SVGSVGElement>) => {};
   const tilt = isEnhanced ? ` ill-3d${id === "three-markets-enhanced" ? " ill-3d-strong" : ""}` : "";
 
   return (
