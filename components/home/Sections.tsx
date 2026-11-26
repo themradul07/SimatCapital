@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Chapter from "./Chapter";
 import Reveal from "../Reveal";
+import HeroRatioGrid, { TwoColRatioGrid } from "./HeroRatioGrid";
 import DynamicHeroIllustration from "../illustrations/DynamicHeroIllustration";
 import ThreeBranch from "../illustrations/ThreeBranch";
 import OpportunityCircles from "../illustrations/OpportunityCircles";
@@ -12,49 +13,49 @@ import Founder from "./Founder";
 export function Hero() {
   return (
     <section className="relative flex min-h-[100svh] items-center pt-[104px] pb-12 md:pb-16">
-      <div className="wrap grid items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
-        <div>
-          <h1 className="h1 fade-in" style={{ ["--d" as string]: "100ms" }}>
-            Shariah-compliant global equity. <span className="em-gold">Institutional discipline.</span>
-          </h1>
-          <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "200ms" }}>
-            Proprietary research, systematic controls and human judgement applied to Shariah global equity.
-          </p>
-          <div className="fade-in mt-8 flex flex-wrap items-center gap-x-6 gap-y-4" style={{ ["--d" as string]: "300ms" }}>
-            <Link href="/contact#waitlist" className="btn btn-gold">
-              Join the waitlist
-            </Link>
-            <Link href="/demo" className="text-link">
-              Request a demo
-            </Link>
-          </div>
+      <HeroRatioGrid
+        text={
+          <>
+            <h1 className="h1 fade-in" style={{ ["--d" as string]: "100ms" }}>
+              Shariah-compliant global equity. <span className="em-gold">Institutional discipline.</span>
+            </h1>
+            <p className="lead fade-in mt-6 !text-[var(--text-secondary)]" style={{ ["--d" as string]: "200ms" }}>
+              Proprietary research, systematic controls and human judgement applied to Shariah global equity.
+            </p>
+            <div className="fade-in mt-8 flex flex-wrap items-center gap-x-6 gap-y-4" style={{ ["--d" as string]: "300ms" }}>
+              <Link href="/contact#waitlist" className="btn btn-gold">
+                Join the waitlist
+              </Link>
+              <Link href="/demo" className="text-link">
+                Request a demo
+              </Link>
+            </div>
 
-          {/* Two Audience Routing Cards with refined hover effects */}
-          <div className="fade-in mt-10 grid gap-4 sm:grid-cols-2" style={{ ["--d" as string]: "360ms" }}>
-            <Link href="/institutions" className="audience-card">
-              <div className="flex items-center justify-between">
-                <span className="serif text-[20px] font-medium" style={{ color: "var(--text-primary)" }}>For Family Offices and Institutions</span>
-                <span className="text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>Review</span>
-              </div>
-              <p className="text-[14px] secondary mt-2">Process, controls and governance in full.</p>
-            </Link>
-            <Link href="/private-investors" className="audience-card">
-              <div className="flex items-center justify-between">
-                <span className="serif text-[20px] font-medium" style={{ color: "var(--text-primary)" }}>For Individuals</span>
-                <span className="text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>Explore</span>
-              </div>
-              <p className="text-[14px] secondary mt-2">Plain words, about two minutes.</p>
-            </Link>
-          </div>
+            {/* Two Audience Routing Cards with refined hover effects */}
+            <div className="fade-in mt-10 grid gap-4 sm:grid-cols-2" style={{ ["--d" as string]: "360ms" }}>
+              <Link href="/institutions" className="audience-card">
+                <div className="flex items-center justify-between">
+                  <span className="serif text-[20px] font-medium" style={{ color: "var(--text-primary)" }}>For Family Offices and Institutions</span>
+                  <span className="text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>Review</span>
+                </div>
+                <p className="text-[14px] secondary mt-2">Process, controls and governance in full.</p>
+              </Link>
+              <Link href="/private-investors" className="audience-card">
+                <div className="flex items-center justify-between">
+                  <span className="serif text-[20px] font-medium" style={{ color: "var(--text-primary)" }}>For Individuals</span>
+                  <span className="text-[13px] font-medium" style={{ color: "var(--gold-accent)" }}>Explore</span>
+                </div>
+                <p className="text-[14px] secondary mt-2">Plain words, about two minutes.</p>
+              </Link>
+            </div>
 
-          <p className="fade-in mt-6 max-w-[56ch] text-[14px] secondary" style={{ ["--d" as string]: "420ms" }}>
-            Simat Capital does not manage external capital. Both strategies currently run on the founder&apos;s own capital.
-          </p>
-        </div>
-        <div className="px-10 sm:px-24 lg:px-16">
-          <DynamicHeroIllustration />
-        </div>
-      </div>
+            <p className="fade-in mt-6 max-w-[56ch] text-[14px] secondary" style={{ ["--d" as string]: "420ms" }}>
+              Simat Capital does not manage external capital. Both strategies currently run on the founder&apos;s own capital.
+            </p>
+          </>
+        }
+        art={<DynamicHeroIllustration />}
+      />
     </section>
   );
 }
@@ -75,12 +76,7 @@ export function ChapterQuestion() {
 }
 
 function TwoCol({ text, art, reverse = false }: { text: React.ReactNode; art: React.ReactNode; reverse?: boolean }) {
-  return (
-    <div className={`mt-6 grid items-center gap-12 lg:grid-cols-12 lg:gap-10`}>
-      <Reveal className={`lg:col-span-5 ${reverse ? "lg:order-2 lg:col-start-8" : ""}`}>{text}</Reveal>
-      <div className={`lg:col-span-7 ${reverse ? "lg:order-1" : "lg:col-start-6 lg:pl-6"}`}>{art}</div>
-    </div>
-  );
+  return <TwoColRatioGrid reverse={reverse} text={<Reveal>{text}</Reveal>} art={art} />;
 }
 
 export function ChapterGap({ thread = true }: { thread?: boolean }) {

@@ -30,6 +30,7 @@ export const ENHANCED_IDS = new Set([
   "sector-cap-enhanced",
   "three-markets-enhanced",
   "high-water-mark-enhanced",
+  "high-water-mark-pnl",
   "agent-swarm",
   "agent-react-loop",
   "agent-debate",
@@ -74,7 +75,9 @@ export default function EnhancedIllustration({ id, uid, live, isMotion, onSelect
     case "three-markets-enhanced":
       return <ThreeMarkets {...p} />;
     case "high-water-mark-enhanced":
-      return <HighWaterMark {...p} />;
+      return <HighWaterMark {...p} pnlColors={false} />;
+    case "high-water-mark-pnl":
+      return <HighWaterMark {...p} pnlColors={true} />;
     case "agent-swarm":
       return <AgentSwarm {...p} />;
     case "agent-react-loop":
@@ -1750,7 +1753,7 @@ const HWM_COMPANIES = [
   { name: "KAZE KK", mkt: "TSE", vals: [25, 30, 25, 28, 33, 37] },
 ];
 
-function HighWaterMark({ live }: P) {
+function HighWaterMark({ live, pnlColors = false }: P & { pnlColors?: boolean }) {
   const n = useStep(live, 1700);
   const k = live ? Math.min(n % 8, 5) : 5;
   const loop = Math.floor(n / 8);
@@ -1771,15 +1774,16 @@ function HighWaterMark({ live }: P) {
         {HWM_COMPANIES.map((c, i) => {
           const v = shares[i];
           const chg = ((v - c.vals[0]) / c.vals[0]) * 100;
+          const pnlColor = pnlColors ? (chg >= 0 ? "#34d399" : "#f87171") : GOLD;
           const rowY = 98 + i * 12;
           return (
             <g key={c.name}>
               <Label x={70} y={rowY} anchor="start" size={8.5} color={i === 0 ? GOLD : i === 1 ? TXT : SUB} mono>
                 {`${c.name} · ${c.mkt}`}
               </Label>
-              <rect x="160" y={rowY - 6} width={barMax} height="5" rx="2" fill={GOLD} fillOpacity="0.12" />
-              <rect x="160" y={rowY - 6} width={f((v / 65) * barMax)} height="5" rx="2" fill={GOLD} fillOpacity={1 - i * 0.28} />
-              <Label x={256} y={rowY} anchor="start" size={8.5} color={GOLD} mono>
+              <rect x="160" y={rowY - 6} width={barMax} height="5" rx="2" fill={pnlColor} fillOpacity={pnlColors ? "0.14" : "0.12"} />
+              <rect x="160" y={rowY - 6} width={f((v / 65) * barMax)} height="5" rx="2" fill={pnlColor} fillOpacity={pnlColors ? 0.85 - i * 0.15 : 1 - i * 0.28} />
+              <Label x={256} y={rowY} anchor="start" size={8.5} color={pnlColor} mono>
                 {`${v.toFixed(1)} ${chg >= 0 ? "+" : ""}${chg.toFixed(0)}%`}
               </Label>
             </g>
@@ -1815,35 +1819,67 @@ function HighWaterMark({ live }: P) {
       </Depth>
 
       <Depth d={1.4}>
-        <polyline
-          points={line}
-          fill="none"
-          stroke={GOLD}
-          strokeWidth="2.4"
-          strokeLinejoin="round"
-          pathLength={100}
-          strokeDasharray="100"
-          strokeDashoffset={100 * (1 - k / 5)}
-          style={{ transition: `stroke-dashoffset 1.4s ${EASE}` }}
-        />
+        {pnlColors ? (
+          HWM_XS.slice(1).map((x, idx) => {
+            const i = idx + 1;
+            const x1 = HWM_XS[idx];
+            const y1 = HWM_YS[idx];
+            const y2 = HWM_YS[i];
+            const isGain = y2 <= y1;
+            const segColor = isGain ? "#34d399" : "#f87171";
+            const visible = i <= k;
+            return (
+              <line
+                key={i}
+                x1={x1}
+                y1={y1}
+                x2={x}
+                y2={y2}
+                stroke={segColor}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                pathLength={100}
+                strokeDasharray="100"
+                strokeDashoffset={visible ? 0 : 100}
+                style={{ transition: `stroke-dashoffset 0.9s ${EASE}` }}
+              />
+            );
+          })
+        ) : (
+          <polyline
+            points={line}
+            fill="none"
+            stroke={GOLD}
+            strokeWidth="2.4"
+            strokeLinejoin="round"
+            pathLength={100}
+            strokeDasharray="100"
+            strokeDashoffset={100 * (1 - k / 5)}
+            style={{ transition: `stroke-dashoffset 1.4s ${EASE}` }}
+          />
+        )}
         {HWM_XS.map((x, i) => {
           const y = HWM_YEARS[i];
+          const prevNav = i > 0 ? HWM_YEARS[i - 1].nav : y.nav;
+          const isLoss = y.nav < prevNav;
+          const dotColor = !pnlColors ? GOLD : i === 0 ? GOLD : isLoss ? "#f87171" : "#34d399";
+          const burstColor = pnlColors ? "#34d399" : TXT;
           const reached = i <= k;
           const cardX = Math.max(30, Math.min(x - 65, 340));
           const cardY = HWM_YS[i] > 240 ? HWM_YS[i] - 50 : HWM_YS[i] + 16;
           return (
             <g key={x} className="ill-hover-group cursor-pointer">
-              {live && i === k && y.newHigh && <circle key={`${loop}-${i}`} cx={x} cy={HWM_YS[i]} r="14" fill="none" stroke={TXT} strokeWidth="1.6" className="ill-burst" style={{ animationDelay: "1.2s" }} />}
-              <circle cx={x} cy={HWM_YS[i]} r="4.5" fill={reached ? GOLD : BG} stroke={GOLD} strokeWidth="1.6" strokeOpacity={reached ? 1 : 0.35} style={{ transition: "fill 0.4s" }} className="ill-target" />
+              {live && i === k && y.newHigh && <circle key={`${loop}-${i}`} cx={x} cy={HWM_YS[i]} r="14" fill="none" stroke={burstColor} strokeWidth="1.6" className="ill-burst" style={{ animationDelay: "1.2s" }} />}
+              <circle cx={x} cy={HWM_YS[i]} r="4.5" fill={reached ? dotColor : BG} stroke={dotColor} strokeWidth="1.6" strokeOpacity={reached ? 1 : 0.35} style={{ transition: "fill 0.4s" }} className="ill-target" />
               <Label x={x} y={378} size={10} weight={600} color={reached ? TXT : SUB}>
                 {y.y}
               </Label>
-              <Label x={x} y={392} size={8.5} color={GOLD} mono opacity={reached ? 1 : 0.4}>
+              <Label x={x} y={392} size={8.5} color={reached ? dotColor : GOLD} mono opacity={reached ? 1 : 0.4}>
                 {y.nav.toFixed(1)}
               </Label>
               <g className="ill-card">
-                <rect x={cardX} y={cardY} width="135" height="36" rx="4" fill={BG} stroke={GOLD} strokeWidth="1" filter={CARD_SHADOW} />
-                <Label x={cardX + 67} y={cardY + 14} size={8.5} color={GOLD} mono>
+                <rect x={cardX} y={cardY} width="135" height="36" rx="4" fill={BG} stroke={dotColor} strokeWidth="1" filter={CARD_SHADOW} />
+                <Label x={cardX + 67} y={cardY + 14} size={8.5} color={dotColor} mono>
                   {`NAV: ${y.nav.toFixed(1)} · ${y.status}`}
                 </Label>
                 <Label x={cardX + 67} y={cardY + 26} size={9} weight={600}>

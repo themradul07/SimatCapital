@@ -50,20 +50,31 @@ export default function IllustrationItem({
   }, [isEnhanced]);
   const live = isEnhanced && isMotion && inView && !reduced;
 
-  // Global website-wide pointer-driven 3D tilt: CSS vars feed the SVG rotation and every <Depth> parallax layer.
+  // Localized pointer-driven 3D tilt: CSS vars feed the SVG rotation and every <Depth> parallax layer.
   useEffect(() => {
     if (!isEnhanced || reduced || !inView) return;
+    const PROXIMITY_PAD = 90;
     const onGlobalMove = (e: globalThis.PointerEvent) => {
       if (e.pointerType === "touch") return;
       const el = svgRef.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
+      const insideProximity =
+        e.clientX >= r.left - PROXIMITY_PAD &&
+        e.clientX <= r.right + PROXIMITY_PAD &&
+        e.clientY >= r.top - PROXIMITY_PAD &&
+        e.clientY <= r.bottom + PROXIMITY_PAD;
+      if (!insideProximity) {
+        el.style.setProperty("--px", "0");
+        el.style.setProperty("--py", "0");
+        return;
+      }
       const cx = r.left + r.width / 2;
       const cy = r.top + r.height / 2;
-      const spanX = Math.max(r.width * 0.65, window.innerWidth * 0.32);
-      const spanY = Math.max(r.height * 0.65, window.innerHeight * 0.32);
-      const px = Math.max(-1.85, Math.min(1.85, (e.clientX - cx) / spanX));
-      const py = Math.max(-1.85, Math.min(1.85, (e.clientY - cy) / spanY));
+      const spanX = r.width / 2 + PROXIMITY_PAD;
+      const spanY = r.height / 2 + PROXIMITY_PAD;
+      const px = Math.max(-1, Math.min(1, (e.clientX - cx) / spanX));
+      const py = Math.max(-1, Math.min(1, (e.clientY - cy) / spanY));
       el.style.setProperty("--px", px.toFixed(3));
       el.style.setProperty("--py", py.toFixed(3));
     };
@@ -743,10 +754,10 @@ export default function IllustrationItem({
           <g className={isEnhanced ? "hm-mark ill-depth" : "hm-mark"} style={isEnhanced ? { ["--d" as string]: 1.8 } : undefined}>
             <image
               href="/goooood.svg"
-              x={C - 34}
-              y={C - 34}
-              width={68}
-              height={68}
+              x={C - 44}
+              y={C - 44}
+              width={88}
+              height={88}
               preserveAspectRatio="xMidYMid meet"
             />
           </g>

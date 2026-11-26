@@ -3,7 +3,7 @@ import Image from "next/image";
 /**
  * Simat Capital official mark (goooood.svg).
  */
-export function Mark({ size = 32, className = "" }: { size?: number; className?: string; solid?: boolean }) {
+export function Mark({ size = 42, className = "" }: { size?: number; className?: string; solid?: boolean }) {
   return (
     <Image
       src="/goooood.svg"
@@ -16,11 +16,11 @@ export function Mark({ size = 32, className = "" }: { size?: number; className?:
   );
 }
 
-export function Lockup({ size = 30 }: { size?: number }) {
+export function Lockup({ size = 40 }: { size?: number }) {
   return (
-    <span className="inline-flex items-center gap-3">
+    <span className="inline-flex items-center gap-3.5">
       <Mark size={size} />
-      <span className="serif text-[21px] font-semibold leading-none tracking-tight" style={{ color: "var(--text-primary)" }}>
+      <span className="serif text-[23px] font-semibold leading-none tracking-tight" style={{ color: "var(--text-primary)" }}>
         Simat Capital
       </span>
     </span>

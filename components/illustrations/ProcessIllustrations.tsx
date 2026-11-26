@@ -47,6 +47,7 @@ export const PROCESS_MARK: Record<string, [number, number] | null> = {
   "sector-cap-enhanced": null,
   "three-markets-enhanced": null,
   "high-water-mark-enhanced": null,
+  "high-water-mark-pnl": null,
   // Agentic AI set (AgenticIllustrations.tsx) — the mark sits inside the swarm's orchestrator
   "agent-swarm": [0, -54],
   "agent-react-loop": null,

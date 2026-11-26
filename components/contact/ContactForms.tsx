@@ -6,8 +6,8 @@ import { submitForm, type FormKind, type FormState } from "@/app/(site)/contact/
 
 const CARDS: { kind: FormKind; title: string; line: string }[] = [
   { kind: "waitlist", title: "Join the waitlist", line: "Register non-binding interest and hear from Eesaa personally." },
-  { kind: "enquiry", title: "Make an enquiry", line: "Ask a question about Simat Capital." },
-  { kind: "demo", title: "Request a demo", line: "The confidential investor overview, with a walkthrough from the founder on request." },
+  // { kind: "enquiry", title: "Make an enquiry", line: "Ask a question about Simat Capital." },
+  // { kind: "demo", title: "Request a demo", line: "The confidential investor overview, with a walkthrough from the founder on request." },
 ];
 
 const SUCCESS: Record<FormKind, string> = {
@@ -20,10 +20,10 @@ const BUTTON: Record<FormKind, string> = { waitlist: "Join the waitlist", enquir
 const INVESTOR_TYPES = ["Family office", "Institution", "Private investor", "Adviser", "Other"];
 const STRATEGIES = ["Flagship Fund", "Simat Catalyst", "Both", "Not sure yet"];
 
-const isKind = (h: string): h is FormKind => h === "waitlist" || h === "enquiry" || h === "demo";
+const isKind = (h: string): h is FormKind => h === "waitlist";
 
 export default function ContactForms() {
-  const [kind, setKind] = useState<FormKind | null>(null);
+  const [kind, setKind] = useState<FormKind | null>("waitlist");
 
   useEffect(() => {
     const sync = () => {
@@ -45,7 +45,7 @@ export default function ContactForms() {
 
   return (
     <div>
-      <div className="grid gap-4 md:grid-cols-3" role="tablist" aria-label="How would you like to hear from us?">
+      <div className="grid gap-4 max-w-[520px]" role="tablist" aria-label="How would you like to hear from us?">
         {CARDS.map((c) => {
           const on = kind === c.kind;
           return (

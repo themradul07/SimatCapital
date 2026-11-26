@@ -180,7 +180,7 @@ export default function InvestorDemo() {
         />
         <header className="d-top">
           <div className="flex min-w-0 items-center gap-3">
-            <Mark size={28} />
+            <Mark size={38} />
             <span className="serif truncate text-[20px] font-semibold leading-none" style={{ color: "var(--text-primary)" }}>
               Simat Capital
             </span>

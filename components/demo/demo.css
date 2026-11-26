@@ -823,10 +823,24 @@
   50% { opacity: 1; }
 }
 
+@keyframes dProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.d-progress-bar {
+  transform-origin: left center;
+  animation-name: dProgress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cv-piece,
   .cv-label,
-  .cv-glow {
+  .cv-glow,
+  .d-progress-bar {
     animation: none !important;
     transition: none !important;
   }

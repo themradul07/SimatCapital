@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, Kicker, Label, Note, Title } from "./ui";
+import { AutoProgressBar, Card, Kicker, Label, Note, Title } from "./ui";
 
 const LOOP = [
   {
@@ -46,12 +46,12 @@ export default function ProcessWalkthrough({ onClose }: { onClose: () => void })
   const [i, setI] = useState(0);
   const [playing, setPlaying] = useState(true);
 
-  // Auto-play: advance through the 6-step cycle every 3.2s until interrupted
+  // Auto-play: advance through the 6-step cycle every 5.5s until interrupted
   useEffect(() => {
     if (!playing) return;
     const interval = setInterval(() => {
       setI((curr) => (curr + 1) % LOOP.length);
-    }, 3200);
+    }, 5500);
     return () => clearInterval(interval);
   }, [playing]);
 
@@ -95,10 +95,11 @@ export default function ProcessWalkthrough({ onClose }: { onClose: () => void })
               type="button"
               onClick={() => handleSelect(k)}
               aria-current={k === i ? "step" : undefined}
-              className={`d-step w-full transition-all duration-300 ${k === i ? "is-on" : k < i ? "is-done" : ""}`}
+              className={`d-step relative overflow-hidden w-full transition-all duration-300 ${k === i ? "is-on" : k < i ? "is-done" : ""}`}
             >
               <span className="d-step-n">0{k + 1}</span>
               <span className="d-step-name">{s.name}</span>
+              {k === i && <AutoProgressBar durationMs={5500} activeKey={i} paused={!playing} />}
             </button>
           </li>
         ))}

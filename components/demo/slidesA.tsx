@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, Kicker, Label, Note, Pill, Title } from "./ui";
+import { AutoProgressBar, Card, Kicker, Label, Note, Pill, Title } from "./ui";
 
 /* ───────────────────────── 1 · Our beliefs ───────────────────────── */
 
@@ -16,12 +16,12 @@ export function Beliefs() {
   const [open, setOpen] = useState<number | null>(0);
   const [interrupted, setInterrupted] = useState(false);
 
-  // Auto-play: sequentially expand each principle every 3.2s until interrupted
+  // Auto-play: sequentially expand each principle every 5.5s until interrupted
   useEffect(() => {
     if (interrupted) return;
     const interval = setInterval(() => {
       setOpen((prev) => ((prev ?? 0) + 1) % BELIEFS.length);
-    }, 3200);
+    }, 5500);
     return () => clearInterval(interval);
   }, [interrupted]);
 
@@ -50,7 +50,7 @@ export function Beliefs() {
                 setInterrupted(true);
                 setOpen(i);
               }}
-              className={`d-card d-card-btn d-rise flex min-h-[250px] flex-col gap-3 text-left transition-all duration-300 ${
+              className={`d-card d-card-btn d-rise relative overflow-hidden flex min-h-[250px] flex-col gap-3 text-left transition-all duration-300 ${
                 on ? "d-card-accent shadow-[0_0_20px_rgba(214,180,106,0.18)]" : ""
               }`}
               style={{ ["--i" as string]: i }}
@@ -69,6 +69,7 @@ export function Beliefs() {
               ) : (
                 <span className="d-label mt-auto">In practice +</span>
               )}
+              {on && <AutoProgressBar durationMs={5500} activeKey={open ?? 0} paused={interrupted} />}
             </button>
           );
         })}
@@ -137,12 +138,12 @@ export function Problem() {
   const [sel, setSel] = useState(0);
   const [interrupted, setInterrupted] = useState(false);
 
-  // Auto-play: cycle through problems every 3.8s until interrupted
+  // Auto-play: cycle through problems every 6.5s until interrupted
   useEffect(() => {
     if (interrupted) return;
     const interval = setInterval(() => {
       setSel((s) => (s + 1) % PROBLEMS.length);
-    }, 3800);
+    }, 6500);
     return () => clearInterval(interval);
   }, [interrupted]);
 
@@ -175,12 +176,13 @@ export function Problem() {
               aria-selected={sel === i}
               type="button"
               onClick={() => handleSelect(i)}
-              className={`d-row-btn transition-all duration-300 ${sel === i ? "is-on" : ""}`}
+              className={`d-row-btn relative overflow-hidden transition-all duration-300 ${sel === i ? "is-on" : ""}`}
             >
               <span className="serif w-6 text-[20px]" style={{ color: sel === i ? "var(--gold-accent)" : "var(--text-secondary)" }}>
                 {i + 1}
               </span>
               <span>{q.title}</span>
+              {sel === i && <AutoProgressBar durationMs={6500} activeKey={sel} paused={interrupted} />}
             </button>
           ))}
         </div>
@@ -219,13 +221,13 @@ export function WhyHard() {
   const [fell, setFell] = useState(false);
   const [interrupted, setInterrupted] = useState(false);
 
-  // Auto-play: show initial state for 2.5s, then automatically execute the share price -10% fall
+  // Auto-play: cycle between baseline and −10% share price fall every 6s until interrupted
   useEffect(() => {
     if (interrupted) return;
-    const timer = setTimeout(() => {
-      setFell(true);
-    }, 2500);
-    return () => clearTimeout(timer);
+    const interval = setInterval(() => {
+      setFell((f) => !f);
+    }, 6000);
+    return () => clearInterval(interval);
   }, [interrupted]);
 
   const handleToggleFell = () => {
@@ -255,10 +257,16 @@ export function WhyHard() {
           <button
             type="button"
             onClick={handleToggleFell}
-            className={`btn ${fell ? "btn-gold" : "btn-outline"} transition-all`}
+            className={`btn relative overflow-hidden ${fell ? "btn-gold" : "btn-outline"} transition-all`}
             aria-pressed={fell}
           >
             {fell ? "Undo the fall" : "Share price −10%"}
+            <AutoProgressBar
+              durationMs={6000}
+              activeKey={String(fell)}
+              paused={interrupted}
+              tone={fell ? "dark" : "gold"}
+            />
           </button>
         </div>
       </div>
@@ -356,7 +364,7 @@ export function Process() {
 
   useEffect(() => {
     if (!playing) return;
-    const t = setInterval(() => setStep((s) => (s + 1) % STEPS.length), 3400);
+    const t = setInterval(() => setStep((s) => (s + 1) % STEPS.length), 5800);
     return () => clearInterval(t);
   }, [playing]);
 
@@ -395,10 +403,11 @@ export function Process() {
               type="button"
               onClick={() => handleStepSelect(i)}
               aria-current={step === i ? "step" : undefined}
-              className={`d-step w-full ${step === i ? "is-on" : step > i ? "is-done" : ""}`}
+              className={`d-step relative overflow-hidden w-full ${step === i ? "is-on" : step > i ? "is-done" : ""}`}
             >
               <span className="d-step-n">0{i + 1}</span>
               <span className="d-step-name">{s.name}</span>
+              {step === i && <AutoProgressBar durationMs={5800} activeKey={step} paused={!playing} />}
             </button>
           </li>
         ))}
@@ -465,15 +474,12 @@ export function ShariahInAction() {
   const [stage, setStage] = useState(0);
   const [interrupted, setInterrupted] = useState(false);
 
-  // Auto-play: advance through Honeywell events every 2.8s until interrupted
+  // Auto-play: advance through Honeywell events every 5.5s (and loop cleanly) until interrupted
   useEffect(() => {
     if (interrupted) return;
     const interval = setInterval(() => {
-      setStage((s) => {
-        if (s < EVENTS.length - 1) return s + 1;
-        return s;
-      });
-    }, 2800);
+      setStage((s) => (s + 1) % EVENTS.length);
+    }, 5500);
     return () => clearInterval(interval);
   }, [interrupted]);
 
@@ -530,8 +536,9 @@ export function ShariahInAction() {
           ))}
         </ol>
         <div className="flex items-center gap-3">
-          <button type="button" onClick={handleAction} className="btn btn-gold self-start">
+          <button type="button" onClick={handleAction} className="btn btn-gold relative overflow-hidden self-start">
             {done ? "Replay case study" : "Next event"}
+            <AutoProgressBar durationMs={5500} activeKey={stage} paused={interrupted} tone="dark" />
           </button>
         </div>
       </div>

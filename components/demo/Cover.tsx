@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AutoProgressBar } from "./ui";
 
 /**
  * Slide 01 / Cover for /demo:
@@ -57,7 +58,7 @@ export default function Cover({
     const interval = setInterval(() => {
       current = (current + 1) % 4;
       setActive(current);
-    }, 2400);
+    }, 4500);
     return () => clearInterval(interval);
   }, [interrupted, split]);
 
@@ -108,7 +109,7 @@ export default function Cover({
         <button
           type="button"
           onClick={toggleSplit}
-          className="relative w-[210px] sm:w-[240px] aspect-square cursor-pointer focus:outline-none group"
+          className="relative w-[260px] sm:w-[300px] aspect-square cursor-pointer focus:outline-none group"
           title={split ? "Click mark to rejoin" : "Click mark to break into four pieces"}
           aria-label="Simat Capital mark: breaks into four pieces"
         >
@@ -165,7 +166,7 @@ export default function Cover({
               handleInterrupt();
               setActive(i);
             }}
-            className={`rounded-xl border p-2.5 transition-all text-center cursor-pointer ${
+            className={`relative overflow-hidden rounded-xl border p-2.5 transition-all text-center cursor-pointer ${
               active === i
                 ? "border-[var(--gold-accent)] bg-[rgba(214,180,106,0.12)] shadow-[0_0_12px_rgba(214,180,106,0.15)]"
                 : "border-[var(--line-soft)] bg-[var(--bg-raised)]/60 hover:border-[var(--gold-accent)]/50"
@@ -177,6 +178,7 @@ export default function Cover({
             <span className="text-[11px] text-[var(--text-secondary)] block mt-0.5 font-mono">
               {q.text}
             </span>
+            {active === i && <AutoProgressBar durationMs={4500} activeKey={active} paused={interrupted} />}
           </div>
         ))}
       </div>

@@ -17,7 +17,7 @@ const STEPS = [
 ];
 
 const C = 250;
-const RADII = [165, 118, 74];
+const RADII = [178, 130, 86];
 const OUTER = RADII[0];
 const PERIMETER = OUTER * Math.SQRT2 * 4;
 const SEG = 90; // comet tail length
@@ -141,26 +141,44 @@ export default function HeroMark() {
     }
   };
 
-  // Global website-wide cursor proximity & parallax tracking:
-  // Reacts wherever the cursor is on the page, not only inside the figure box.
+  // Localized cursor proximity & parallax tracking around the hero animation:
+  // Reacts when the cursor is over or near the figure, resetting smoothly outside that zone.
   useEffect(() => {
     if (reduced || !inView) return;
+    const PROXIMITY_PAD = 100;
     const onGlobalMove = (e: globalThis.PointerEvent) => {
       if (e.pointerType === "touch") return;
       const el = figRef.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
+
+      // Only react when cursor is within PROXIMITY_PAD px of the figure bounds
+      const insideProximity =
+        e.clientX >= r.left - PROXIMITY_PAD &&
+        e.clientX <= r.right + PROXIMITY_PAD &&
+        e.clientY >= r.top - PROXIMITY_PAD &&
+        e.clientY <= r.bottom + PROXIMITY_PAD;
+
+      if (!insideProximity) {
+        el.style.setProperty("--mx", "0");
+        el.style.setProperty("--my", "0");
+        setTracking(false);
+        setPointed(null);
+        if (hoverRef.current !== null) focusStep(null);
+        return;
+      }
+
       const cx = r.left + r.width / 2;
       const cy = r.top + r.height / 2;
-      const spanX = Math.max(r.width * 0.55, window.innerWidth * 0.26);
-      const spanY = Math.max(r.height * 0.55, window.innerHeight * 0.26);
-      const nx = Math.max(-2.0, Math.min(2.0, (e.clientX - cx) / spanX));
-      const ny = Math.max(-2.0, Math.min(2.0, (e.clientY - cy) / spanY));
+      const spanX = r.width / 2 + PROXIMITY_PAD;
+      const spanY = r.height / 2 + PROXIMITY_PAD;
+      const nx = Math.max(-1, Math.min(1, (e.clientX - cx) / spanX));
+      const ny = Math.max(-1, Math.min(1, (e.clientY - cy) / spanY));
       el.style.setProperty("--mx", nx.toFixed(3));
       el.style.setProperty("--my", ny.toFixed(3));
       setTracking(true);
 
-      // Determine which cardinal direction the cursor is in (even when on the title)
+      // Determine which cardinal direction the cursor is in
       const dx = e.clientX - cx;
       const dy = e.clientY - cy;
       if (Math.abs(dx) > Math.abs(dy)) {
@@ -169,10 +187,10 @@ export default function HeroMark() {
         setPointed(dy > 0 ? 2 : 0); // Bottom (Approved) or Top (Researched)
       }
 
-      // Wide proximity detection for the 4 cardinal diamond nodes (260px radius)
+      // Tighter proximity detection for the 4 cardinal diamond nodes (90px radius)
       const outerScale = r.width / 500;
       let nearest: number | null = null;
-      let bestDist = 260;
+      let bestDist = 90;
       POINTS.forEach(([px, py], idx) => {
         const vx = r.left + px * outerScale;
         const vy = r.top + py * outerScale;
@@ -209,14 +227,14 @@ export default function HeroMark() {
   };
 
   const shown = active ?? 0;
-  const spokeLen = OUTER - 70;
+  const spokeLen = OUTER - 80;
 
   return (
     <figure
       ref={figRef}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
-      className={`hm relative mx-auto w-full max-w-[480px] ${on ? "on" : ""} ${live ? "is-live" : ""} ${tracking ? "is-tracking" : ""}`}
+      className={`hm relative mx-auto w-full max-w-[580px] ${on ? "on" : ""} ${live ? "is-live" : ""} ${tracking ? "is-tracking" : ""}`}
       aria-label="The Simat Capital mark at the centre of three diamonds: researched, screened, approved, recorded."
     >
       <div className="hm-stage relative">
@@ -281,7 +299,7 @@ export default function HeroMark() {
           {POINTS.map(([x, y], i) => {
             const dx = Math.sign(x - C);
             const dy = Math.sign(y - C);
-            const d = `M ${C + dx * 64} ${C + dy * 64} L ${C + dx * (OUTER - 6)} ${C + dy * (OUTER - 6)}`;
+            const d = `M ${C + dx * 76} ${C + dy * 76} L ${C + dx * (OUTER - 6)} ${C + dy * (OUTER - 6)}`;
             return (
               <g key={i}>
                 <path d={d} stroke="var(--gold-accent)" strokeOpacity="0.07" strokeWidth="1" />
@@ -371,7 +389,7 @@ export default function HeroMark() {
         <g style={{ ...parallax(26), opacity: on ? 1 : 0, transition: "opacity 600ms var(--ease) 300ms, transform 600ms var(--ease)" }}>
           <g className="mark-pulse">
             <g className="hm-mark">
-              <image href="/goooood.svg" x={C - 50} y={C - 50} width={100} height={100} preserveAspectRatio="xMidYMid meet" />
+              <image href="/goooood.svg" x={C - 64} y={C - 64} width={128} height={128} preserveAspectRatio="xMidYMid meet" />
             </g>
           </g>
         </g>

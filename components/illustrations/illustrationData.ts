@@ -308,6 +308,30 @@ export const ILLUSTRATIONS: IllustrationDefinition[] = [
     isEnhanced: true,
   },
   {
+    id: "high-water-mark-pnl",
+    name: "High-Water Mark & Hurdle · Profit & Loss (Green / Red)",
+    category: "process",
+    categoryLabel: "Process & Proof",
+    badge: "P&L Edition",
+    animationType: "Green Gain / Red Drawdown NAV Replay",
+    animationDescription:
+      "Duplicate P&L edition of the Compound Alpha Waterfall: rising NAV segments and positive holdings glow green, drawdown years highlight in red, while hurdle and alpha shading remain gold.",
+    subtitle: "Mudarabah profit share with green gain & red drawdown colour coding",
+    description:
+      "Illustrative 5-year mudarabah profit-share schedule with green gain and red drawdown cues. Loss and recovery years incur £0 fee; Simat participates only above the prior peak plus 5% hurdle.",
+    symbolism: [
+      "Green Segments: Positive compounding periods and advancing holdings",
+      "Red Segments: Drawdown years where £0 performance fee is charged",
+      "Gold Hurdle & Shading: 5% preferred hurdle and 60/40 surplus alpha zone",
+    ],
+    details: [
+      { title: "Year 1 · Alpha Surplus", sub: "NAV reaches 125.0 (+25%); growth above hurdle shared 60% investor / 40% Simat." },
+      { title: "Years 2 & 3 · Drawdown & Recovery", sub: "Red drawdown to 106.0 and recovery to 117.0: £0 fee; investor keeps 100% of recovery." },
+      { title: "Years 4 & 5 · Breakout & Compounding", sub: "Green breakout surpasses prior high-water mark; profit share re-engages above 5% hurdle." },
+    ],
+    isEnhanced: true,
+  },
+  {
     id: "agent-swarm",
     name: "Agentic Research Swarm · Orchestrator & Specialists",
     category: "agentic",

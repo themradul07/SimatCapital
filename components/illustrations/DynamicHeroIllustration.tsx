@@ -110,7 +110,7 @@ export default function DynamicHeroIllustration() {
 
   return (
     <figure
-      className="relative mx-auto aspect-square w-full max-w-[500px] select-none on"
+      className="relative mx-auto aspect-square w-full max-w-[580px] select-none on"
       aria-label={`Simat Capital - ${activeDef.name}`}
     >
       <div className="relative aspect-square w-full flex items-center justify-center p-2">

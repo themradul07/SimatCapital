@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Card, Kicker, Label, Note, Pill, Title } from "./ui";
+import { AutoProgressBar, Card, Kicker, Label, Note, Pill, Title } from "./ui";
 
 /* ───────────────────────── 6 · When markets fall ───────────────────────── */
 
@@ -17,12 +17,12 @@ export function MarketsFall() {
   const [activePlan, setActivePlan] = useState<number | null>(0);
   const [interrupted, setInterrupted] = useState(false);
 
-  // Auto-play: cycle through the 3 plan points every 3.0s until interrupted
+  // Auto-play: cycle through the 3 plan points every 5.5s until interrupted
   useEffect(() => {
     if (interrupted) return;
     const interval = setInterval(() => {
       setActivePlan((p) => ((p ?? 0) + 1) % PLAN.length);
-    }, 3000);
+    }, 5500);
     return () => clearInterval(interval);
   }, [interrupted]);
 
@@ -54,7 +54,7 @@ export function MarketsFall() {
                   handleInterrupt();
                   setActivePlan(i);
                 }}
-                className={`d-rise flex gap-5 p-3.5 rounded-xl border transition-all duration-300 cursor-pointer ${
+                className={`d-rise relative overflow-hidden flex gap-5 p-3.5 rounded-xl border transition-all duration-300 cursor-pointer ${
                   on
                     ? "border-[var(--gold-accent)] bg-[rgba(214,180,106,0.08)] shadow-[0_0_16px_rgba(214,180,106,0.15)]"
                     : "border-transparent hover:border-[var(--line-soft)]"
@@ -70,6 +70,7 @@ export function MarketsFall() {
                   </p>
                   <p className="mt-1 text-[14.5px] leading-relaxed secondary">{d}</p>
                 </div>
+                {on && <AutoProgressBar durationMs={5500} activeKey={activePlan ?? 0} paused={interrupted} />}
               </div>
             );
           })}
@@ -101,12 +102,12 @@ export function Receive() {
   const [activeItem, setActiveItem] = useState<number | null>(0);
   const [interrupted, setInterrupted] = useState(false);
 
-  // Auto-play: cycle through the 4 deliverables every 3.0s until interrupted
+  // Auto-play: cycle through the 4 deliverables every 5.5s until interrupted
   useEffect(() => {
     if (interrupted) return;
     const interval = setInterval(() => {
       setActiveItem((a) => ((a ?? 0) + 1) % 4);
-    }, 3000);
+    }, 5500);
     return () => clearInterval(interval);
   }, [interrupted]);
 
@@ -130,7 +131,7 @@ export function Receive() {
             handleInterrupt();
             setActiveItem(0);
           }}
-          className={`d-paper d-rise flex flex-col gap-3 rounded-2xl p-6 transition-all duration-300 cursor-pointer ${
+          className={`d-paper d-rise relative overflow-hidden flex flex-col gap-3 rounded-2xl p-6 transition-all duration-300 cursor-pointer ${
             activeItem === 0 ? "ring-2 ring-[var(--gold-accent)] shadow-[0_0_24px_rgba(214,180,106,0.3)]" : ""
           }`}
           style={{ ["--i" as string]: 0 }}
@@ -158,6 +159,7 @@ export function Receive() {
           <span className="mt-auto text-[12.5px]" style={{ color: "#5e574b" }}>
             With the reasoning behind every change.
           </span>
+          {activeItem === 0 && <AutoProgressBar durationMs={5500} activeKey={activeItem} paused={interrupted} />}
         </div>
 
         {/* Item 1 & 2: Shariah alert & Purification */}
@@ -167,7 +169,7 @@ export function Receive() {
               handleInterrupt();
               setActiveItem(1);
             }}
-            className={`d-rise flex flex-col gap-2 transition-all duration-300 cursor-pointer ${
+            className={`d-rise relative overflow-hidden flex flex-col gap-2 transition-all duration-300 cursor-pointer ${
               activeItem === 1 ? "border-[var(--status-breach)] shadow-[0_0_20px_rgba(255,90,90,0.2)]" : ""
             }`}
             style={{ ["--i" as string]: 1 }}
@@ -182,13 +184,14 @@ export function Receive() {
             <span className="text-[14px] leading-relaxed secondary">
               If a filing or corporate action puts a holding under review, you are told, and new purchases pause while it is reviewed.
             </span>
+            {activeItem === 1 && <AutoProgressBar durationMs={5500} activeKey={activeItem} paused={interrupted} />}
           </Card>
           <Card
             onClick={() => {
               handleInterrupt();
               setActiveItem(2);
             }}
-            className={`d-rise flex flex-col gap-2 transition-all duration-300 cursor-pointer ${
+            className={`d-rise relative overflow-hidden flex flex-col gap-2 transition-all duration-300 cursor-pointer ${
               activeItem === 2 ? "border-[var(--status-pass)] shadow-[0_0_20px_rgba(60,203,143,0.2)]" : ""
             }`}
             style={{ ["--i" as string]: 2 }}
@@ -201,6 +204,7 @@ export function Receive() {
               What to give, and why
             </span>
             <span className="text-[14px] leading-relaxed secondary">The amount to give to charity for each holding, with the income ratios used to calculate it.</span>
+            {activeItem === 2 && <AutoProgressBar durationMs={5500} activeKey={activeItem} paused={interrupted} />}
           </Card>
         </div>
 
@@ -210,7 +214,7 @@ export function Receive() {
             handleInterrupt();
             setActiveItem(3);
           }}
-          className={`d-rise flex flex-col gap-4 md:col-span-2 lg:col-span-1 transition-all duration-300 cursor-pointer ${
+          className={`d-rise relative overflow-hidden flex flex-col gap-4 md:col-span-2 lg:col-span-1 transition-all duration-300 cursor-pointer ${
             activeItem === 3 ? "border-[var(--status-info)] shadow-[0_0_20px_rgba(90,160,255,0.2)]" : ""
           }`}
           style={{ ["--i" as string]: 3 }}
@@ -222,6 +226,7 @@ export function Receive() {
           <LogEntry kind="Executed trade" t="Trim position" d="Reason: holding above its limit. Approved by the CIO. Evidence attached." on />
           <LogEntry kind="Rejected idea" t="Idea declined: valuation" d="Sound business, but the price leaves no margin of safety. Dissent recorded." />
           <span className="mt-auto text-[12.5px] secondary">Rejected ideas and dissenting views are kept on record.</span>
+          {activeItem === 3 && <AutoProgressBar durationMs={5500} activeKey={activeItem} paused={interrupted} />}
         </Card>
       </div>
     </div>
@@ -315,12 +320,12 @@ export function Governance() {
   const [activeRisk, setActiveRisk] = useState<number | null>(0);
   const [interrupted, setInterrupted] = useState(false);
 
-  // Auto-play: cycle through the 6 risk controls every 2.8s until interrupted
+  // Auto-play: cycle through the 6 risk controls every 5.0s until interrupted
   useEffect(() => {
     if (interrupted) return;
     const interval = setInterval(() => {
       setActiveRisk((r) => ((r ?? 0) + 1) % RISKS.length);
-    }, 2800);
+    }, 5000);
     return () => clearInterval(interval);
   }, [interrupted]);
 
@@ -375,7 +380,7 @@ export function Governance() {
                   handleInterrupt();
                   setActiveRisk(i);
                 }}
-                className={`d-rise flex flex-col gap-1.5 !p-4 transition-all duration-300 cursor-pointer ${
+                className={`d-rise relative overflow-hidden flex flex-col gap-1.5 !p-4 transition-all duration-300 cursor-pointer ${
                   on
                     ? "border-[var(--gold-accent)] bg-[rgba(214,180,106,0.08)] shadow-[0_0_16px_rgba(214,180,106,0.15)]"
                     : "hover:border-[var(--line-soft)]"
@@ -394,6 +399,7 @@ export function Governance() {
                   </span>
                   {m}
                 </p>
+                {on && <AutoProgressBar durationMs={5000} activeKey={activeRisk ?? 0} paused={interrupted} />}
               </Card>
             );
           })}
@@ -406,9 +412,31 @@ export function Governance() {
 /* ───────────────────────── 10 · Closing ───────────────────────── */
 
 export function Closing({ onProcess, onInfo }: { onProcess: () => void; onInfo: () => void }) {
+  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [rating, setRating] = useState<number>(0);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const handleRate = async (stars: number) => {
+    setRating(stars);
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/demo-feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating: stars, slide: "closing" }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const activeStars = hoverRating || rating;
+
   return (
     <div className="mx-auto flex max-w-[760px] flex-col items-center gap-7 text-center">
-      <Image src="/goooood.svg" alt="" width={64} height={64} className="d-rise" />
+      <Image src="/goooood.svg" alt="" width={96} height={96} className="d-rise" />
       <Title className="!text-center">
         Shariah-compliant global equity. <span className="em-gold">Institutional discipline.</span>
       </Title>
@@ -419,14 +447,56 @@ export function Closing({ onProcess, onInfo }: { onProcess: () => void; onInfo: 
         </p>
         <p className="text-[15.5px] leading-relaxed secondary">A direct, confidential conversation with Eesaa Simat for family offices and allocators.</p>
         <div className="mt-1 flex flex-wrap gap-3">
-          <Link href="/contact#enquiry" className="btn btn-gold">
+          <Link href="/contact#waitlist" className="btn btn-gold">
             Speak with the CIO
           </Link>
           <Link href="/contact#waitlist" className="btn btn-outline">
             Register your interest
           </Link>
         </div>
-        <button type="button" onClick={onProcess} className="text-link mt-2 self-start text-[14.5px]">
+
+        {/* 5-star auto-submit feedback */}
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t pt-4" style={{ borderColor: "var(--hairline)" }}>
+          <div className="flex items-center gap-3">
+            <span className="text-[12.5px] font-mono uppercase tracking-wider secondary">Rate this overview</span>
+            <div className="flex items-center gap-1" role="radiogroup" aria-label="Rate this overview from 1 to 5 stars">
+              {[1, 2, 3, 4, 5].map((star) => {
+                const filled = star <= activeStars;
+                return (
+                  <button
+                    key={star}
+                    type="button"
+                    aria-label={`${star} star${star > 1 ? "s" : ""}`}
+                    aria-checked={rating === star}
+                    role="radio"
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    onClick={() => handleRate(star)}
+                    disabled={status === "sending"}
+                    className="p-1 transition-transform duration-150 hover:scale-110 cursor-pointer bg-transparent border-0"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        fill={filled ? "var(--gold-accent)" : "transparent"}
+                        stroke="var(--gold-accent)"
+                        strokeWidth="1.6"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <span className="text-[12.5px] font-mono" style={{ color: status === "error" ? "#f87171" : "var(--gold-accent)" }}>
+            {status === "sending" && "Sending feedback…"}
+            {status === "sent" && `Thank you · ${rating}/5 received`}
+            {status === "error" && "Could not send. Try again."}
+          </span>
+        </div>
+
+        <button type="button" onClick={onProcess} className="text-link mt-1 self-start text-[14.5px]">
           See the process in action
         </button>
       </Card>
