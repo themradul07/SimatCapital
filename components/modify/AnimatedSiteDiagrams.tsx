@@ -961,3 +961,217 @@ export function AnimatedProfitLossNAV({ isMotion = true }: { isMotion?: boolean 
     </figure>
   );
 }
+
+/**
+ * 11. AnimatedFourRulebooks (Demo — "One company. Four rulebooks.")
+ * Auto-toggles market move (-10%) showing AAOIFI breach (red) while S&P/MSCI/FTSE pass (green).
+ */
+const RULEBOOKS = [
+  { name: "AAOIFI", basis: "Debt ÷ market value", base: 29.1, drop: 32.3, limit: 30.0 },
+  { name: "S&P Shariah", basis: "Debt ÷ 36m avg mkt val", base: 29.6, drop: 29.6, limit: 33.0 },
+  { name: "MSCI Islamic", basis: "Debt ÷ total assets", base: 32.0, drop: 32.0, limit: 33.33 },
+  { name: "FTSE Shariah", basis: "Debt ÷ total assets", base: 32.0, drop: 32.0, limit: 33.33 },
+];
+
+export function AnimatedFourRulebooks({ isMotion = true }: { isMotion?: boolean }) {
+  const [dropped, setDropped] = useState(false);
+
+  useEffect(() => {
+    if (!isMotion) return;
+    const t = window.setInterval(() => setDropped((d) => !d), 2600);
+    return () => window.clearInterval(t);
+  }, [isMotion]);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between text-[12px] font-mono">
+        <span className="secondary">
+          Market Value:{" "}
+          <strong style={{ color: dropped ? "#f87171" : "var(--text-primary)" }}>
+            {dropped ? "$9.9bn (-10%)" : "$11.0bn"}
+          </strong>
+        </span>
+        <button
+          type="button"
+          onClick={() => setDropped((d) => !d)}
+          className="rounded border px-2.5 py-1 text-[11px] font-mono cursor-pointer transition-colors"
+          style={{
+            borderColor: dropped ? "#f87171" : "var(--gold-accent)",
+            color: dropped ? "#f87171" : "var(--gold-accent)",
+            background: dropped ? "rgba(248,113,113,0.10)" : "rgba(214,180,106,0.08)",
+          }}
+        >
+          {dropped ? "State: Share price −10%" : "State: Baseline"}
+        </button>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        {RULEBOOKS.map((rb) => {
+          const val = dropped ? rb.drop : rb.base;
+          const fail = val > rb.limit;
+          const color = fail ? "#f87171" : "#34d399";
+          const pct = Math.min(100, (val / 38) * 100);
+          const limPct = (rb.limit / 38) * 100;
+          return (
+            <div
+              key={rb.name}
+              className="rounded-lg border p-3.5 transition-colors duration-500"
+              style={{
+                borderColor: fail ? "rgba(248,113,113,0.6)" : "var(--hairline)",
+                background: fail ? "rgba(248,113,113,0.06)" : "rgba(255,255,255,0.015)",
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-semibold text-[var(--text-primary)]">{rb.name}</span>
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-mono font-semibold"
+                  style={{
+                    color,
+                    background: fail ? "rgba(248,113,113,0.16)" : "rgba(52,211,153,0.14)",
+                  }}
+                >
+                  {fail ? "FAIL" : "PASS"}
+                </span>
+              </div>
+              <p className="text-[11px] secondary mt-0.5">{rb.basis}</p>
+              <div className="relative mt-2.5 h-2 w-full rounded-full bg-white/5 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{ width: `${pct}%`, background: color }}
+                />
+                <div
+                  className="absolute top-0 bottom-0 w-0.5 bg-white/80"
+                  style={{ left: `${limPct}%` }}
+                />
+              </div>
+              <p className="mt-1.5 text-[11px] font-mono" style={{ color }}>
+                {val.toFixed(1)}% vs {rb.limit}% limit
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 12. AnimatedDrawdownShield (Demo — "When markets fall")
+ * Compares passive index drawdown (red) vs Simat pre-set risk floor & cash buffer (gold/green).
+ */
+export function AnimatedDrawdownShield({ isMotion = true }: { isMotion?: boolean }) {
+  const uid = useId().replace(/:/g, "");
+  const indexPath = "M 36 62 C 130 66, 210 120, 290 172 C 360 198, 430 182, 504 166";
+  const simatPath = "M 36 62 C 130 64, 210 92, 290 106 C 360 110, 430 96, 504 86";
+
+  return (
+    <figure className="relative mx-auto w-full max-w-[540px] select-none">
+      <svg viewBox="0 0 540 225" className="w-full overflow-visible" aria-hidden>
+        {/* Risk Floor */}
+        <line x1="30" y1="118" x2="510" y2="118" stroke="var(--gold-accent)" strokeOpacity="0.45" strokeDasharray="5 5" />
+        <text x="510" y="132" textAnchor="end" fill="var(--gold-accent)" fontSize="10" fontFamily="monospace">
+          PRE-SET RISK FLOOR · CASH BUFFER
+        </text>
+
+        {/* Passive Index Drop */}
+        <path id={`${uid}-idx-drop`} d={indexPath} fill="none" stroke="#f87171" strokeOpacity="0.75" strokeWidth="2" strokeDasharray="4 4" />
+        <text x="504" y="182" textAnchor="end" fill="#f87171" fontSize="10" fontFamily="monospace">
+          PASSIVE INDEX (-18%)
+        </text>
+
+        {/* Simat Shielded Curve */}
+        <path id={`${uid}-simat-shield`} d={simatPath} fill="none" stroke="#34d399" strokeWidth="2.4" />
+        <text x="504" y="76" textAnchor="end" fill="#34d399" fontSize="10" fontFamily="monospace">
+          SIMAT RISK-MANAGED (-6%)
+        </text>
+
+        {isMotion && (
+          <>
+            <circle r="4" fill="#f87171">
+              <animateMotion dur="4.4s" repeatCount="indefinite">
+                <mpath href={`#${uid}-idx-drop`} />
+              </animateMotion>
+            </circle>
+            <circle r="4.5" fill="#34d399" stroke="#0a0907" strokeWidth="1.5">
+              <animateMotion dur="4.4s" repeatCount="indefinite">
+                <mpath href={`#${uid}-simat-shield`} />
+              </animateMotion>
+            </circle>
+          </>
+        )}
+      </svg>
+      <p className="mt-1 text-center text-[13px] secondary">
+        Risk is set before every trade; <span className="text-[var(--gold-accent)]">cash is held</span> when ideas are scarce.
+      </p>
+    </figure>
+  );
+}
+
+/**
+ * 13. AnimatedIndexConcentration (Demo — "The problem with passive Islamic funds")
+ * Contrasts top-heavy index concentration (red) vs Simat capped conviction weights (gold/green).
+ */
+const PASSIVE_WEIGHTS = [34, 26, 18, 12, 10];
+const SIMAT_WEIGHTS = [11, 10, 9, 9, 8];
+
+export function AnimatedIndexConcentration({ isMotion = true }: { isMotion?: boolean }) {
+  const [highlight, setHighlight] = useState(0);
+
+  useEffect(() => {
+    if (!isMotion) return;
+    const t = window.setInterval(() => setHighlight((h) => (h + 1) % PASSIVE_WEIGHTS.length), 1400);
+    return () => window.clearInterval(t);
+  }, [isMotion]);
+
+  return (
+    <div className="grid gap-5 sm:grid-cols-2">
+      <div className="rounded-lg border p-4" style={{ borderColor: "rgba(248,113,113,0.35)" }}>
+        <p className="text-[11px] font-mono uppercase tracking-wider text-[#f87171] mb-3">
+          Passive Shariah Index (Top-Heavy)
+        </p>
+        <div className="space-y-2">
+          {PASSIVE_WEIGHTS.map((w, i) => (
+            <div key={i} className="flex items-center gap-2 text-[11px] font-mono">
+              <span className="w-12 secondary">Top {i + 1}</span>
+              <div className="h-2.5 flex-1 rounded bg-white/5 overflow-hidden">
+                <div
+                  className="h-full rounded transition-all duration-500"
+                  style={{
+                    width: `${w * 2.5}%`,
+                    background: i < 2 ? "#f87171" : "rgba(248,113,113,0.5)",
+                    opacity: highlight === i ? 1 : 0.72,
+                  }}
+                />
+              </div>
+              <span className="w-8 text-right text-[#f87171]">{w}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-lg border p-4" style={{ borderColor: "rgba(52,211,153,0.4)" }}>
+        <p className="text-[11px] font-mono uppercase tracking-wider text-[#34d399] mb-3">
+          Simat Mandate (Hard Position Caps)
+        </p>
+        <div className="space-y-2">
+          {SIMAT_WEIGHTS.map((w, i) => (
+            <div key={i} className="flex items-center gap-2 text-[11px] font-mono">
+              <span className="w-12 secondary">Pos {i + 1}</span>
+              <div className="h-2.5 flex-1 rounded bg-white/5 overflow-hidden">
+                <div
+                  className="h-full rounded transition-all duration-500"
+                  style={{
+                    width: `${w * 2.5}%`,
+                    background: "#34d399",
+                    opacity: highlight === i ? 1 : 0.72,
+                  }}
+                />
+              </div>
+              <span className="w-8 text-right text-[#34d399]">{w}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

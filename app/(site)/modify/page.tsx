@@ -16,7 +16,10 @@ import ShariahFilter from "@/components/illustrations/ShariahFilter";
 import {
   AnimatedBearCaseChallenge,
   AnimatedDailyReconciliation,
+  AnimatedDrawdownShield,
   AnimatedEngineMap,
+  AnimatedFourRulebooks,
+  AnimatedIndexConcentration,
   AnimatedMarginOfSafety,
   AnimatedOpportunityCircles,
   AnimatedProfitLossNAV,
@@ -26,7 +29,7 @@ import {
   AnimatedTwoStrategies,
 } from "@/components/modify/AnimatedSiteDiagrams";
 
-type FilterTab = "all" | "landing" | "institutions" | "new";
+type FilterTab = "all" | "demo" | "landing" | "institutions" | "new";
 
 const PRESETS = [
   { label: "60 : 40", textPct: 60 },
@@ -99,6 +102,7 @@ export default function ModifyPage() {
 
   const showLanding = filter === "all" || filter === "landing";
   const showInstitutions = filter === "all" || filter === "institutions";
+  const showDemo = filter === "all" || filter === "demo";
   const showNew = filter === "all" || filter === "new";
 
   return (
@@ -403,6 +407,7 @@ export default function ModifyPage() {
               {(
                 [
                   ["all", "All"],
+                  ["demo", "Demo"],
                   ["new", "New Concepts"],
                   ["landing", "Landing & Private Investors"],
                   ["institutions", "Institutions"],
@@ -553,6 +558,57 @@ export default function ModifyPage() {
                   </Link>
                 </div>
                 <ShariahFilter />
+              </div>
+            )}
+
+            {showDemo && (
+              <div className="rounded-xl border p-6" style={{ borderColor: "var(--line)" }}>
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <div>
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--gold-accent)]">
+                      /demo · Why Shariah Is Hard
+                    </span>
+                    <h3 className="h3 mt-1">Four Rulebooks (-10% Market Move)</h3>
+                  </div>
+                  <Link href="/demo" className="text-[12px] font-mono secondary hover:text-[var(--gold-accent)]">
+                    View /demo →
+                  </Link>
+                </div>
+                <AnimatedFourRulebooks isMotion={isMotion} />
+              </div>
+            )}
+
+            {showDemo && (
+              <div className="rounded-xl border p-6" style={{ borderColor: "var(--line)" }}>
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <div>
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--gold-accent)]">
+                      /demo · When Markets Fall
+                    </span>
+                    <h3 className="h3 mt-1">Drawdown Shield &amp; Cash Buffer</h3>
+                  </div>
+                  <Link href="/demo" className="text-[12px] font-mono secondary hover:text-[var(--gold-accent)]">
+                    View /demo →
+                  </Link>
+                </div>
+                <AnimatedDrawdownShield isMotion={isMotion} />
+              </div>
+            )}
+
+            {showDemo && (
+              <div className="rounded-xl border p-6 lg:col-span-2" style={{ borderColor: "var(--line)" }}>
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <div>
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--gold-accent)]">
+                      /demo · Why Passive Funds Fall Short
+                    </span>
+                    <h3 className="h3 mt-1">Index Concentration vs Hard Position Caps</h3>
+                  </div>
+                  <Link href="/demo" className="text-[12px] font-mono secondary hover:text-[var(--gold-accent)]">
+                    View /demo →
+                  </Link>
+                </div>
+                <AnimatedIndexConcentration isMotion={isMotion} />
               </div>
             )}
 
